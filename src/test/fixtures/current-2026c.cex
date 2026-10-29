@@ -1,0 +1,100 @@
+#!version
+2026c
+
+#!images
+path|description|credits|urn
+Seikilos2.png|Stele of Seikilos|By Lennart Larsen, Nationalmuseets fotograf - Nationalmuseet 14897, CC BY-SA 3.0, https://commons.wikimedia.org/w/index.php?curid=23255221|urn:cite2:mousike:images.v1:Seikilos2
+
+#!surfaces
+urn|label
+urn:cite2:mousike:epigraphic.seikilos|Copenhagen, Nationalmuseet 14897, the Seikilos stele
+
+#!audio
+file|label|notation
+seikilos-phrygian-even_diatonic-lyre.wav|Seikilos stele, Phrygian tonos, even diatonic division, on lyre|urn:cts:mousike:epigraphic.seikilos.notes
+seikilos-phrygian-tense_diatonic-aulos.wav|Seikilos stele, Phrygian tonos, tense diatonic division, on aulos|urn:cts:mousike:epigraphic.seikilos.notes
+seikilos-phrygian-tense_diatonic-lyre.wav|Seikilos stele, Phrygian tonos, tense diatonic division, on lyre|urn:cts:mousike:epigraphic.seikilos.notes
+
+#!texts
+urn|text
+urn:cts:mousike:epigraphic.seikilos.text:1|οσον ζης φαινου
+urn:cts:mousike:epigraphic.seikilos.text:2|μηδεν ολως συ λυπου
+urn:cts:mousike:epigraphic.seikilos.text:3|προς ολιγον εστι το ζην
+urn:cts:mousike:epigraphic.seikilos.text:4|το τελος ο χρονος απαιτει
+
+#!notes
+urn|text
+urn:cts:mousike:epigraphic.seikilos.notes:1|gvn:11.1.1.0.0 gvn:15.1.2.0.0 gvn:15.1.3.1.0 gvn:13.3.1.0.0~gvn:14.1.1.0.0~gvn:15.1.1.0.0 gvn:14.1.3.1.1
+urn:cts:mousike:epigraphic.seikilos.notes:2|gvn:13.3.2.0.0 gvn:14.1.1.0.0 gvn:15.1.1.1.0 gvn:14.1.2.1.1~gvn:13.3.2.1.1 gvn:12.1.1.0.0 gvn:11.1.2.0.0 gvn:12.1.3.1.1~gvn:10.1.3.1.1
+urn:cts:mousike:epigraphic.seikilos.notes:3|gvn:11.1.1.0.0 gvn:13.3.1.0.0 gvn:15.1.1.0.0 gvn:14.1.1.1.0 gvn:13.3.1.0.0~gvn:14.1.1.1.0 gvn:13.3.1.0.0 gvn:11.1.2.0.0 gvn:12.1.3.1.1~gvn:10.1.3.1.1
+urn:cts:mousike:epigraphic.seikilos.notes:4|gvn:11.1.1.0.0 gvn:13.3.1.0.0 gvn:12.1.1.0.0 gvn:14.1.1.1.0 gvn:15.1.1.1.0 gvn:13.3.1.0.0 gvn:11.1.1.0.0 gvn:11.1.2.0.0 gvn:11.1.1.1.1~gvn:9.3.2.1.1~gvn:8.1.2.1.1
+
+#!syllables
+urn|text
+urn:cts:mousike:epigraphic.seikilos.syllables:1.1|ο-
+urn:cts:mousike:epigraphic.seikilos.syllables:1.2|σον
+urn:cts:mousike:epigraphic.seikilos.syllables:1.3|ζης
+urn:cts:mousike:epigraphic.seikilos.syllables:1.4|φαι-
+urn:cts:mousike:epigraphic.seikilos.syllables:1.5|νου
+urn:cts:mousike:epigraphic.seikilos.syllables:2.1|μη-
+urn:cts:mousike:epigraphic.seikilos.syllables:2.2|δεν
+urn:cts:mousike:epigraphic.seikilos.syllables:2.3|ο-
+urn:cts:mousike:epigraphic.seikilos.syllables:2.4|λως
+urn:cts:mousike:epigraphic.seikilos.syllables:2.5|συ
+urn:cts:mousike:epigraphic.seikilos.syllables:2.6|λυ-
+urn:cts:mousike:epigraphic.seikilos.syllables:2.7|που
+urn:cts:mousike:epigraphic.seikilos.syllables:3.1|προς
+urn:cts:mousike:epigraphic.seikilos.syllables:3.2|ο-
+urn:cts:mousike:epigraphic.seikilos.syllables:3.3|λι-
+urn:cts:mousike:epigraphic.seikilos.syllables:3.4|γον
+urn:cts:mousike:epigraphic.seikilos.syllables:3.5|ε-
+urn:cts:mousike:epigraphic.seikilos.syllables:3.6|στι
+urn:cts:mousike:epigraphic.seikilos.syllables:3.7|το
+urn:cts:mousike:epigraphic.seikilos.syllables:3.8|ζην
+urn:cts:mousike:epigraphic.seikilos.syllables:4.1|το
+urn:cts:mousike:epigraphic.seikilos.syllables:4.2|τε-
+urn:cts:mousike:epigraphic.seikilos.syllables:4.3|λος
+urn:cts:mousike:epigraphic.seikilos.syllables:4.4|ο
+urn:cts:mousike:epigraphic.seikilos.syllables:4.5|χρο-
+urn:cts:mousike:epigraphic.seikilos.syllables:4.6|νος
+urn:cts:mousike:epigraphic.seikilos.syllables:4.7|α-
+urn:cts:mousike:epigraphic.seikilos.syllables:4.8|παι-
+urn:cts:mousike:epigraphic.seikilos.syllables:4.9|τει
+
+#!dse
+image|text|surface
+urn:cite2:mousike:images.Seikilos2@0.1164,0.4114,0.0412,0.0323|urn:cts:mousike:epigraphic.seikilos.notes:1.1|urn:cite2:mousike:epigraphic.seikilos
+urn:cite2:mousike:images.Seikilos2@0.2542,0.4013,0.0565,0.0484|urn:cts:mousike:epigraphic.seikilos.notes:1.2|urn:cite2:mousike:epigraphic.seikilos
+urn:cite2:mousike:images.Seikilos2@0.4040,0.3848,0.0793,0.0535|urn:cts:mousike:epigraphic.seikilos.notes:1.3|urn:cite2:mousike:epigraphic.seikilos
+urn:cite2:mousike:images.Seikilos2@0.5557,0.3827,0.1447,0.0519|urn:cts:mousike:epigraphic.seikilos.notes:1.4|urn:cite2:mousike:epigraphic.seikilos
+urn:cite2:mousike:images.Seikilos2@0.7521,0.3812,0.0534,0.0695|urn:cts:mousike:epigraphic.seikilos.notes:1.5|urn:cite2:mousike:epigraphic.seikilos
+urn:cite2:mousike:images.Seikilos2@0.1255,0.4942,0.0648,0.0353|urn:cts:mousike:epigraphic.seikilos.notes:2.1|urn:cite2:mousike:epigraphic.seikilos
+urn:cite2:mousike:images.Seikilos2@0.2837,0.4965,0.0430,0.0311|urn:cts:mousike:epigraphic.seikilos.notes:2.2|urn:cite2:mousike:epigraphic.seikilos
+urn:cite2:mousike:images.Seikilos2@0.3792,0.4934,0.0522,0.0265|urn:cts:mousike:epigraphic.seikilos.notes:2.3|urn:cite2:mousike:epigraphic.seikilos
+urn:cite2:mousike:images.Seikilos2@0.5684,0.4871,0.0732,0.0442|urn:cts:mousike:epigraphic.seikilos.notes:2.4|urn:cite2:mousike:epigraphic.seikilos
+urn:cite2:mousike:images.Seikilos2@0.7304,0.4975,0.0415,0.0336|urn:cts:mousike:epigraphic.seikilos.notes:2.5|urn:cite2:mousike:epigraphic.seikilos
+urn:cite2:mousike:images.Seikilos2@0.1677,0.5792,0.0411,0.0317|urn:cts:mousike:epigraphic.seikilos.notes:3.1|urn:cite2:mousike:epigraphic.seikilos
+urn:cite2:mousike:images.Seikilos2@0.3151,0.5688,0.0751,0.0510|urn:cts:mousike:epigraphic.seikilos.notes:3.2|urn:cite2:mousike:epigraphic.seikilos
+urn:cite2:mousike:images.Seikilos2@0.5651,0.5774,0.0341,0.0299|urn:cts:mousike:epigraphic.seikilos.notes:3.3|urn:cite2:mousike:epigraphic.seikilos
+urn:cite2:mousike:images.Seikilos2@0.7209,0.5714,0.0429,0.0460|urn:cts:mousike:epigraphic.seikilos.notes:3.4|urn:cite2:mousike:epigraphic.seikilos
+urn:cite2:mousike:images.Seikilos2@0.7835,0.5678,0.0636,0.0462|urn:cts:mousike:epigraphic.seikilos.notes:3.5|urn:cite2:mousike:epigraphic.seikilos
+urn:cite2:mousike:images.Seikilos2@0.1555,0.6443,0.0355,0.0433|urn:cts:mousike:epigraphic.seikilos.notes:4.1|urn:cite2:mousike:epigraphic.seikilos
+urn:cite2:mousike:images.Seikilos2@0.3061,0.6468,0.0458,0.0391|urn:cts:mousike:epigraphic.seikilos.notes:4.2|urn:cite2:mousike:epigraphic.seikilos
+urn:cite2:mousike:images.Seikilos2@0.4303,0.6418,0.0461,0.0511|urn:cts:mousike:epigraphic.seikilos.notes:4.3|urn:cite2:mousike:epigraphic.seikilos
+urn:cite2:mousike:images.Seikilos2@0.5798,0.6547,0.0462,0.0287|urn:cts:mousike:epigraphic.seikilos.notes:4.4|urn:cite2:mousike:epigraphic.seikilos
+urn:cite2:mousike:images.Seikilos2@0.6971,0.6502,0.0633,0.0314|urn:cts:mousike:epigraphic.seikilos.notes:4.5|urn:cite2:mousike:epigraphic.seikilos
+urn:cite2:mousike:images.Seikilos2@0.1730,0.7307,0.0430,0.0306|urn:cts:mousike:epigraphic.seikilos.notes:5.1|urn:cite2:mousike:epigraphic.seikilos
+urn:cite2:mousike:images.Seikilos2@0.2966,0.7260,0.0334,0.0300|urn:cts:mousike:epigraphic.seikilos.notes:5.2|urn:cite2:mousike:epigraphic.seikilos
+urn:cite2:mousike:images.Seikilos2@0.3844,0.7253,0.0380,0.0342|urn:cts:mousike:epigraphic.seikilos.notes:5.3|urn:cite2:mousike:epigraphic.seikilos
+urn:cite2:mousike:images.Seikilos2@0.4939,0.7286,0.0702,0.0395|urn:cts:mousike:epigraphic.seikilos.notes:5.4|urn:cite2:mousike:epigraphic.seikilos
+urn:cite2:mousike:images.Seikilos2@0.6642,0.7316,0.0596,0.0343|urn:cts:mousike:epigraphic.seikilos.notes:5.5|urn:cite2:mousike:epigraphic.seikilos
+urn:cite2:mousike:images.Seikilos2@0.1846,0.8031,0.0592,0.0376|urn:cts:mousike:epigraphic.seikilos.notes:6.1|urn:cite2:mousike:epigraphic.seikilos
+urn:cite2:mousike:images.Seikilos2@0.3089,0.8055,0.0445,0.0347|urn:cts:mousike:epigraphic.seikilos.notes:6.2|urn:cite2:mousike:epigraphic.seikilos
+urn:cite2:mousike:images.Seikilos2@0.4303,0.8027,0.0598,0.0348|urn:cts:mousike:epigraphic.seikilos.notes:6.3|urn:cite2:mousike:epigraphic.seikilos
+urn:cite2:mousike:images.Seikilos2@0.6341,0.8015,0.0892,0.0417|urn:cts:mousike:epigraphic.seikilos.notes:6.4|urn:cite2:mousike:epigraphic.seikilos
+urn:cite2:mousike:images.Seikilos2@0.0932,0.4450,0.0759,0.0597|urn:cts:mousike:epigraphic.seikilos.syllables:1.1|urn:cite2:mousike:epigraphic.seikilos
+urn:cite2:mousike:images.Seikilos2@0.1768,0.4411,0.1727,0.0668|urn:cts:mousike:epigraphic.seikilos.syllables:1.2|urn:cite2:mousike:epigraphic.seikilos
+urn:cite2:mousike:images.Seikilos2@0.3483,0.4368,0.1930,0.0725|urn:cts:mousike:epigraphic.seikilos.syllables:1.3|urn:cite2:mousike:epigraphic.seikilos
+urn:cite2:mousike:images.Seikilos2@0.5397,0.4238,0.1451,0.0777|urn:cts:mousike:epigraphic.seikilos.syllables:1.4|urn:cite2:mousike:epigraphic.seikilos
+urn:cite2:mousike:images.Seikilos2@0.6887,0.4436,0.1984,0.0602|urn:cts:mousike:epigraphic.seikilos.syllables:1.5|urn:cite2:mousike:epigraphic.seikilos
+

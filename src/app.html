@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>agm: Ancient Greek Music</title>
 <style>
+/*@@FONT_CSS@@*/
   :root { --bg:#fbfaf7; --fg:#222; --muted:#666; --line:#ddd; --accent:#7a3b12; --warn:#9a5b00; }
   @media (prefers-color-scheme: dark) {
     :root { --bg:#1b1a18; --fg:#e8e6e1; --muted:#9a968e; --line:#3a3834; --accent:#e0a070; --warn:#e0b050; }
@@ -33,13 +34,35 @@
   th, td { text-align: left; vertical-align: top; padding: 4px 10px 4px 0; border-bottom: 1px solid var(--line); }
   th { color: var(--muted); font-weight: 500; }
   td.urn { font-family: ui-monospace, Menlo, monospace; font-size: .8rem; white-space: nowrap; }
+  .surface-picker { display:flex; gap:10px; align-items:center; margin: 14px 0; }
+  .surface-picker label { font-weight: 600; }
+  .surface-picker select { font: inherit; padding: 6px 8px; max-width: 100%; min-width: 0;
+    background: var(--bg); color: inherit; border: 1px solid var(--line); border-radius: 4px; }
+  #surface-out h2 { margin: 18px 0 2px; font-size: 1.15rem; }
+  .urn-line, .counts { color: var(--muted); margin: 2px 0 8px; }
+  .urn-line code { overflow-wrap: anywhere; }
+  .entries { list-style: none; margin: 0; padding: 0; }
+  .entry { border-top: 1px solid var(--line); padding: 8px 0; }
+  .entry-head { display: flex; flex-wrap: wrap; gap: 4px 14px; align-items: baseline; }
+  .entry-head .ref { font-family: ui-monospace, Menlo, monospace; font-weight: 600; }
+  .entry-head .roi { font-family: ui-monospace, Menlo, monospace; font-size: .78rem; color: var(--muted); }
+  .entry .content { margin-top: 3px; }
+  .entry .content.greek { font-family: "Gentium Plus", "New Athena Unicode", Georgia, serif; font-size: 1.1rem; }
+  .entry .content .mousike-notation { font-size: 1.6rem; line-height: 1.7; }
+  .entry .content .notation { font-family: ui-monospace, Menlo, monospace; font-size: .75rem; color: var(--muted); overflow-wrap: anywhere; }
+  .entry.unresolved .content { opacity: .7; }
+  .entry .content .count { font-family: system-ui, sans-serif; color: var(--muted); }
+  .entry .note { color: var(--warn); font-size: .85rem; margin-top: 3px; }
+  td.notation { font-family: ui-monospace, Menlo, monospace; font-size: .8rem; }
+  .data-panel { margin-top: 28px; }
+  .data-panel > summary { font-size: 1.05rem; }
   td.greek { font-family: "Gentium Plus", "New Athena Unicode", Georgia, serif; font-size: 1.05rem; }
 </style>
 </head>
 <body>
 <header>
   <h1>agm · Ancient Greek Music</h1>
-  <p class="sub">Data loader for the <code>mousike</code> CEX release</p>
+  <p class="sub">Reader for the <code>mousike</code> CEX release</p>
   <div class="controls">
     <input id="url" type="url" aria-label="CEX URL">
     <button id="load">Load</button>
@@ -48,11 +71,28 @@
 </header>
 <main>
   <p id="status">Not loaded.</p>
-  <div id="out"></div>
+  <section class="surface-picker">
+    <label for="surface">Artifact</label>
+    <select id="surface" disabled><option value="">Load data first</option></select>
+  </section>
+  <section id="surface-out"></section>
+  <details class="data-panel">
+    <summary>Release data</summary>
+    <div id="data-out"></div>
+  </details>
 </main>
 
 <script>
 /*@@CEX_JS@@*/
+</script>
+<script>
+/*@@EDITION_JS@@*/
+</script>
+<script>
+/*@@SOWERBY_TABLE_JS@@*/
+</script>
+<script>
+/*@@NOTATION_JS@@*/
 </script>
 <script>
 /*@@APP_JS@@*/

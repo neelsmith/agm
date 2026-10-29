@@ -1,13 +1,15 @@
-/* app.js — UI for loading and inspecting a mousike CEX release. Depends on global AgmCex. */
+/* app.js — UI for the agm reader. Depends on globals AgmCex and AgmEdition. */
 (function () {
   "use strict";
   const $ = (id) => document.getElementById(id);
   const urlInput = $("url");
   const statusEl = $("status");
-  const out = $("out");
+  const surfaceSelect = $("surface");
+  const surfaceOut = $("surface-out");
+  const dataOut = $("data-out");
 
-  /** Parsed release data, exposed for console inspection and later app stages. */
-  window.agm = { data: null };
+  /** App state, exposed for console inspection and tests. */
+  window.agm = { data: null, selectSurface };
 
   urlInput.value = AgmCex.DEFAULT_URL;
 
@@ -22,6 +24,90 @@
     for (const k of kids) e.append(k);
     return e;
   }
+
+  /* ---------- surface menu and contents ---------- */
+
+  function renderSurfaceMenu(d) {
+    const menu = AgmEdition.surfaceMenu(d);
+    surfaceSelect.replaceChildren(
+      el("option", { value: "", textContent: menu.length ? "Choose an artifact…" : "No artifacts in this release" }),
+      ...menu.map((s) => el("option", { value: s.urn, textContent: s.label }))
+    );
+    surfaceSelect.disabled = menu.length === 0;
+    surfaceOut.replaceChildren();
+  }
+
+  /** Notation rendered in the Mousike Notation font, with the URN encoding below it. */
+  function notationEl(urnText, extra) {
+    return el("div", { className: "content" },
+      el("div", { className: "mousike-notation", textContent: AgmNotation.notesToUnicodeSafe(urnText) }),
+      el("div", { className: "notation" }, el("span", { textContent: urnText }), extra || ""));
+  }
+
+  function contentEl(p) {
+    if (p.block === "notes") {
+      const n = p.unit === "group" ? p.record.notes.length : 0;
+      return notationEl(p.record.text,
+        n > 1 ? el("span", { className: "count", textContent: ` (${n} notes on one syllable)` }) : null);
+    }
+    return el("div", { className: "content greek", textContent: p.record.text });
+  }
+
+  function passageBody(p) {
+    if (p.match === "exact") return contentEl(p);
+    if (p.match === "container") {
+      return el("div", null,
+        el("div", { className: "note", textContent: `Not found in ${p.block}. Containing passage ${shortRef(p.record.urn)}:` }),
+        contentEl(p));
+    }
+    return el("div", { className: "note", textContent: "Not found in texts, notes or syllables." });
+  }
+
+  function selectSurface(urn) {
+    surfaceSelect.value = urn || "";
+    const d = window.agm.data;
+    if (!d || !urn) { surfaceOut.replaceChildren(); return null; }
+    const view = AgmEdition.surfaceContents(d, urn);
+    const { counts } = view;
+
+    const head = el("p", { className: "counts" });
+    head.textContent = counts.total === 0
+      ? "No DSE records for this artifact."
+      : `${counts.total} DSE record(s): ${counts.exact} resolved` +
+        (counts.container ? `, ${counts.container} only to a containing passage` : "") +
+        (counts.missing ? `, ${counts.missing} not found` : "") + ".";
+
+    const list = el("ol", { className: "entries" });
+    for (const { dse, passage } of view.entries) {
+      const roi = dse.roi;
+      list.append(el("li", { className: passage.match === "exact" ? "entry" : "entry unresolved" },
+        el("div", { className: "entry-head" },
+          el("span", { className: "ref", textContent: shortRef(dse.text), title: dse.text }),
+          el("span", {
+            className: "roi",
+            textContent: roi ? "region " + [roi.left, roi.top, roi.width, roi.height].join(", ") : "no region",
+            title: dse.image,
+          })),
+        passageBody(passage)));
+    }
+
+    surfaceOut.replaceChildren(
+      el("h2", { textContent: view.surface ? view.surface.label : urn }),
+      el("p", { className: "urn-line" }, el("code", { textContent: urn })),
+      head,
+      list);
+    return view;
+  }
+
+  /** "urn:cts:mousike:epigraphic.seikilos.notes:1.1" -> "notes:1.1" */
+  function shortRef(urn) {
+    const { work, passage } = AgmCex.ctsParts(urn);
+    return `${work.split(".").pop()}${passage ? ":" + passage : ""}`;
+  }
+
+  surfaceSelect.addEventListener("change", () => selectSurface(surfaceSelect.value));
+
+  /* ---------- raw data inspector ---------- */
 
   const GREEK_COLS = { texts: ["text"], syllables: ["text"] };
 
@@ -43,32 +129,36 @@
     return el("div", { className: "scroll" }, t);
   }
 
-  function render(d) {
-    out.replaceChildren();
+  function renderData(d) {
+    dataOut.replaceChildren();
     const summary = el("div", { className: "summary" });
     summary.append(el("div", null, el("b", { textContent: d.version ?? "—" }), el("span", { textContent: "version" })));
     for (const name of AgmCex.BLOCK_NAMES.slice(1)) {
       summary.append(el("div", null, el("b", { textContent: String(d[name].length) }), el("span", { textContent: name })));
     }
-    out.append(summary);
+    dataOut.append(summary);
 
     if (d.warnings.length) {
-      out.append(el("div", { className: "warnings" },
-        el("p", { textContent: `${d.warnings.length} warning(s):` }),
+      dataOut.append(el("details", { className: "warnings" },
+        el("summary", { textContent: `${d.warnings.length} warning(s)` }),
         el("ul", null, ...d.warnings.map((w) => el("li", { textContent: w })))));
     }
     for (const name of AgmCex.BLOCK_NAMES.slice(1)) {
-      out.append(el("details", null,
+      dataOut.append(el("details", null,
         el("summary", { textContent: `#!${name} (${d[name].length})` }),
         tableFor(name, d[name])));
     }
   }
 
+  /* ---------- loading ---------- */
+
   function accept(d, source) {
     window.agm.data = d;
     setStatus(`Loaded release ${d.version} from ${source}.`);
-    render(d);
+    renderSurfaceMenu(d);
+    renderData(d);
   }
+  window.agm.accept = accept;
 
   async function loadUrl() {
     const url = urlInput.value.trim() || AgmCex.DEFAULT_URL;
@@ -89,5 +179,5 @@
     catch (err) { setStatus(`Could not parse ${f.name}: ${err.message}`, true); }
   });
 
-  loadUrl();
+  if (!window.AGM_NO_AUTOLOAD) loadUrl();
 })();

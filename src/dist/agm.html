@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>agm: Ancient Greek Music</title>
 <style>
+/* Mousike Notation font: SIL Open Font License 1.1, derived from Noto Serif and Noto Music. */
+@font-face {
+  font-family: 'Mousike Notation';
+  src: url('data:font/woff2;base64,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') format('woff2');
+  font-display: block;
+}
+.mousike-notation { font-family: 'Mousike Notation', serif; }
   :root { --bg:#fbfaf7; --fg:#222; --muted:#666; --line:#ddd; --accent:#7a3b12; --warn:#9a5b00; }
   @media (prefers-color-scheme: dark) {
     :root { --bg:#1b1a18; --fg:#e8e6e1; --muted:#9a968e; --line:#3a3834; --accent:#e0a070; --warn:#e0b050; }
@@ -33,13 +40,35 @@
   th, td { text-align: left; vertical-align: top; padding: 4px 10px 4px 0; border-bottom: 1px solid var(--line); }
   th { color: var(--muted); font-weight: 500; }
   td.urn { font-family: ui-monospace, Menlo, monospace; font-size: .8rem; white-space: nowrap; }
+  .surface-picker { display:flex; gap:10px; align-items:center; margin: 14px 0; }
+  .surface-picker label { font-weight: 600; }
+  .surface-picker select { font: inherit; padding: 6px 8px; max-width: 100%; min-width: 0;
+    background: var(--bg); color: inherit; border: 1px solid var(--line); border-radius: 4px; }
+  #surface-out h2 { margin: 18px 0 2px; font-size: 1.15rem; }
+  .urn-line, .counts { color: var(--muted); margin: 2px 0 8px; }
+  .urn-line code { overflow-wrap: anywhere; }
+  .entries { list-style: none; margin: 0; padding: 0; }
+  .entry { border-top: 1px solid var(--line); padding: 8px 0; }
+  .entry-head { display: flex; flex-wrap: wrap; gap: 4px 14px; align-items: baseline; }
+  .entry-head .ref { font-family: ui-monospace, Menlo, monospace; font-weight: 600; }
+  .entry-head .roi { font-family: ui-monospace, Menlo, monospace; font-size: .78rem; color: var(--muted); }
+  .entry .content { margin-top: 3px; }
+  .entry .content.greek { font-family: "Gentium Plus", "New Athena Unicode", Georgia, serif; font-size: 1.1rem; }
+  .entry .content .mousike-notation { font-size: 1.6rem; line-height: 1.7; }
+  .entry .content .notation { font-family: ui-monospace, Menlo, monospace; font-size: .75rem; color: var(--muted); overflow-wrap: anywhere; }
+  .entry.unresolved .content { opacity: .7; }
+  .entry .content .count { font-family: system-ui, sans-serif; color: var(--muted); }
+  .entry .note { color: var(--warn); font-size: .85rem; margin-top: 3px; }
+  td.notation { font-family: ui-monospace, Menlo, monospace; font-size: .8rem; }
+  .data-panel { margin-top: 28px; }
+  .data-panel > summary { font-size: 1.05rem; }
   td.greek { font-family: "Gentium Plus", "New Athena Unicode", Georgia, serif; font-size: 1.05rem; }
 </style>
 </head>
 <body>
 <header>
   <h1>agm · Ancient Greek Music</h1>
-  <p class="sub">Data loader for the <code>mousike</code> CEX release</p>
+  <p class="sub">Reader for the <code>mousike</code> CEX release</p>
   <div class="controls">
     <input id="url" type="url" aria-label="CEX URL">
     <button id="load">Load</button>
@@ -48,7 +77,15 @@
 </header>
 <main>
   <p id="status">Not loaded.</p>
-  <div id="out"></div>
+  <section class="surface-picker">
+    <label for="surface">Artifact</label>
+    <select id="surface" disabled><option value="">Load data first</option></select>
+  </section>
+  <section id="surface-out"></section>
+  <details class="data-panel">
+    <summary>Release data</summary>
+    <div id="data-out"></div>
+  </details>
 </main>
 
 <script>
@@ -235,6 +272,32 @@
       .map((group) => group.split("~").filter(Boolean));
   }
 
+  /**
+   * Derive the 2-tier citation of a notes edition: a line `…notes:L` with groups
+   * g1 g2 … yields one record per note group, cited `…notes:L.N` (N counts from 1),
+   * analogous to syllables `…syllables:L.N`.
+   * Each record: { urn, work, passage, line (URN of the line), group (N),
+   *   notes: [note, …], text: notes joined with "~" }
+   */
+  function noteGroups(noteLines) {
+    const out = [];
+    for (const line of noteLines) {
+      line.tokens.forEach((notes, i) => {
+        const passage = `${line.passage}.${i + 1}`;
+        out.push({
+          urn: `${line.work}:${passage}`,
+          work: line.work,
+          passage,
+          line: line.urn,
+          group: i + 1,
+          notes,
+          text: notes.join("~"),
+        });
+      });
+    }
+    return out;
+  }
+
   /** Build a Map from key column to row; warn on duplicate keys. */
   function indexBy(rows, key, name, warnings) {
     const m = new Map();
@@ -303,6 +366,8 @@
       texts: indexBy(texts, "urn", "texts", warnings),
       notes: indexBy(notes, "urn", "notes", warnings),
       syllables: indexBy(syllables, "urn", "syllables", warnings),
+      // Derived from #!notes: one entry per note group, cited line.group
+      noteGroups: indexBy(noteGroups(notes.filter((n) => n.passage)), "urn", "notes (groups)", warnings),
     };
 
     return { version, images, surfaces, audio, texts, notes, syllables, dse, index, warnings };
@@ -328,6 +393,7 @@
     resolveImage,
     ctsParts,
     tokenizeNotes,
+    noteGroups,
     parseCex,
     loadCex,
   };
@@ -335,16 +401,425 @@
 
 </script>
 <script>
-/* app.js — UI for loading and inspecting a mousike CEX release. Depends on global AgmCex. */
+/*
+ * edition.js — queries over parsed mousike data (output of AgmCex.parseCex).
+ *
+ * Classic UMD script: global `AgmEdition` in the browser, CommonJS in Node.
+ */
+(function (root, factory) {
+  if (typeof module === "object" && module.exports) {
+    module.exports = factory();
+  } else {
+    root.AgmEdition = factory();
+  }
+})(typeof self !== "undefined" ? self : this, function () {
+  "use strict";
+
+  /** Surfaces for a menu: [{ urn, label }] in source order. */
+  function surfaceMenu(data) {
+    return data.surfaces.map((s) => ({ urn: s.urn, label: s.label }));
+  }
+
+  /** All DSE records whose surface column equals `surfaceUrn`, in source order. */
+  function dseForSurface(data, surfaceUrn) {
+    return data.dse.filter((r) => r.surface === surfaceUrn);
+  }
+
+  /**
+   * Look up the passage a DSE text URN cites, in the `texts`, `notes` or `syllables` block.
+   *
+   * Notes are citable by line (`notes:1`) or by note group within a line (`notes:1.2`,
+   * the 2nd whitespace-separated group); a group record also has `notes` (array) and `line`.
+   *
+   * Returns { urn, block, unit, match, record }:
+   *   block  "texts" | "notes" | "syllables" | null
+   *   unit   "line" | "group" | "syllable" | null
+   *   match  "exact"     — the URN is in that block
+   *          "container" — not found, but a containing passage is (e.g. text:1 for text:1.1);
+   *                        `record` is the containing passage, for context only
+   *          null        — nothing found; `record` is null
+   */
+  function resolvePassage(data, urn) {
+    const blocks = [
+      ["texts", "line", data.index.texts],
+      ["notes", "line", data.index.notes],
+      ["notes", "group", data.index.noteGroups],
+      ["syllables", "syllable", data.index.syllables],
+    ];
+    for (const [block, unit, m] of blocks) {
+      if (m.has(urn)) return { urn, block, unit, match: "exact", record: m.get(urn) };
+    }
+    // Walk up the citation hierarchy: a:1.2.3 -> a:1.2 -> a:1
+    const colon = urn.lastIndexOf(":");
+    if (colon > 0) {
+      const work = urn.slice(0, colon);
+      const ref = urn.slice(colon + 1).split(".");
+      for (let n = ref.length - 1; n >= 1; n--) {
+        const parent = `${work}:${ref.slice(0, n).join(".")}`;
+        for (const [block, unit, m] of blocks) {
+          if (m.has(parent)) return { urn, block, unit, match: "container", record: m.get(parent) };
+        }
+      }
+    }
+    return { urn, block: null, unit: null, match: null, record: null };
+  }
+
+  /**
+   * Everything indexed to one surface: for each DSE record, the cited passage.
+   * Returns { surface, entries: [{ dse, passage }], counts }
+   */
+  function surfaceContents(data, surfaceUrn) {
+    const surface = data.index.surfaces.get(surfaceUrn) || null;
+    const entries = dseForSurface(data, surfaceUrn).map((dse) => ({
+      dse,
+      passage: resolvePassage(data, dse.text),
+    }));
+    const counts = { total: entries.length, exact: 0, container: 0, missing: 0 };
+    for (const e of entries) counts[e.passage.match || "missing"]++;
+    return { surface, entries, counts };
+  }
+
+  return { surfaceMenu, dseForSurface, resolvePassage, surfaceContents };
+});
+
+</script>
+<script>
+/*
+ * GENERATED by src/tools/gen-sowerby-table.js — do not edit by hand.
+ * Source: sowerby_system.cex from the mousike project (Zach Sowerby's notation table).
+ * Maps short note URNs (e.g. "gvn:11.1") to [unicode sign, description].
+ */
+(function (root, factory) {
+  if (typeof module === "object" && module.exports) module.exports = factory();
+  else root.AgmSowerbyTable = factory();
+})(typeof self !== "undefined" ? self : this, function () {
+  "use strict";
+  return {
+    "gvn:1.1": ["𝈀", "vocal E"],
+    "gvn:1.2": ["𝈁", "vocal first sharp of E"],
+    "gvn:1.3": ["𝈂", "vocal second sharp of E"],
+    "gvn:2.1": ["𝈃", "vocal F"],
+    "gvn:2.2": ["𝈄", "vocal first sharp of F"],
+    "gvn:2.3": ["𝈅", "vocal second sharp of F"],
+    "gvn:3.1": ["𝈆", "vocal G"],
+    "gvn:3.2": ["𝈇", "vocal first sharp of G"],
+    "gvn:3.3": ["𝈈", "vocal second sharp of G"],
+    "gvn:4.1": ["𝈉", "vocal A"],
+    "gvn:4.2": ["𝈊", "vocal first sharp of A"],
+    "gvn:4.3": ["𝈋", "vocal second sharp of A"],
+    "gvn:5.1": ["𝈌", "vocal B"],
+    "gvn:5.2": ["𝈍", "vocal first sharp of B"],
+    "gvn:5.3": ["𝈎", "vocal second sharp of B"],
+    "gvn:6.1": ["𝈏", "vocal c"],
+    "gvn:6.2": ["𝈐", "vocal first sharp of c"],
+    "gvn:6.3": ["𝈑", "vocal second sharp of c"],
+    "gvn:7.1": ["𝈒", "vocal d"],
+    "gvn:7.2": ["𝈓", "vocal first sharp of d"],
+    "gvn:7.3": ["𝈔", "vocal second sharp of d"],
+    "gvn:8.1": ["𝈕", "vocal e"],
+    "gvn:8.2": ["𝈖", "vocal first sharp of e"],
+    "gvn:8.3": ["𝈗", "vocal second sharp of e"],
+    "gvn:9.1": ["Ω", "vocal f"],
+    "gvn:9.2": ["Ψ", "vocal first sharp of f"],
+    "gvn:9.3": ["Χ", "vocal second sharp of f"],
+    "gvn:10.1": ["Φ", "vocal g"],
+    "gvn:10.2": ["Υ", "vocal first sharp of g"],
+    "gvn:10.3": ["Τ", "vocal second sharp of g"],
+    "gvn:11.1": ["Ϲ", "vocal a"],
+    "gvn:11.2": ["Ρ", "vocal first sharp of a"],
+    "gvn:11.3": ["Π", "vocal second sharp of a"],
+    "gvn:12.1": ["Ο", "vocal b"],
+    "gvn:12.2": ["Ξ", "vocal first sharp of b"],
+    "gvn:12.3": ["Ν", "vocal second sharp of b"],
+    "gvn:13.1": ["Μ", "vocal c′"],
+    "gvn:13.2": ["Λ", "vocal first sharp of c′"],
+    "gvn:13.3": ["Κ", "vocal second sharp of c′"],
+    "gvn:14.1": ["Ι", "vocal d′"],
+    "gvn:14.2": ["Θ", "vocal first sharp of d′"],
+    "gvn:14.3": ["Η", "vocal second sharp of d′"],
+    "gvn:15.1": ["Ζ", "vocal e′"],
+    "gvn:15.2": ["Ε", "vocal first sharp of e′"],
+    "gvn:15.3": ["Δ", "vocal second sharp of e′"],
+    "gvn:16.1": ["Γ", "vocal f′"],
+    "gvn:16.2": ["Β", "vocal first sharp of f′"],
+    "gvn:16.3": ["Α", "vocal second sharp of f′"],
+    "gvn:17.1": ["Ʊ", "vocal g′"],
+    "gvn:17.2": ["𝈘", "vocal first sharp of g′"],
+    "gvn:17.3": ["𝈙", "vocal second sharp of g′"],
+    "gvn:18.1": ["𝈚", "vocal a′"],
+    "gvn:18.2": ["𝈛", "vocal first sharp of a′"],
+    "gvn:18.3": ["𝈜", "vocal second sharp of a′"],
+    "gvn:19.1": ["Ο′", "vocal b′"],
+    "gvn:19.2": ["Ξ′", "vocal first sharp of b′"],
+    "gvn:19.3": ["Ν′", "vocal second sharp of b′"],
+    "gvn:20.1": ["Μ′", "vocal c′′"],
+    "gvn:20.2": ["Λ′", "vocal first sharp of c′′"],
+    "gvn:20.3": ["Κ′", "vocal second sharp of c′′"],
+    "gvn:21.1": ["Ι′", "vocal d′′"],
+    "gvn:21.2": ["Θ′", "vocal first sharp of d′′"],
+    "gvn:21.3": ["Η′", "vocal second sharp of d′′"],
+    "gvn:22.1": ["Ζ′", "vocal e′′"],
+    "gvn:22.2": ["Ε′", "vocal first sharp of e′′"],
+    "gvn:22.3": ["Δ′", "vocal second sharp of e′′"],
+    "gvn:23.1": ["Γ′", "vocal f′′"],
+    "gvn:23.2": ["Β′", "vocal first sharp of f′′"],
+    "gvn:23.3": ["Α′", "vocal second sharp of f′′"],
+    "gvn:24.1": ["Ʊ′", "vocal g′′"],
+    "gin:1.1": ["𝈝", "instrumental E"],
+    "gin:1.2": ["𝈞", "instrumental first sharp of E"],
+    "gin:1.3": ["𝈂", "instrumental second sharp of E"],
+    "gin:2.1": ["𝈟", "instrumental F"],
+    "gin:2.2": ["𝈠", "instrumental first sharp of F"],
+    "gin:2.3": ["Τ", "instrumental second sharp of F"],
+    "gin:3.1": ["𝈡", "instrumental G"],
+    "gin:3.2": ["𝈢", "instrumental first sharp of G"],
+    "gin:3.3": ["𝈆", "instrumental second sharp of G"],
+    "gin:4.1": ["Η", "instrumental A"],
+    "gin:4.2": ["𝈣", "instrumental first sharp of A"],
+    "gin:4.3": ["𝈤", "instrumental second sharp of A"],
+    "gin:5.1": ["𝈥", "instrumental B"],
+    "gin:5.2": ["𝈦", "instrumental first sharp of B"],
+    "gin:5.3": ["𝈑", "instrumental second sharp of B"],
+    "gin:6.1": ["Ε", "instrumental c"],
+    "gin:6.2": ["𝈧", "instrumental first sharp of c"],
+    "gin:6.3": ["𝈨", "instrumental second sharp of c"],
+    "gin:7.1": ["𝈩", "instrumental d"],
+    "gin:7.2": ["𝈜", "instrumental first sharp of d"],
+    "gin:7.3": ["𝈅", "instrumental second sharp of d"],
+    "gin:8.1": ["Γ", "instrumental e"],
+    "gin:8.2": ["𝈪", "instrumental first sharp of e"],
+    "gin:8.3": ["𝈫", "instrumental second sharp of e"],
+    "gin:9.1": ["𝈬", "instrumental f"],
+    "gin:9.2": ["𝈭", "instrumental first sharp of f"],
+    "gin:9.3": ["𝈮", "instrumental second sharp of f"],
+    "gin:10.1": ["𝈓", "instrumental g"],
+    "gin:10.2": ["𝈯", "instrumental first sharp of g"],
+    "gin:10.3": ["𝈰", "instrumental second sharp of g"],
+    "gin:11.1": ["Ϲ", "instrumental a"],
+    "gin:11.2": ["𝈱", "instrumental first sharp of a"],
+    "gin:11.3": ["Ͻ", "instrumental second sharp of a"],
+    "gin:12.1": ["Κ", "instrumental b"],
+    "gin:12.2": ["𝈎", "instrumental first sharp of b"],
+    "gin:12.3": ["𝈲", "instrumental second sharp of b"],
+    "gin:13.1": ["𝈳", "instrumental c′"],
+    "gin:13.2": ["𝈴", "instrumental first sharp of c′"],
+    "gin:13.3": ["𝈵", "instrumental second sharp c′"],
+    "gin:14.1": ["𝈶", "instrumental d′"],
+    "gin:14.2": ["𝈍", "instrumental first sharp of d′"],
+    "gin:14.3": ["𝈷", "instrumental second sharp of d′"],
+    "gin:15.1": ["𝈸", "instrumental e′"],
+    "gin:15.2": ["𝈈", "instrumental first sharp of e′"],
+    "gin:15.3": ["𝈹", "instrumental second sharp of e′"],
+    "gin:16.1": ["Ν", "instrumental f′"],
+    "gin:16.2": ["𝈺", "instrumental first sharp of f′"],
+    "gin:16.3": ["𝈻", "instrumental second sharp of f′"],
+    "gin:17.1": ["𝈼", "instrumental g′"],
+    "gin:17.2": ["𝈽", "instrumental first sharp of g′"],
+    "gin:17.3": ["𝈾", "instrumental second sharp of g′"],
+    "gin:18.1": ["𝈿", "instrumental a′"],
+    "gin:18.2": ["𝉀", "instrumental first sharp of a′"],
+    "gin:18.3": ["𝉁", "instrumental second sharp of a′"],
+    "gin:19.1": ["Κ′", "instrumental b′"],
+    "gin:19.2": ["𝈎′", "instrumental first sharp of b′"],
+    "gin:19.3": ["𝈲′", "instrumental second sharp of b′"],
+    "gin:20.1": ["𝈳′", "instrumental c′′"],
+    "gin:20.2": ["𝈴′", "instrumental first sharp of c′′"],
+    "gin:20.3": ["𝈵′", "instrumental second sharp of c′′"],
+    "gin:21.1": ["𝈶′", "instrumental d′′"],
+    "gin:21.2": ["𝈍′", "instrumental first sharp of d′′"],
+    "gin:21.3": ["𝈷′", "instrumental second sharp of d′′"],
+    "gin:22.1": ["𝈸′", "instrumental e′′"],
+    "gin:22.2": ["𝈈′", "instrumental first sharp of e′′"],
+    "gin:22.3": ["𝈹′", "instrumental second sharp of e′′"],
+    "gin:23.1": ["Ν′", "instrumental f′′"],
+    "gin:23.2": ["𝈺′", "instrumental first sharp of f′′"],
+    "gin:23.3": ["𝈻′", "instrumental second sharp of f′′"],
+    "gin:24.1": ["𝈼′", "instrumental g′′"],
+    "gcn:1": ["𝉅", "rest"],
+  };
+});
+
+</script>
+<script>
+/*
+ * notation.js — Greek musical notation in Zach Sowerby's URN scheme, rendered as Unicode.
+ *
+ * A JavaScript port of mousike's `note.py` / `unicode.py`; output should be identical.
+ *
+ * A note is cited by a URN in `urn:cite2:zst:` (the short form drops the prefix) with up to
+ * five dot-separated tiers, e.g. `gvn:11.1.1.0.0`:
+ *   1. base note
+ *   2. sharpening (1 = unsharpened, 2 = first sharp, 3 = second sharp)
+ *   3. length: 1 = no length sign, 2–5 = diseme, triseme, tetraseme, pentaseme
+ *   4. arsis: 1 if the note carries an arsis dot (stigme), else 0
+ *   5. hyphen: 1 if the note carries a hyphen, else 0 (not rendered)
+ * Collections: `gvn` (vocal), `gin` (instrumental), `gcn` (other signs, e.g. the rest `gcn:1`,
+ * which has a single tier).
+ *
+ * Rendering: the first two tiers choose the sign from Sowerby's table; length and arsis are
+ * added as combining marks after the sign's first character (so on the letter, not the
+ * prime, in upper-octave signs like `Ο′`). Groups are separated by one space; notes joined
+ * with `~` (several notes over one syllable) are written with no space.
+ *
+ * Classic UMD script: global `AgmNotation` in the browser (needs `AgmSowerbyTable` loaded
+ * first), CommonJS in Node.
+ */
+(function (root, factory) {
+  if (typeof module === "object" && module.exports) {
+    module.exports = factory(require("./sowerby-table.js"));
+  } else {
+    root.AgmNotation = factory(root.AgmSowerbyTable);
+  }
+})(typeof self !== "undefined" ? self : this, function (TABLE) {
+  "use strict";
+
+  const URN_PREFIX = "urn:cite2:zst:";
+  const JOINER = "~";
+
+  /** Combining marks for lengths 2–5. */
+  const LENGTH_MARKS = {
+    2: "̅",        // diseme: COMBINING OVERLINE
+    3: "\u{1D242}",     // COMBINING GREEK MUSICAL TRISEME
+    4: "\u{1D243}",     // COMBINING GREEK MUSICAL TETRASEME
+    5: "\u{1D244}",     // COMBINING GREEK MUSICAL PENTASEME
+  };
+  const ARSIS_MARK = "̇"; // arsis dot (stigme): COMBINING DOT ABOVE
+
+  function flag(value, tier, urn) {
+    if (value !== "0" && value !== "1") {
+      throw new Error(`${JSON.stringify(urn)}: ${tier} must be 0 or 1, not ${JSON.stringify(value)}`);
+    }
+    return value === "1";
+  }
+
+  /**
+   * Parse one note URN (full or short form).
+   * Returns a frozen object { collection, base, sharpening, length, arsis, hyphen, key,
+   *   urn (short, all tiers), pitchUnicode, marks, unicode, name }.
+   * Throws Error for a malformed URN or a sign not in the table.
+   */
+  function parseNote(urn) {
+    let short = String(urn).trim();
+    if (short.startsWith(URN_PREFIX)) short = short.slice(URN_PREFIX.length);
+    const colon = short.indexOf(":");
+    const collection = colon < 0 ? "" : short.slice(0, colon);
+    const ref = colon < 0 ? "" : short.slice(colon + 1);
+    if (!collection || !ref) throw new Error(`Not a note URN: ${JSON.stringify(urn)}`);
+    const tiers = ref.split(".");
+    if (tiers.length > 5 || !tiers.every((t) => /^\d+$/.test(t))) {
+      throw new Error(`Not a note URN: ${JSON.stringify(urn)}`);
+    }
+
+    let key, sharpening;
+    if (tiers.length >= 2 && Object.hasOwn(TABLE, `${collection}:${tiers[0]}.${tiers[1]}`)) {
+      key = `${collection}:${tiers[0]}.${tiers[1]}`;
+      sharpening = parseInt(tiers[1], 10);
+    } else if (tiers.length === 1 && Object.hasOwn(TABLE, `${collection}:${tiers[0]}`)) {
+      key = `${collection}:${tiers[0]}`;
+      sharpening = null;
+    } else {
+      throw new Error(`No such note in the table: ${JSON.stringify(urn)}`);
+    }
+
+    const length = tiers.length > 2 ? parseInt(tiers[2], 10) : 1;
+    if (length < 1 || length > 5) {
+      throw new Error(`${JSON.stringify(urn)}: length must be 1-5, not ${length}`);
+    }
+    const arsis = tiers.length > 3 ? flag(tiers[3], "arsis", urn) : false;
+    const hyphen = tiers.length > 4 ? flag(tiers[4], "hyphen", urn) : false;
+
+    const [pitchUnicode, name] = TABLE[key];
+    const marks = (LENGTH_MARKS[length] || "") + (arsis ? ARSIS_MARK : "");
+    // Split by code point, not UTF-16 unit: many signs are astral (U+1D2xx).
+    const chars = Array.from(pitchUnicode);
+    const unicode = chars[0] + marks + chars.slice(1).join("");
+
+    return Object.freeze({
+      collection,
+      base: parseInt(tiers[0], 10),
+      sharpening,
+      length,
+      arsis,
+      hyphen,
+      key,
+      urn: sharpening === null ? key : `${key}.${length}.${arsis ? 1 : 0}.${hyphen ? 1 : 0}`,
+      pitchUnicode,
+      marks,
+      unicode,
+      name,
+      vocal: collection === "gvn",
+      instrumental: collection === "gin",
+    });
+  }
+
+  /** Unicode for a single note URN. noteToUnicode("gvn:11.1.1.0.0") === "Ϲ" */
+  function noteToUnicode(urn) {
+    return parseNote(urn).unicode;
+  }
+
+  /** Parse a notation string into note groups (arrays of parsed notes), one per syllable. */
+  function parseNoteGroups(notes) {
+    return String(notes)
+      .split(/\s+/)
+      .filter(Boolean)
+      .map((token) => token.split(JOINER).filter(Boolean).map(parseNote));
+  }
+
+  /** Render groups (arrays of URN strings or parsed notes): space between, none within. */
+  function groupsToUnicode(groups) {
+    return groups
+      .map((g) => g.map((n) => (typeof n === "string" ? noteToUnicode(n) : n.unicode)).join(""))
+      .join(" ");
+  }
+
+  /**
+   * Convert a notation-edition string to Unicode.
+   * notesToUnicode("gvn:11.1.1.0.0 gvn:13.3.1.0.0~gvn:14.1.1.0.0") === "Ϲ ΚΙ"
+   */
+  function notesToUnicode(notes) {
+    return groupsToUnicode(parseNoteGroups(notes));
+  }
+
+  /** Like notesToUnicode but never throws: unknown notes render as `fallback(urn)`. */
+  function notesToUnicodeSafe(notes, fallback) {
+    const fb = fallback || ((u) => `[${u}]`);
+    return String(notes)
+      .split(/\s+/)
+      .filter(Boolean)
+      .map((token) => token.split(JOINER).filter(Boolean).map((u) => {
+        try { return noteToUnicode(u); } catch (e) { return fb(u); }
+      }).join(""))
+      .join(" ");
+  }
+
+  return {
+    URN_PREFIX,
+    LENGTH_MARKS,
+    ARSIS_MARK,
+    TABLE,
+    parseNote,
+    noteToUnicode,
+    parseNoteGroups,
+    groupsToUnicode,
+    notesToUnicode,
+    notesToUnicodeSafe,
+  };
+});
+
+</script>
+<script>
+/* app.js — UI for the agm reader. Depends on globals AgmCex and AgmEdition. */
 (function () {
   "use strict";
   const $ = (id) => document.getElementById(id);
   const urlInput = $("url");
   const statusEl = $("status");
-  const out = $("out");
+  const surfaceSelect = $("surface");
+  const surfaceOut = $("surface-out");
+  const dataOut = $("data-out");
 
-  /** Parsed release data, exposed for console inspection and later app stages. */
-  window.agm = { data: null };
+  /** App state, exposed for console inspection and tests. */
+  window.agm = { data: null, selectSurface };
 
   urlInput.value = AgmCex.DEFAULT_URL;
 
@@ -359,6 +834,90 @@
     for (const k of kids) e.append(k);
     return e;
   }
+
+  /* ---------- surface menu and contents ---------- */
+
+  function renderSurfaceMenu(d) {
+    const menu = AgmEdition.surfaceMenu(d);
+    surfaceSelect.replaceChildren(
+      el("option", { value: "", textContent: menu.length ? "Choose an artifact…" : "No artifacts in this release" }),
+      ...menu.map((s) => el("option", { value: s.urn, textContent: s.label }))
+    );
+    surfaceSelect.disabled = menu.length === 0;
+    surfaceOut.replaceChildren();
+  }
+
+  /** Notation rendered in the Mousike Notation font, with the URN encoding below it. */
+  function notationEl(urnText, extra) {
+    return el("div", { className: "content" },
+      el("div", { className: "mousike-notation", textContent: AgmNotation.notesToUnicodeSafe(urnText) }),
+      el("div", { className: "notation" }, el("span", { textContent: urnText }), extra || ""));
+  }
+
+  function contentEl(p) {
+    if (p.block === "notes") {
+      const n = p.unit === "group" ? p.record.notes.length : 0;
+      return notationEl(p.record.text,
+        n > 1 ? el("span", { className: "count", textContent: ` (${n} notes on one syllable)` }) : null);
+    }
+    return el("div", { className: "content greek", textContent: p.record.text });
+  }
+
+  function passageBody(p) {
+    if (p.match === "exact") return contentEl(p);
+    if (p.match === "container") {
+      return el("div", null,
+        el("div", { className: "note", textContent: `Not found in ${p.block}. Containing passage ${shortRef(p.record.urn)}:` }),
+        contentEl(p));
+    }
+    return el("div", { className: "note", textContent: "Not found in texts, notes or syllables." });
+  }
+
+  function selectSurface(urn) {
+    surfaceSelect.value = urn || "";
+    const d = window.agm.data;
+    if (!d || !urn) { surfaceOut.replaceChildren(); return null; }
+    const view = AgmEdition.surfaceContents(d, urn);
+    const { counts } = view;
+
+    const head = el("p", { className: "counts" });
+    head.textContent = counts.total === 0
+      ? "No DSE records for this artifact."
+      : `${counts.total} DSE record(s): ${counts.exact} resolved` +
+        (counts.container ? `, ${counts.container} only to a containing passage` : "") +
+        (counts.missing ? `, ${counts.missing} not found` : "") + ".";
+
+    const list = el("ol", { className: "entries" });
+    for (const { dse, passage } of view.entries) {
+      const roi = dse.roi;
+      list.append(el("li", { className: passage.match === "exact" ? "entry" : "entry unresolved" },
+        el("div", { className: "entry-head" },
+          el("span", { className: "ref", textContent: shortRef(dse.text), title: dse.text }),
+          el("span", {
+            className: "roi",
+            textContent: roi ? "region " + [roi.left, roi.top, roi.width, roi.height].join(", ") : "no region",
+            title: dse.image,
+          })),
+        passageBody(passage)));
+    }
+
+    surfaceOut.replaceChildren(
+      el("h2", { textContent: view.surface ? view.surface.label : urn }),
+      el("p", { className: "urn-line" }, el("code", { textContent: urn })),
+      head,
+      list);
+    return view;
+  }
+
+  /** "urn:cts:mousike:epigraphic.seikilos.notes:1.1" -> "notes:1.1" */
+  function shortRef(urn) {
+    const { work, passage } = AgmCex.ctsParts(urn);
+    return `${work.split(".").pop()}${passage ? ":" + passage : ""}`;
+  }
+
+  surfaceSelect.addEventListener("change", () => selectSurface(surfaceSelect.value));
+
+  /* ---------- raw data inspector ---------- */
 
   const GREEK_COLS = { texts: ["text"], syllables: ["text"] };
 
@@ -380,32 +939,36 @@
     return el("div", { className: "scroll" }, t);
   }
 
-  function render(d) {
-    out.replaceChildren();
+  function renderData(d) {
+    dataOut.replaceChildren();
     const summary = el("div", { className: "summary" });
     summary.append(el("div", null, el("b", { textContent: d.version ?? "—" }), el("span", { textContent: "version" })));
     for (const name of AgmCex.BLOCK_NAMES.slice(1)) {
       summary.append(el("div", null, el("b", { textContent: String(d[name].length) }), el("span", { textContent: name })));
     }
-    out.append(summary);
+    dataOut.append(summary);
 
     if (d.warnings.length) {
-      out.append(el("div", { className: "warnings" },
-        el("p", { textContent: `${d.warnings.length} warning(s):` }),
+      dataOut.append(el("details", { className: "warnings" },
+        el("summary", { textContent: `${d.warnings.length} warning(s)` }),
         el("ul", null, ...d.warnings.map((w) => el("li", { textContent: w })))));
     }
     for (const name of AgmCex.BLOCK_NAMES.slice(1)) {
-      out.append(el("details", null,
+      dataOut.append(el("details", null,
         el("summary", { textContent: `#!${name} (${d[name].length})` }),
         tableFor(name, d[name])));
     }
   }
 
+  /* ---------- loading ---------- */
+
   function accept(d, source) {
     window.agm.data = d;
     setStatus(`Loaded release ${d.version} from ${source}.`);
-    render(d);
+    renderSurfaceMenu(d);
+    renderData(d);
   }
+  window.agm.accept = accept;
 
   async function loadUrl() {
     const url = urlInput.value.trim() || AgmCex.DEFAULT_URL;
@@ -426,7 +989,7 @@
     catch (err) { setStatus(`Could not parse ${f.name}: ${err.message}`, true); }
   });
 
-  loadUrl();
+  if (!window.AGM_NO_AUTOLOAD) loadUrl();
 })();
 
 </script>

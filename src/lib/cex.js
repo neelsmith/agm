@@ -181,6 +181,32 @@
       .map((group) => group.split("~").filter(Boolean));
   }
 
+  /**
+   * Derive the 2-tier citation of a notes edition: a line `…notes:L` with groups
+   * g1 g2 … yields one record per note group, cited `…notes:L.N` (N counts from 1),
+   * analogous to syllables `…syllables:L.N`.
+   * Each record: { urn, work, passage, line (URN of the line), group (N),
+   *   notes: [note, …], text: notes joined with "~" }
+   */
+  function noteGroups(noteLines) {
+    const out = [];
+    for (const line of noteLines) {
+      line.tokens.forEach((notes, i) => {
+        const passage = `${line.passage}.${i + 1}`;
+        out.push({
+          urn: `${line.work}:${passage}`,
+          work: line.work,
+          passage,
+          line: line.urn,
+          group: i + 1,
+          notes,
+          text: notes.join("~"),
+        });
+      });
+    }
+    return out;
+  }
+
   /** Build a Map from key column to row; warn on duplicate keys. */
   function indexBy(rows, key, name, warnings) {
     const m = new Map();
@@ -249,6 +275,8 @@
       texts: indexBy(texts, "urn", "texts", warnings),
       notes: indexBy(notes, "urn", "notes", warnings),
       syllables: indexBy(syllables, "urn", "syllables", warnings),
+      // Derived from #!notes: one entry per note group, cited line.group
+      noteGroups: indexBy(noteGroups(notes.filter((n) => n.passage)), "urn", "notes (groups)", warnings),
     };
 
     return { version, images, surfaces, audio, texts, notes, syllables, dse, index, warnings };
@@ -274,6 +302,7 @@
     resolveImage,
     ctsParts,
     tokenizeNotes,
+    noteGroups,
     parseCex,
     loadCex,
   };

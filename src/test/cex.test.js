@@ -51,6 +51,28 @@ test("notes tokenize into groups, with ~ joining a melisma", () => {
   assert.deepEqual(n1[3], ["gvn:13.3.1.0.0", "gvn:14.1.1.0.0", "gvn:15.1.1.0.0"]);
 });
 
+test("tokenizeNotes: whitespace separates groups, ~ joins notes in a group", () => {
+  assert.deepEqual(cex.tokenizeNotes("gvn:11.1.1.0.0 gvn:15.1.2.0.0 gvn:15.1.3.1.0"),
+    [["gvn:11.1.1.0.0"], ["gvn:15.1.2.0.0"], ["gvn:15.1.3.1.0"]]);
+  assert.deepEqual(cex.tokenizeNotes("gvn:13.3.1.0.0~gvn:14.1.1.0.0~gvn:15.1.1.0.0 gvn:14.1.3.1.1"),
+    [["gvn:13.3.1.0.0", "gvn:14.1.1.0.0", "gvn:15.1.1.0.0"], ["gvn:14.1.3.1.1"]]);
+});
+
+test("notes lines yield note groups cited line.group", () => {
+  const d = cex.parseCex(fixture);
+  const g = d.index.noteGroups;
+  assert.equal(g.size, 29); // 5 + 7 + 8 + 9 groups = number of syllables
+  assert.equal(g.size, d.syllables.length);
+  const g14 = g.get("urn:cts:mousike:epigraphic.seikilos.notes:1.4");
+  assert.deepEqual(g14.notes, ["gvn:13.3.1.0.0", "gvn:14.1.1.0.0", "gvn:15.1.1.0.0"]);
+  assert.equal(g14.text, "gvn:13.3.1.0.0~gvn:14.1.1.0.0~gvn:15.1.1.0.0");
+  assert.equal(g14.line, "urn:cts:mousike:epigraphic.seikilos.notes:1");
+  assert.equal(g14.group, 4);
+  assert.deepEqual(g.get("urn:cts:mousike:epigraphic.seikilos.notes:4.9").notes,
+    ["gvn:11.1.1.1.1", "gvn:9.3.2.1.1", "gvn:8.1.2.1.1"]);
+  assert.equal(g.has("urn:cts:mousike:epigraphic.seikilos.notes:1.6"), false);
+});
+
 test("CITE2 URNs parse into parts, object id and region of interest", () => {
   assert.deepEqual(cex.parseCite2("urn:cite2:mousike:images.v1:Seikilos2@0.1164,0.4114,0.0412,0.0323"), {
     urn: "urn:cite2:mousike:images.v1:Seikilos2",
