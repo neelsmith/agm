@@ -94,9 +94,55 @@
     surfaceOut.replaceChildren(
       el("h2", { textContent: view.surface ? view.surface.label : urn }),
       el("p", { className: "urn-line" }, el("code", { textContent: urn })),
-      head,
-      list);
+      linesView(AgmEdition.surfaceLines(d, urn)),
+      el("details", { className: "dse-panel" },
+        el("summary", { textContent: `DSE records (${counts.total})` }),
+        head,
+        list));
     return view;
+  }
+
+  /* ---------- line view: syllables with their note groups above ---------- */
+
+  function linesView(texts) {
+    const sec = el("section", { className: "lines" });
+    if (!texts.length) {
+      sec.append(el("p", { className: "note", textContent: "No syllables or notes for this artifact." }));
+      return sec;
+    }
+    for (const { base, lines } of texts) {
+      if (texts.length > 1) sec.append(el("h3", { textContent: shortRef(base) }));
+      for (const ln of lines) sec.append(lineEl(ln));
+    }
+    return sec;
+  }
+
+  function lineEl(ln) {
+    const head = el("div", { className: "line-head" },
+      el("span", { className: "line-no", textContent: `Line ${ln.line}` }));
+    if (!ln.aligned) {
+      head.append(el("span", {
+        className: "note",
+        textContent: `${ln.syllables.length} syllable(s), ${ln.groups.length} note group(s)`,
+      }));
+    }
+    const row = el("div", { className: "line-row" });
+    for (const c of ln.columns) {
+      const g = c.group, s = c.syllable;
+      const col = el("div", { className: "col" + (g && s ? "" : " unmatched") });
+      col.append(g
+        ? el("div", {
+            className: "mousike-notation col-notes",
+            textContent: AgmNotation.notesToUnicodeSafe(g.text),
+            title: `${shortRef(g.urn)}  ${g.text}`,
+          })
+        : el("div", { className: "col-notes missing", textContent: "—", title: "no note group" }));
+      col.append(s
+        ? el("div", { className: "greek col-syl", textContent: s.text, title: shortRef(s.urn) })
+        : el("div", { className: "col-syl missing", textContent: "—", title: "no syllable" }));
+      row.append(col);
+    }
+    return el("div", { className: ln.aligned ? "line" : "line misaligned" }, head, row);
   }
 
   /** "urn:cts:mousike:epigraphic.seikilos.notes:1.1" -> "notes:1.1" */

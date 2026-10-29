@@ -76,5 +76,94 @@
     return { surface, entries, counts };
   }
 
-  return { surfaceMenu, dseForSurface, resolvePassage, surfaceContents };
+  /* ---------- syllable ↔ note-group alignment ---------- */
+
+  /**
+   * The text a CTS work belongs to, without its last work-id component:
+   * "urn:cts:mousike:epigraphic.seikilos.notes" -> "urn:cts:mousike:epigraphic.seikilos".
+   * The notes and syllables editions of one text share this base.
+   */
+  function textBase(work) {
+    const colon = work.lastIndexOf(":");
+    const id = work.slice(colon + 1);
+    const dot = id.lastIndexOf(".");
+    return dot < 0 ? work : work.slice(0, colon + 1) + id.slice(0, dot);
+  }
+
+  /** Split a 2-tier passage "L.N" into { line: "L", n: N }; null if not 2-tier. */
+  function splitLineRef(passage) {
+    const parts = String(passage || "").split(".");
+    if (parts.length !== 2 || !parts[0] || !/^\d+$/.test(parts[1])) return null;
+    return { line: parts[0], n: Number(parts[1]) };
+  }
+
+  const byNumber = (a, b) => {
+    const na = Number(a), nb = Number(b);
+    return Number.isNaN(na) || Number.isNaN(nb) ? String(a).localeCompare(String(b)) : na - nb;
+  };
+
+  /**
+   * Pair syllables with note groups line by line for one text.
+   * `base` is a textBase() value. Line L's syllables (`…syllables:L.N`) and note groups
+   * (`…notes:L.N`) are matched by N.
+   * Returns [{ line, syllables: [rec], groups: [rec], columns: [{ n, syllable, group }],
+   *   aligned }] in line order; a missing partner is null, and `aligned` is true when the
+   *   line has the same number of syllables and note groups.
+   */
+  function alignLines(data, base) {
+    const lines = new Map();
+    const add = (rec, kind) => {
+      if (textBase(rec.work) !== base) return;
+      const ref = splitLineRef(rec.passage);
+      if (!ref) return;
+      if (!lines.has(ref.line)) lines.set(ref.line, { syllables: [], groups: [] });
+      lines.get(ref.line)[kind].push({ n: ref.n, rec });
+    };
+    for (const s of data.syllables) add(s, "syllables");
+    for (const g of data.index.noteGroups.values()) add(g, "groups");
+
+    return [...lines.keys()].sort(byNumber).map((line) => {
+      const { syllables, groups } = lines.get(line);
+      const sylByN = new Map(syllables.map((x) => [x.n, x.rec]));
+      const grpByN = new Map(groups.map((x) => [x.n, x.rec]));
+      const ns = [...new Set([...sylByN.keys(), ...grpByN.keys()])].sort((a, b) => a - b);
+      return {
+        line,
+        syllables: syllables.sort((a, b) => a.n - b.n).map((x) => x.rec),
+        groups: groups.sort((a, b) => a.n - b.n).map((x) => x.rec),
+        columns: ns.map((n) => ({ n, syllable: sylByN.get(n) || null, group: grpByN.get(n) || null })),
+        aligned: syllables.length === groups.length,
+      };
+    });
+  }
+
+  /**
+   * Texts a surface's DSE records cite, each with its aligned lines.
+   * Returns [{ base, lines }] in order of first citation; texts with no syllables or
+   * note groups are left out.
+   */
+  function surfaceLines(data, surfaceUrn) {
+    const bases = [];
+    for (const r of dseForSurface(data, surfaceUrn)) {
+      const { work } = ctsWork(r.text);
+      if (!work) continue;
+      const b = textBase(work);
+      if (!bases.includes(b)) bases.push(b);
+    }
+    return bases
+      .map((base) => ({ base, lines: alignLines(data, base) }))
+      .filter((t) => t.lines.length > 0);
+  }
+
+  /** "urn:cts:ns:work:passage" -> { work: "urn:cts:ns:work" } (work null if not CTS). */
+  function ctsWork(urn) {
+    const parts = String(urn || "").split(":");
+    if (parts.length < 4 || parts[0] !== "urn" || parts[1] !== "cts") return { work: null };
+    return { work: parts.slice(0, 4).join(":") };
+  }
+
+  return {
+    surfaceMenu, dseForSurface, resolvePassage, surfaceContents,
+    textBase, alignLines, surfaceLines,
+  };
 });

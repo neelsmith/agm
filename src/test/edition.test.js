@@ -93,3 +93,49 @@ test("surfaceContents pairs each DSE record with its passage", () => {
   assert.deepEqual(s.entries[3].passage.record.notes,
     ["gvn:13.3.1.0.0", "gvn:14.1.1.0.0", "gvn:15.1.1.0.0"]);
 });
+
+/* ---------- syllable ↔ note-group alignment ---------- */
+
+const d2026c = cex.parseCex(fs.readFileSync(path.join(__dirname, "fixtures", "current-2026c.cex"), "utf8"));
+const SEIKILOS = "urn:cts:mousike:epigraphic.seikilos";
+
+test("textBase drops the last work-id component", () => {
+  assert.equal(ed.textBase("urn:cts:mousike:epigraphic.seikilos.notes"), SEIKILOS);
+  assert.equal(ed.textBase("urn:cts:mousike:epigraphic.seikilos.syllables"), SEIKILOS);
+  assert.equal(ed.textBase("urn:cts:t:single"), "urn:cts:t:single");
+});
+
+test("2026c: every Seikilos line has as many syllables as note groups", () => {
+  const lines = ed.alignLines(d2026c, SEIKILOS);
+  assert.deepEqual(lines.map((l) => l.line), ["1", "2", "3", "4"]);
+  assert.deepEqual(lines.map((l) => [l.syllables.length, l.groups.length]), [[5, 5], [7, 7], [8, 8], [9, 9]]);
+  assert.ok(lines.every((l) => l.aligned));
+  const first = lines[0].columns;
+  assert.deepEqual(first.map((c) => c.syllable.text), ["ο-", "σον", "ζης", "φαι-", "νου"]);
+  // φαι- carries the 3-note melisma
+  assert.deepEqual(first[3].group.notes, ["gvn:13.3.1.0.0", "gvn:14.1.1.0.0", "gvn:15.1.1.0.0"]);
+});
+
+test("alignLines reports a line with unequal counts and leaves gaps null", () => {
+  const d = cex.parseCex([
+    "#!notes", "urn|text", "urn:cts:t:w.notes:1|gvn:1.1.1.0.0 gvn:2.1.1.0.0 gvn:3.1.1.0.0",
+    "#!syllables", "urn|text", "urn:cts:t:w.syllables:1.1|a", "urn:cts:t:w.syllables:1.2|b",
+    "urn:cts:t:w.syllables:2.1|c",
+  ].join("\n"));
+  const [l1, l2] = ed.alignLines(d, "urn:cts:t:w");
+  assert.equal(l1.aligned, false);
+  assert.equal(l1.columns.length, 3);
+  assert.equal(l1.columns[2].syllable, null);
+  assert.equal(l1.columns[2].group.text, "gvn:3.1.1.0.0");
+  assert.equal(l2.line, "2");
+  assert.equal(l2.aligned, false);
+  assert.equal(l2.columns[0].group, null);
+});
+
+test("surfaceLines collects the texts a surface cites", () => {
+  const t = ed.surfaceLines(d2026c, STELE);
+  assert.equal(t.length, 1);
+  assert.equal(t[0].base, SEIKILOS);
+  assert.equal(t[0].lines.length, 4);
+  assert.deepEqual(ed.surfaceLines(d2026c, "urn:cite2:t:none.v1:x"), []);
+});

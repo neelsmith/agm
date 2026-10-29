@@ -60,6 +60,19 @@
   .entry .content .count { font-family: system-ui, sans-serif; color: var(--muted); }
   .entry .note { color: var(--warn); font-size: .85rem; margin-top: 3px; }
   td.notation { font-family: ui-monospace, Menlo, monospace; font-size: .8rem; }
+  .lines { margin: 10px 0 18px; }
+  .lines h3 { font-size: 1rem; margin: 14px 0 4px; font-family: ui-monospace, Menlo, monospace; }
+  .line { border-top: 1px solid var(--line); padding: 8px 0 10px; }
+  .line-head { display: flex; gap: 12px; align-items: baseline; }
+  .line-no { font-weight: 600; color: var(--muted); font-size: .85rem; }
+  .line .note { color: var(--warn); font-size: .85rem; }
+  .line-row { display: flex; flex-wrap: wrap; gap: 6px 18px; margin-top: 4px; }
+  .col { display: flex; flex-direction: column; align-items: center; }
+  .col-notes { font-size: 1.7rem; line-height: 1.6; white-space: nowrap; }
+  .col-syl { font-family: "Gentium Plus", "New Athena Unicode", Georgia, serif; font-size: 1.2rem; }
+  .col .missing { color: var(--warn); }
+  .col.unmatched { opacity: .75; }
+  .dse-panel > summary { font-size: .95rem; }
   .data-panel { margin-top: 28px; }
   .data-panel > summary { font-size: 1.05rem; }
   td.greek { font-family: "Gentium Plus", "New Athena Unicode", Georgia, serif; font-size: 1.05rem; }
@@ -480,7 +493,96 @@
     return { surface, entries, counts };
   }
 
-  return { surfaceMenu, dseForSurface, resolvePassage, surfaceContents };
+  /* ---------- syllable ↔ note-group alignment ---------- */
+
+  /**
+   * The text a CTS work belongs to, without its last work-id component:
+   * "urn:cts:mousike:epigraphic.seikilos.notes" -> "urn:cts:mousike:epigraphic.seikilos".
+   * The notes and syllables editions of one text share this base.
+   */
+  function textBase(work) {
+    const colon = work.lastIndexOf(":");
+    const id = work.slice(colon + 1);
+    const dot = id.lastIndexOf(".");
+    return dot < 0 ? work : work.slice(0, colon + 1) + id.slice(0, dot);
+  }
+
+  /** Split a 2-tier passage "L.N" into { line: "L", n: N }; null if not 2-tier. */
+  function splitLineRef(passage) {
+    const parts = String(passage || "").split(".");
+    if (parts.length !== 2 || !parts[0] || !/^\d+$/.test(parts[1])) return null;
+    return { line: parts[0], n: Number(parts[1]) };
+  }
+
+  const byNumber = (a, b) => {
+    const na = Number(a), nb = Number(b);
+    return Number.isNaN(na) || Number.isNaN(nb) ? String(a).localeCompare(String(b)) : na - nb;
+  };
+
+  /**
+   * Pair syllables with note groups line by line for one text.
+   * `base` is a textBase() value. Line L's syllables (`…syllables:L.N`) and note groups
+   * (`…notes:L.N`) are matched by N.
+   * Returns [{ line, syllables: [rec], groups: [rec], columns: [{ n, syllable, group }],
+   *   aligned }] in line order; a missing partner is null, and `aligned` is true when the
+   *   line has the same number of syllables and note groups.
+   */
+  function alignLines(data, base) {
+    const lines = new Map();
+    const add = (rec, kind) => {
+      if (textBase(rec.work) !== base) return;
+      const ref = splitLineRef(rec.passage);
+      if (!ref) return;
+      if (!lines.has(ref.line)) lines.set(ref.line, { syllables: [], groups: [] });
+      lines.get(ref.line)[kind].push({ n: ref.n, rec });
+    };
+    for (const s of data.syllables) add(s, "syllables");
+    for (const g of data.index.noteGroups.values()) add(g, "groups");
+
+    return [...lines.keys()].sort(byNumber).map((line) => {
+      const { syllables, groups } = lines.get(line);
+      const sylByN = new Map(syllables.map((x) => [x.n, x.rec]));
+      const grpByN = new Map(groups.map((x) => [x.n, x.rec]));
+      const ns = [...new Set([...sylByN.keys(), ...grpByN.keys()])].sort((a, b) => a - b);
+      return {
+        line,
+        syllables: syllables.sort((a, b) => a.n - b.n).map((x) => x.rec),
+        groups: groups.sort((a, b) => a.n - b.n).map((x) => x.rec),
+        columns: ns.map((n) => ({ n, syllable: sylByN.get(n) || null, group: grpByN.get(n) || null })),
+        aligned: syllables.length === groups.length,
+      };
+    });
+  }
+
+  /**
+   * Texts a surface's DSE records cite, each with its aligned lines.
+   * Returns [{ base, lines }] in order of first citation; texts with no syllables or
+   * note groups are left out.
+   */
+  function surfaceLines(data, surfaceUrn) {
+    const bases = [];
+    for (const r of dseForSurface(data, surfaceUrn)) {
+      const { work } = ctsWork(r.text);
+      if (!work) continue;
+      const b = textBase(work);
+      if (!bases.includes(b)) bases.push(b);
+    }
+    return bases
+      .map((base) => ({ base, lines: alignLines(data, base) }))
+      .filter((t) => t.lines.length > 0);
+  }
+
+  /** "urn:cts:ns:work:passage" -> { work: "urn:cts:ns:work" } (work null if not CTS). */
+  function ctsWork(urn) {
+    const parts = String(urn || "").split(":");
+    if (parts.length < 4 || parts[0] !== "urn" || parts[1] !== "cts") return { work: null };
+    return { work: parts.slice(0, 4).join(":") };
+  }
+
+  return {
+    surfaceMenu, dseForSurface, resolvePassage, surfaceContents,
+    textBase, alignLines, surfaceLines,
+  };
 });
 
 </script>
@@ -905,9 +1007,55 @@
     surfaceOut.replaceChildren(
       el("h2", { textContent: view.surface ? view.surface.label : urn }),
       el("p", { className: "urn-line" }, el("code", { textContent: urn })),
-      head,
-      list);
+      linesView(AgmEdition.surfaceLines(d, urn)),
+      el("details", { className: "dse-panel" },
+        el("summary", { textContent: `DSE records (${counts.total})` }),
+        head,
+        list));
     return view;
+  }
+
+  /* ---------- line view: syllables with their note groups above ---------- */
+
+  function linesView(texts) {
+    const sec = el("section", { className: "lines" });
+    if (!texts.length) {
+      sec.append(el("p", { className: "note", textContent: "No syllables or notes for this artifact." }));
+      return sec;
+    }
+    for (const { base, lines } of texts) {
+      if (texts.length > 1) sec.append(el("h3", { textContent: shortRef(base) }));
+      for (const ln of lines) sec.append(lineEl(ln));
+    }
+    return sec;
+  }
+
+  function lineEl(ln) {
+    const head = el("div", { className: "line-head" },
+      el("span", { className: "line-no", textContent: `Line ${ln.line}` }));
+    if (!ln.aligned) {
+      head.append(el("span", {
+        className: "note",
+        textContent: `${ln.syllables.length} syllable(s), ${ln.groups.length} note group(s)`,
+      }));
+    }
+    const row = el("div", { className: "line-row" });
+    for (const c of ln.columns) {
+      const g = c.group, s = c.syllable;
+      const col = el("div", { className: "col" + (g && s ? "" : " unmatched") });
+      col.append(g
+        ? el("div", {
+            className: "mousike-notation col-notes",
+            textContent: AgmNotation.notesToUnicodeSafe(g.text),
+            title: `${shortRef(g.urn)}  ${g.text}`,
+          })
+        : el("div", { className: "col-notes missing", textContent: "—", title: "no note group" }));
+      col.append(s
+        ? el("div", { className: "greek col-syl", textContent: s.text, title: shortRef(s.urn) })
+        : el("div", { className: "col-syl missing", textContent: "—", title: "no syllable" }));
+      row.append(col);
+    }
+    return el("div", { className: ln.aligned ? "line" : "line misaligned" }, head, row);
   }
 
   /** "urn:cts:mousike:epigraphic.seikilos.notes:1.1" -> "notes:1.1" */
