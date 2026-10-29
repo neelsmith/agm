@@ -7,6 +7,10 @@
  * View state is { scale, x, y }: the image is drawn at its natural size times `scale`, with its
  * top-left corner at (x, y) in frame pixels.
  *
+ * Regions of interest (fractions 0..1 of the image's width/height: left, top, width, height)
+ * are drawn as outlined boxes in an overlay; their screen positions are recomputed on every
+ * pan/zoom, so outlines stay a constant width at any zoom.
+ *
  * Controls: drag to pan; mouse wheel / trackpad / pinch to zoom about the pointer;
  * double-click to zoom in; buttons for zoom in, zoom out and fit.
  */
@@ -39,9 +43,22 @@
     return { scale, x: px - (px - state.x) * k, y: py - (py - state.y) * k };
   }
 
+  /** Screen-pixel box of a region `roi` {left, top, width, height} (fractions of the image). */
+  function regionBox(state, imgW, imgH, roi) {
+    return {
+      left: state.x + roi.left * imgW * state.scale,
+      top: state.y + roi.top * imgH * state.scale,
+      width: roi.width * imgW * state.scale,
+      height: roi.height * imgH * state.scale,
+    };
+  }
+
   /**
    * Build a viewer inside `container` (emptied first).
-   * Returns { load(url, alt), fit(), zoom(factor), state(), element }.
+   * Returns { load(url, alt), fit(), zoom(factor), state(), element,
+   *   setRegions([{ id, roi, kind, title }]), highlight(id | null), onRegionHover(fn) }.
+   * Several regions may share an id; highlight(id) marks all of them.
+   * onRegionHover(fn) calls fn(id) when the pointer enters a region and fn(null) when it leaves.
    */
   function createViewer(container) {
     const doc = container.ownerDocument;
@@ -50,7 +67,8 @@
     const frame = mk("div", "viewer-frame", { tabIndex: 0 });
     const img = mk("img", "viewer-img", { draggable: false, alt: "" });
     const msg = mk("div", "viewer-msg");
-    frame.append(img, msg);
+    const overlay = mk("div", "viewer-regions");
+    frame.append(img, overlay, msg);
 
     const bar = mk("div", "viewer-bar");
     const btn = (label, title, fn) => {
@@ -67,9 +85,38 @@
     let st = { scale: 1, x: 0, y: 0 };
     let fitScale = 1;
     let loaded = false;
+    let regions = []; // [{ id, roi, el }]
+    let hoverFn = null;
+    let highlighted = null;
+    let dragging = false;
 
     function apply() {
       img.style.transform = `translate(${st.x}px, ${st.y}px) scale(${st.scale})`;
+      if (!loaded) return;
+      for (const r of regions) {
+        const b = regionBox(st, img.naturalWidth, img.naturalHeight, r.roi);
+        Object.assign(r.el.style, {
+          left: `${b.left}px`, top: `${b.top}px`, width: `${b.width}px`, height: `${b.height}px`,
+        });
+      }
+    }
+
+    function setRegions(list) {
+      regions = (list || []).filter((r) => r && r.roi).map((r) => {
+        const e = mk("div", `viewer-region${r.kind ? " kind-" + r.kind : ""}`, { title: r.title || r.id });
+        e.dataset.id = r.id;
+        e.addEventListener("pointerenter", () => { if (!dragging && hoverFn) hoverFn(r.id); });
+        e.addEventListener("pointerleave", () => { if (!dragging && hoverFn) hoverFn(null); });
+        return { id: r.id, roi: r.roi, el: e };
+      });
+      overlay.replaceChildren(...regions.map((r) => r.el));
+      highlight(highlighted);
+      apply();
+    }
+
+    function highlight(id) {
+      highlighted = id || null;
+      for (const r of regions) r.el.classList.toggle("active", highlighted !== null && r.id === highlighted);
     }
     function center() {
       return { x: frame.clientWidth / 2, y: frame.clientHeight / 2 };
@@ -102,6 +149,7 @@
         const [a, b] = [...pointers.values()];
         pinchDist = Math.hypot(a.x - b.x, a.y - b.y);
       }
+      dragging = true;
       frame.classList.add("dragging");
     });
     frame.addEventListener("pointermove", (e) => {
@@ -122,7 +170,7 @@
     const release = (e) => {
       pointers.delete(e.pointerId);
       pinchDist = 0;
-      if (!pointers.size) frame.classList.remove("dragging");
+      if (!pointers.size) { dragging = false; frame.classList.remove("dragging"); }
     };
     frame.addEventListener("pointerup", release);
     frame.addEventListener("pointercancel", release);
@@ -166,8 +214,13 @@
       img.src = url;
     }
 
-    return { load, fit, zoom, state: () => ({ ...st }), element: frame };
+    return {
+      load, fit, zoom, setRegions, highlight,
+      onRegionHover: (fn) => { hoverFn = fn; },
+      state: () => ({ ...st }),
+      element: frame,
+    };
   }
 
-  return { createViewer, fitState, zoomAt, MAX_SCALE };
+  return { createViewer, fitState, zoomAt, regionBox, MAX_SCALE };
 });

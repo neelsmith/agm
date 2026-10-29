@@ -69,6 +69,8 @@
 
   function selectSurface(urn) {
     surfaceSelect.value = urn || "";
+    window.agm.surface = urn || null;
+    window.agm.viewer = null;
     const d = window.agm.data;
     if (!d || !urn) { surfaceOut.replaceChildren(); return null; }
     const view = AgmEdition.surfaceContents(d, urn);
@@ -153,14 +155,56 @@
     const holder = el("div", { className: "viewer" });
     imageOut.replaceChildren(holder);
     const viewer = AgmViewer.createViewer(holder);
+    window.agm.viewer = viewer;
+
+    // Regions of interest on this image, linked to the line view by DSE text URN.
+    const regions = AgmEdition.imageRegions(window.agm.data, window.agm.surface, urn);
+    viewer.setRegions(regions.map((r) => ({ id: r.id, roi: r.roi, kind: r.kind, title: shortRef(r.id) })));
+    viewer.onRegionHover((id) => highlight(id));
+    const withRegion = new Set(regions.map((r) => r.id));
+    for (const e of surfaceOut.querySelectorAll("[data-urn]")) {
+      e.classList.toggle("has-roi", withRegion.has(e.dataset.urn));
+    }
+    highlight(null);
+
     viewer.load(url, im.label);
+    if (regions.length) {
+      imageOut.append(el("p", { className: "roi-key" },
+        el("span", { className: "sw", style: "border-color: rgba(255,190,60,.95)" }), "notes",
+        el("span", { className: "sw", style: "border-color: rgba(80,200,255,.95)" }), "syllables",
+        ` · ${regions.length} region(s). Hover a region or a syllable/note to link them.`));
+    }
     if (im.image.credits) {
       imageOut.append(el("p", { className: "credits", textContent: im.image.credits }));
     }
-    window.agm.viewer = viewer;
     return urn;
   }
   window.agm.selectImage = selectImage;
+
+  /* ---------- linked highlighting: line view ↔ image regions ---------- */
+
+  let highlighted = null;
+
+  /** Highlight passage `urn` (a DSE text URN) in the line view and on the image; null clears. */
+  function highlight(urn) {
+    highlighted = urn || null;
+    for (const e of surfaceOut.querySelectorAll(".hl")) e.classList.remove("hl");
+    if (highlighted) {
+      for (const e of surfaceOut.querySelectorAll("[data-urn]")) {
+        if (e.dataset.urn === highlighted) e.classList.add("hl");
+      }
+    }
+    if (window.agm.viewer) window.agm.viewer.highlight(highlighted);
+  }
+  window.agm.highlight = highlight;
+
+  /** Tag a line-view element with its passage URN so it links to image regions. */
+  function linked(e, urn) {
+    e.dataset.urn = urn;
+    e.addEventListener("pointerenter", () => highlight(urn));
+    e.addEventListener("pointerleave", () => { if (highlighted === urn) highlight(null); });
+    return e;
+  }
 
   /* ---------- line view: syllables with their note groups above ---------- */
 
@@ -191,14 +235,14 @@
       const g = c.group, s = c.syllable;
       const col = el("div", { className: "col" + (g && s ? "" : " unmatched") });
       col.append(g
-        ? el("div", {
+        ? linked(el("div", {
             className: "mousike-notation col-notes",
             textContent: AgmNotation.notesToUnicodeSafe(g.text),
             title: `${shortRef(g.urn)}  ${g.text}`,
-          })
+          }), g.urn)
         : el("div", { className: "col-notes missing", textContent: "—", title: "no note group" }));
       col.append(s
-        ? el("div", { className: "greek col-syl", textContent: s.text, title: shortRef(s.urn) })
+        ? linked(el("div", { className: "greek col-syl", textContent: s.text, title: shortRef(s.urn) }), s.urn)
         : el("div", { className: "col-syl missing", textContent: "—", title: "no syllable" }));
       row.append(col);
     }

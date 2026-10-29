@@ -29,3 +29,14 @@ test("imageUrl joins the image service base URL and the catalog path", () => {
   assert.equal(ed.imageUrl(null), null);
   assert.equal(ed.imageUrl({ path: "" }), null);
 });
+
+test("regionBox maps fractional ROIs through the view transform", () => {
+  const st = { scale: 0.5, x: 10, y: 20 };
+  // 1000×2000 image; ROI at 10%,25% size 20%×5%
+  assert.deepEqual(v.regionBox(st, 1000, 2000, { left: 0.1, top: 0.25, width: 0.2, height: 0.05 }),
+    { left: 10 + 50, top: 20 + 250, width: 100, height: 50 });
+  // after zoomAt, a region keeps its place relative to the image point under the pointer
+  const s2 = v.zoomAt(st, 2, 60, 270, 0.5);
+  const b = v.regionBox(s2, 1000, 2000, { left: 0.1, top: 0.25, width: 0.2, height: 0.05 });
+  assert.deepEqual([b.left, b.top, b.width, b.height], [60, 270, 200, 100]);
+});

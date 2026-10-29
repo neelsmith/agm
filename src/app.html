@@ -76,6 +76,20 @@
   .viewer-msg { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
     color: #bbb; font-size: .9rem; padding: 16px; text-align: center; overflow-wrap: anywhere; pointer-events: none; }
   .viewer-msg:empty { display: none; }
+  .viewer-regions { position: absolute; inset: 0; pointer-events: none; }
+  .viewer-frame.empty .viewer-regions { display: none; }
+  .viewer-region { position: absolute; box-sizing: border-box; pointer-events: auto;
+    border: 1.5px solid var(--roi, rgba(255,255,255,.75)); border-radius: 2px; }
+  .viewer-region.kind-notes { --roi: rgba(255, 190, 60, .85); --roi-fill: rgba(255, 190, 60, .30); }
+  .viewer-region.kind-syllables { --roi: rgba(80, 200, 255, .85); --roi-fill: rgba(80, 200, 255, .30); }
+  .viewer-region:hover, .viewer-region.active { border-width: 3px; border-color: #ff3b6b;
+    background: rgba(255, 59, 107, .28); box-shadow: 0 0 0 1px rgba(0,0,0,.5); }
+  .col-notes.has-roi, .col-syl.has-roi { cursor: default; border-radius: 4px; }
+  .col-notes.hl, .col-syl.hl { background: rgba(255, 59, 107, .22); box-shadow: 0 0 0 2px rgba(255, 59, 107, .7); }
+  .roi-key { color: var(--muted); font-size: .8rem; margin: 6px 0 0; }
+  .roi-key .sw { display: inline-block; width: 10px; height: 10px; border: 2px solid; border-radius: 2px;
+    vertical-align: -1px; margin: 0 4px 0 10px; }
+  .roi-key .sw:first-child { margin-left: 0; }
   .viewer-bar { display: flex; gap: 6px; margin-top: 6px; }
   .viewer-btn { min-width: 40px; padding: 4px 10px; }
   .credits { color: var(--muted); font-size: .8rem; margin: 6px 0 0; overflow-wrap: anywhere; }

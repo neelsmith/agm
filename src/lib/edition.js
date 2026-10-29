@@ -182,6 +182,26 @@
     return out;
   }
 
+  /**
+   * Regions of interest on one image (URN without `@`) from a surface's DSE records.
+   * Returns [{ id, roi, kind, dse }] in DSE order, where `id` is the DSE text URN and `kind` is
+   * "notes" (a note group or notes line), "syllables", "texts" or "other" (passage not found).
+   * Records without a parseable region are left out.
+   */
+  function imageRegions(data, surfaceUrn, imageUrn) {
+    const out = [];
+    for (const r of dseForSurface(data, surfaceUrn)) {
+      if (!r.roi || String(r.image || "").split("@")[0].trim() !== imageUrn) continue;
+      const i = data.index;
+      const kind = i.noteGroups.has(r.text) || i.notes.has(r.text) ? "notes"
+        : i.syllables.has(r.text) ? "syllables"
+        : i.texts.has(r.text) ? "texts"
+        : "other";
+      out.push({ id: r.text, roi: r.roi, kind, dse: r });
+    }
+    return out;
+  }
+
   /** Where catalogued image files are served: an image's URL is this + "/" + its `path`. */
   const IMAGE_BASE_URL = "https://shot.holycross.edu/images/mousike";
 
@@ -194,6 +214,6 @@
   return {
     surfaceMenu, dseForSurface, resolvePassage, surfaceContents,
     textBase, alignLines, surfaceLines, surfaceImages,
-    IMAGE_BASE_URL, imageUrl,
+    imageRegions, IMAGE_BASE_URL, imageUrl,
   };
 });

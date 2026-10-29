@@ -176,3 +176,18 @@ test("surfaceImages: distinct, in citation order; unmatched URNs label themselve
   const c = ed.surfaceImages(d2026c, STELE);
   assert.deepEqual(c.map((i) => [i.urn, i.image]), [["urn:cite2:mousike:images.Seikilos2", null]]);
 });
+
+test("imageRegions: 2026d stele regions, keyed by DSE text URN, with kinds", () => {
+  const d = cex.parseCex(fs.readFileSync(path.join(__dirname, "fixtures", "current-2026d.cex"), "utf8"));
+  const regs = ed.imageRegions(d, STELE, "urn:cite2:mousike:images.v1:Seikilos2");
+  assert.equal(regs.length, 34);
+  const first = regs[0];
+  assert.equal(first.id, "urn:cts:mousike:epigraphic.seikilos.notes:1.1");
+  assert.equal(first.kind, "notes");
+  assert.deepEqual(first.roi, { left: 0.1164, top: 0.4114, width: 0.0412, height: 0.0323 });
+  const kinds = {};
+  for (const r of regs) kinds[r.kind] = (kinds[r.kind] || 0) + 1;
+  // notes:5.x–6.x cite lines missing from #!notes → "other"
+  assert.deepEqual(kinds, { notes: 20, other: 9, syllables: 5 });
+  assert.deepEqual(ed.imageRegions(d, STELE, "urn:cite2:mousike:images.v1:nope"), []);
+});
