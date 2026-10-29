@@ -5,6 +5,10 @@ const path = require("node:path");
 const here = __dirname;
 const read = (p) => fs.readFileSync(path.join(here, p), "utf8");
 
+// App version, shown discreetly in the page footer. Maintained only in package.json.
+const version = JSON.parse(read("package.json")).version;
+if (!/^\d+\.\d+\.\d+/.test(version || "")) throw new Error(`package.json has no valid version: ${version}`);
+
 // Mousike Notation font (SIL OFL 1.1, from the mousike project; see assets/fonts/OFL.txt),
 // embedded as a data URI so the page needs no other files.
 const font = fs.readFileSync(path.join(here, "assets", "fonts", "MousikeNotation.woff2")).toString("base64");
@@ -41,9 +45,10 @@ const LOAD_CONTROLS = `  <div class="controls">
  */
 function render({ loadControls = false } = {}) {
   let html = read("app.html");
-  const all = { ...parts, LOAD_CONTROLS: loadControls ? LOAD_CONTROLS : "" };
+  const htmlParts = { LOAD_CONTROLS: loadControls ? LOAD_CONTROLS : "", VERSION: version };
+  const all = { ...parts, ...htmlParts };
   for (const [name, content] of Object.entries(all)) {
-    const marker = name === "LOAD_CONTROLS" ? `<!--@@${name}@@-->` : `/*@@${name}@@*/`;
+    const marker = name in htmlParts ? `<!--@@${name}@@-->` : `/*@@${name}@@*/`;
     if (!html.includes(marker)) throw new Error(`app.html is missing ${marker}`);
     // Function replacer so `$` sequences in source aren't treated as patterns.
     html = html.replace(marker, () => content);
@@ -51,7 +56,7 @@ function render({ loadControls = false } = {}) {
   return html;
 }
 
-module.exports = { render };
+module.exports = { render, version };
 
 if (require.main === module) {
   fs.mkdirSync(path.join(here, "dist"), { recursive: true });
