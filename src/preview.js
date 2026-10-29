@@ -6,7 +6,7 @@ const path = require("node:path");
 const { render } = require("./build.js");
 
 const here = __dirname;
-const FIXTURE = "current-2026d.cex";
+const FIXTURE = "current-2026g.cex";
 const fixture = fs.readFileSync(path.join(here, "test", "fixtures", FIXTURE), "utf8");
 let html = render({ loadControls: true });
 html = html.replace("<script>", () => "<script>window.AGM_NO_AUTOLOAD = true;</script>\n<script>");

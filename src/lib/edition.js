@@ -202,6 +202,61 @@
     return out;
   }
 
+  /* ---------- audio ---------- */
+
+  /** Where audio files are served (the mousike repo's `audio` directory). */
+  const AUDIO_BASE_URL = "https://raw.githubusercontent.com/neelsmith/mousike/refs/heads/main/audio";
+
+  /** URL of an `#!audio` row's file, or null if it has none. */
+  function audioUrl(track) {
+    if (!track || !track.file) return null;
+    return `${AUDIO_BASE_URL}/${String(track.file).trim().replace(/^\/+/, "")}`;
+  }
+
+  /** Line-level part of a passage reference: "3.2" -> "3". */
+  const lineOf = (ref) => String(ref).split(".")[0];
+
+  /**
+   * Does line `line` fall within passage reference `passage`?
+   * `passage` may be null (the whole work), a single reference ("2", "2.3") or a range
+   * ("1-6", "1.2-3.4"); only the line-level part of each end is compared, numerically when
+   * both are numbers.
+   */
+  function lineInPassage(line, passage) {
+    if (passage === null || passage === undefined || passage === "") return true;
+    const [from, to = from] = String(passage).split("-").map((p) => lineOf(p.trim()));
+    const l = String(line);
+    const nums = [l, from, to].map(Number);
+    if (nums.every((n) => Number.isFinite(n))) return nums[1] <= nums[0] && nums[0] <= nums[2];
+    return l === from || l === to;
+  }
+
+  /**
+   * Audio tracks for the notation shown for a surface: every `#!audio` row whose `notation`
+   * URN is in the same notes work as a displayed line, with a passage (or range) that
+   * includes at least one displayed line. Returns [{ label, file, notation, url, lines }] in
+   * `#!audio` order, where `lines` are the matching displayed line numbers.
+   */
+  function surfaceAudio(data, surfaceUrn) {
+    const shown = []; // [{ work, line }] notes lines in the line view
+    for (const t of surfaceLines(data, surfaceUrn)) {
+      for (const ln of t.lines) {
+        if (ln.groups.length) shown.push({ work: ln.groups[0].work, line: ln.line });
+      }
+    }
+    const out = [];
+    for (const a of data.audio || []) {
+      const urn = String(a.notation || "").trim();
+      const parts = urn.split(":");
+      if (parts.length < 4 || parts[0] !== "urn" || parts[1] !== "cts") continue;
+      const work = parts.slice(0, 4).join(":");
+      const passage = parts.length > 4 ? parts.slice(4).join(":") : null;
+      const lines = shown.filter((s) => s.work === work && lineInPassage(s.line, passage)).map((s) => s.line);
+      if (lines.length) out.push({ label: a.label, file: a.file, notation: urn, url: audioUrl(a), lines });
+    }
+    return out;
+  }
+
   /** Where catalogued image files are served: an image's URL is this + "/" + its `path`. */
   const IMAGE_BASE_URL = "https://shot.holycross.edu/images/mousike";
 
@@ -215,5 +270,6 @@
     surfaceMenu, dseForSurface, resolvePassage, surfaceContents,
     textBase, alignLines, surfaceLines, surfaceImages,
     imageRegions, IMAGE_BASE_URL, imageUrl,
+    AUDIO_BASE_URL, audioUrl, lineInPassage, surfaceAudio,
   };
 });

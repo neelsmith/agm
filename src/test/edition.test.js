@@ -191,3 +191,53 @@ test("imageRegions: 2026d stele regions, keyed by DSE text URN, with kinds", () 
   assert.deepEqual(kinds, { notes: 20, other: 9, syllables: 5 });
   assert.deepEqual(ed.imageRegions(d, STELE, "urn:cite2:mousike:images.v1:nope"), []);
 });
+
+/* ---------- 2026g: six stele lines; audio ---------- */
+
+const d2026g = cex.parseCex(fs.readFileSync(path.join(__dirname, "fixtures", "current-2026g.cex"), "utf8"));
+
+test("2026g: six lines, each with as many syllables as note groups", () => {
+  assert.deepEqual(d2026g.warnings, []);
+  const lines = ed.alignLines(d2026g, SEIKILOS);
+  assert.deepEqual(lines.map((l) => [l.line, l.syllables.length, l.groups.length]),
+    [["1", 5, 5], ["2", 5, 5], ["3", 5, 5], ["4", 5, 5], ["5", 5, 5], ["6", 4, 4]]);
+  // every DSE region now resolves to a note group or syllable
+  const kinds = new Set(ed.imageRegions(d2026g, STELE, "urn:cite2:mousike:images.v1:Seikilos2").map((r) => r.kind));
+  assert.deepEqual([...kinds].sort(), ["notes", "syllables"]);
+});
+
+test("lineInPassage handles whole works, single refs and ranges", () => {
+  assert.equal(ed.lineInPassage("3", null), true);
+  assert.equal(ed.lineInPassage("3", "1-6"), true);
+  assert.equal(ed.lineInPassage("7", "1-6"), false);
+  assert.equal(ed.lineInPassage("2", "2"), true);
+  assert.equal(ed.lineInPassage("2", "3"), false);
+  assert.equal(ed.lineInPassage("2", "1.3-2.1"), true);
+  assert.equal(ed.lineInPassage("10", "9-11"), true); // numeric, not string, comparison
+  assert.equal(ed.lineInPassage("b", "a-b"), true);
+});
+
+test("surfaceAudio: 2026g stele has three tracks covering lines 1–6", () => {
+  const tracks = ed.surfaceAudio(d2026g, STELE);
+  assert.equal(tracks.length, 3);
+  assert.equal(tracks[0].label, "Seikilos stele, Phrygian tonos, even diatonic division, on lyre");
+  assert.equal(tracks[0].url,
+    "https://raw.githubusercontent.com/neelsmith/mousike/refs/heads/main/audio/seikilos-phrygian-even_diatonic-lyre.wav");
+  assert.deepEqual(tracks[0].lines, ["1", "2", "3", "4", "5", "6"]);
+  assert.deepEqual(ed.surfaceAudio(d2026g, "urn:cite2:t:none.v1:x"), []);
+});
+
+test("surfaceAudio matches on work and overlapping lines only", () => {
+  const d = cex.parseCex([
+    "#!surfaces", "urn|label", "urn:cite2:t:obj.v1:s|S",
+    "#!audio", "file|label|notation",
+    "a.wav|A|urn:cts:t:w.notes:1-2",
+    "b.wav|B|urn:cts:t:w.notes:5-9",
+    "c.wav|C|urn:cts:t:other.notes:1",
+    "d.wav|D|urn:cts:t:w.notes",
+    "#!notes", "urn|text", "urn:cts:t:w.notes:2|gvn:1.1.1.0.0", "urn:cts:t:w.notes:3|gvn:1.1.1.0.0",
+    "#!dse", "image|text|surface", "urn:cite2:t:img.v1:x@0,0,1,1|urn:cts:t:w.notes:2.1|urn:cite2:t:obj.v1:s",
+  ].join("\n"));
+  assert.deepEqual(ed.surfaceAudio(d, "urn:cite2:t:obj.v1:s").map((t) => [t.label, t.lines]),
+    [["A", ["2"]], ["D", ["2", "3"]]]);
+});

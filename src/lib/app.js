@@ -69,6 +69,7 @@
 
   function selectSurface(urn) {
     surfaceSelect.value = urn || "";
+    stopAudio(); // a detached <audio> keeps playing, so stop it before replacing the view
     window.agm.surface = urn || null;
     window.agm.viewer = null;
     const d = window.agm.data;
@@ -98,6 +99,7 @@
     }
 
     surfaceOut.replaceChildren(
+      audioSection(AgmEdition.surfaceAudio(d, urn)),
       el("h2", { textContent: view.surface ? view.surface.label : urn }),
       el("p", { className: "urn-line" }, el("code", { textContent: urn })),
       linesView(AgmEdition.surfaceLines(d, urn)),
@@ -108,6 +110,63 @@
         list));
     return view;
   }
+
+  /* ---------- audio menu: tracks indexed to the displayed notation lines ---------- */
+
+  let player = null; // the <audio> element for the current surface
+
+  function stopAudio() {
+    if (player) { player.pause(); player.removeAttribute("src"); player.load(); }
+    player = null;
+    window.agm.track = null;
+  }
+
+  function audioSection(tracks) {
+    window.agm.tracks = tracks;
+    if (!tracks.length) {
+      return el("p", { className: "note muted", textContent: "No audio for this artifact." });
+    }
+    const select = el("select", { id: "audio" },
+      el("option", { value: "", textContent: "Choose a recording…" }),
+      ...tracks.map((t, i) => el("option", { value: String(i), textContent: t.label, title: t.file })));
+    select.addEventListener("change", () => playTrack(select.value === "" ? null : Number(select.value)));
+    player = el("audio", { id: "player", controls: true, preload: "none" });
+    player.hidden = true;
+    const msg = el("span", { id: "audio-msg", className: "note" });
+    player.addEventListener("error", () => {
+      if (player && player.getAttribute("src")) msg.textContent = `Could not load ${player.src}`;
+    });
+    return el("section", { className: "audio-picker" },
+      el("label", { htmlFor: "audio", textContent: "Audio" }), select, player, msg);
+  }
+
+  /** Play track number `i` of the current artifact's audio menu; null stops playback. */
+  function playTrack(i) {
+    const t = i === null ? null : (window.agm.tracks || [])[i];
+    const msg = $("audio-msg");
+    const select = $("audio");
+    if (!player) return null;
+    if (msg) msg.textContent = "";
+    if (!t) {
+      player.pause();
+      player.hidden = true;
+      window.agm.track = null;
+      if (select) select.value = "";
+      return null;
+    }
+    if (select) select.value = String(i);
+    window.agm.track = t;
+    player.hidden = false;
+    player.src = t.url;
+    const p = player.play();
+    if (p && p.catch) {
+      p.catch((e) => {
+        if (msg && e.name !== "AbortError") msg.textContent = `Could not play: ${e.message}`;
+      });
+    }
+    return t;
+  }
+  window.agm.playTrack = playTrack;
 
   /* ---------- image menu: distinct images cited by the surface's DSE records ---------- */
 
