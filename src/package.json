@@ -1,0 +1,9 @@
+{
+  "name": "agm",
+  "private": true,
+  "description": "Ancient Greek Music reading environment",
+  "scripts": {
+    "test": "node --test 'test/*.test.js'",
+    "build": "node build.js"
+  }
+}

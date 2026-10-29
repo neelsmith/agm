@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>agm: Ancient Greek Music</title>
+<style>
+  :root { --bg:#fbfaf7; --fg:#222; --muted:#666; --line:#ddd; --accent:#7a3b12; --warn:#9a5b00; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#1b1a18; --fg:#e8e6e1; --muted:#9a968e; --line:#3a3834; --accent:#e0a070; --warn:#e0b050; }
+  }
+  body { margin:0; background:var(--bg); color:var(--fg); font:15px/1.45 system-ui, sans-serif; }
+  header, main { max-width: 1100px; margin: 0 auto; padding: 0 16px; }
+  header { padding-top: 20px; border-bottom: 1px solid var(--line); }
+  h1 { margin: 0 0 4px; font-size: 1.4rem; }
+  .sub { color: var(--muted); margin: 0 0 12px; }
+  .controls { display:flex; gap:8px; flex-wrap:wrap; align-items:center; padding-bottom: 14px; }
+  .controls input[type=url] { flex: 1 1 380px; min-width: 0; padding: 6px 8px; font: inherit;
+    background: transparent; color: inherit; border: 1px solid var(--line); border-radius: 4px; }
+  button { font: inherit; padding: 6px 12px; border-radius: 4px; border: 1px solid var(--accent);
+    background: var(--accent); color: var(--bg); cursor: pointer; }
+  #status { color: var(--muted); }
+  #status.error { color: #c0392b; }
+  .summary { display:grid; grid-template-columns: repeat(auto-fill, minmax(120px,1fr)); gap:8px; margin: 18px 0; }
+  .summary div { border:1px solid var(--line); border-radius:6px; padding:8px 10px; }
+  .summary b { display:block; font-size: 1.3rem; }
+  .summary span { color: var(--muted); font-size: .85rem; }
+  .warnings { color: var(--warn); }
+  details { border-top: 1px solid var(--line); padding: 8px 0; }
+  summary { cursor: pointer; font-weight: 600; }
+  .scroll { overflow-x: auto; }
+  table { border-collapse: collapse; margin-top: 8px; font-size: .9rem; }
+  th, td { text-align: left; vertical-align: top; padding: 4px 10px 4px 0; border-bottom: 1px solid var(--line); }
+  th { color: var(--muted); font-weight: 500; }
+  td.urn { font-family: ui-monospace, Menlo, monospace; font-size: .8rem; white-space: nowrap; }
+  td.greek { font-family: "Gentium Plus", "New Athena Unicode", Georgia, serif; font-size: 1.05rem; }
+</style>
+</head>
+<body>
+<header>
+  <h1>agm · Ancient Greek Music</h1>
+  <p class="sub">Data loader for the <code>mousike</code> CEX release</p>
+  <div class="controls">
+    <input id="url" type="url" aria-label="CEX URL">
+    <button id="load">Load</button>
+    <label>or local file <input id="file" type="file" accept=".cex,.txt"></label>
+  </div>
+</header>
+<main>
+  <p id="status">Not loaded.</p>
+  <div id="out"></div>
+</main>
+
+<script>
+/*@@CEX_JS@@*/
+</script>
+<script>
+/*@@APP_JS@@*/
+</script>
+</body>
+</html>
