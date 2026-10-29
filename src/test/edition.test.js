@@ -139,3 +139,40 @@ test("surfaceLines collects the texts a surface cites", () => {
   assert.equal(t[0].lines.length, 4);
   assert.deepEqual(ed.surfaceLines(d2026c, "urn:cite2:t:none.v1:x"), []);
 });
+
+/* ---------- images cited by a surface ---------- */
+
+test("surfaceImages: 2026d cites one image, labelled from #!images", () => {
+  const d = cex.parseCex(fs.readFileSync(path.join(__dirname, "fixtures", "current-2026d.cex"), "utf8"));
+  assert.equal(d.version, "2026d");
+  assert.deepEqual(d.warnings, []);
+  const imgs = ed.surfaceImages(d, STELE);
+  assert.equal(imgs.length, 1);
+  assert.equal(imgs[0].urn, "urn:cite2:mousike:images.v1:Seikilos2");
+  assert.equal(imgs[0].label, "Stele of Seikilos");
+  assert.equal(imgs[0].image.path, "Seikilos2.png");
+});
+
+test("surfaceImages: distinct, in citation order; unmatched URNs label themselves", () => {
+  const d = cex.parseCex([
+    "#!images", "path|description|credits|urn",
+    "a.png|Photo A|c|urn:cite2:t:img.v1:a",
+    "b.png|Photo B|c|urn:cite2:t:img.v1:b",
+    "#!dse", "image|text|surface",
+    "urn:cite2:t:img.v1:b@0,0,.1,.1|urn:cts:t:w.text:1|urn:cite2:t:obj.v1:s",
+    "urn:cite2:t:img.v1:a@0,0,.1,.1|urn:cts:t:w.text:2|urn:cite2:t:obj.v1:s",
+    "urn:cite2:t:img.v1:b@.5,.5,.1,.1|urn:cts:t:w.text:3|urn:cite2:t:obj.v1:s",
+    "urn:cite2:t:img:a|urn:cts:t:w.text:4|urn:cite2:t:obj.v1:s",
+    "urn:cite2:t:img.v1:z@0,0,1,1|urn:cts:t:w.text:5|urn:cite2:t:obj.v1:other",
+  ].join("\n"));
+  const imgs = ed.surfaceImages(d, "urn:cite2:t:obj.v1:s");
+  assert.deepEqual(imgs.map((i) => [i.urn, i.label]), [
+    ["urn:cite2:t:img.v1:b", "Photo B"],
+    ["urn:cite2:t:img.v1:a", "Photo A"],
+    ["urn:cite2:t:img:a", "urn:cite2:t:img:a"], // no exact urn match in #!images
+  ]);
+  assert.equal(imgs[2].image, null);
+  // 2026c's 4-part DSE image URNs don't match the catalog
+  const c = ed.surfaceImages(d2026c, STELE);
+  assert.deepEqual(c.map((i) => [i.urn, i.image]), [["urn:cite2:mousike:images.Seikilos2", null]]);
+});

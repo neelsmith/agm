@@ -19,14 +19,13 @@
   body { margin:0; background:var(--bg); color:var(--fg); font:15px/1.45 system-ui, sans-serif; }
   header, main { max-width: 1100px; margin: 0 auto; padding: 0 16px; }
   header { padding-top: 20px; border-bottom: 1px solid var(--line); }
-  h1 { margin: 0 0 4px; font-size: 1.4rem; }
-  .sub { color: var(--muted); margin: 0 0 12px; }
+  h1 { margin: 0 0 14px; font-size: 1.4rem; }
   .controls { display:flex; gap:8px; flex-wrap:wrap; align-items:center; padding-bottom: 14px; }
   .controls input[type=url] { flex: 1 1 380px; min-width: 0; padding: 6px 8px; font: inherit;
     background: transparent; color: inherit; border: 1px solid var(--line); border-radius: 4px; }
   button { font: inherit; padding: 6px 12px; border-radius: 4px; border: 1px solid var(--accent);
     background: var(--accent); color: var(--bg); cursor: pointer; }
-  #status { color: var(--muted); }
+  #status { color: var(--muted); overflow-wrap: anywhere; }
   #status.error { color: #c0392b; }
   .summary { display:grid; grid-template-columns: repeat(auto-fill, minmax(120px,1fr)); gap:8px; margin: 18px 0; }
   .summary div { border:1px solid var(--line); border-radius:6px; padding:8px 10px; }
@@ -40,9 +39,9 @@
   th, td { text-align: left; vertical-align: top; padding: 4px 10px 4px 0; border-bottom: 1px solid var(--line); }
   th { color: var(--muted); font-weight: 500; }
   td.urn { font-family: ui-monospace, Menlo, monospace; font-size: .8rem; white-space: nowrap; }
-  .surface-picker { display:flex; gap:10px; align-items:center; margin: 14px 0; }
-  .surface-picker label { font-weight: 600; }
-  .surface-picker select { font: inherit; padding: 6px 8px; max-width: 100%; min-width: 0;
+  .surface-picker, .image-picker { display:flex; gap:10px; align-items:center; margin: 14px 0; }
+  .surface-picker label, .image-picker label { font-weight: 600; }
+  .surface-picker select, .image-picker select { font: inherit; padding: 6px 8px; max-width: 100%; min-width: 0;
     background: var(--bg); color: inherit; border: 1px solid var(--line); border-radius: 4px; }
   #surface-out h2 { margin: 18px 0 2px; font-size: 1.15rem; }
   .urn-line, .counts { color: var(--muted); margin: 2px 0 8px; }
@@ -73,6 +72,19 @@
   .col .missing { color: var(--warn); }
   .col.unmatched { opacity: .75; }
   .dse-panel > summary { font-size: .95rem; }
+  .image-section { margin: 18px 0; }
+  .viewer-frame { position: relative; overflow: hidden; height: min(70vh, 640px); border: 1px solid var(--line);
+    border-radius: 6px; background: #111; cursor: grab; touch-action: none; user-select: none; }
+  .viewer-frame.dragging { cursor: grabbing; }
+  .viewer-frame:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .viewer-img { position: absolute; left: 0; top: 0; transform-origin: 0 0; max-width: none; }
+  .viewer-frame.empty .viewer-img { visibility: hidden; }
+  .viewer-msg { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    color: #bbb; font-size: .9rem; padding: 16px; text-align: center; overflow-wrap: anywhere; pointer-events: none; }
+  .viewer-msg:empty { display: none; }
+  .viewer-bar { display: flex; gap: 6px; margin-top: 6px; }
+  .viewer-btn { min-width: 40px; padding: 4px 10px; }
+  .credits { color: var(--muted); font-size: .8rem; margin: 6px 0 0; overflow-wrap: anywhere; }
   .data-panel { margin-top: 28px; }
   .data-panel > summary { font-size: 1.05rem; }
   td.greek { font-family: "Gentium Plus", "New Athena Unicode", Georgia, serif; font-size: 1.05rem; }
@@ -81,12 +93,7 @@
 <body>
 <header>
   <h1>agm · Ancient Greek Music</h1>
-  <p class="sub">Reader for the <code>mousike</code> CEX release</p>
-  <div class="controls">
-    <input id="url" type="url" aria-label="CEX URL">
-    <button id="load">Load</button>
-    <label>or local file <input id="file" type="file" accept=".cex,.txt"></label>
-  </div>
+
 </header>
 <main>
   <p id="status">Not loaded.</p>
@@ -578,9 +585,39 @@
     return { work: parts.slice(0, 4).join(":") };
   }
 
+  /**
+   * Distinct images a surface's DSE records cite, with any `@` region of interest removed,
+   * in order of first citation. Each is labelled with the `description` of the `#!images`
+   * row whose `urn` is exactly equal; if there is none, the label is the URN and `image` is null.
+   * Returns [{ urn, label, image }].
+   */
+  function surfaceImages(data, surfaceUrn) {
+    const byUrn = new Map(data.images.map((img) => [img.urn, img]));
+    const out = [];
+    const seen = new Set();
+    for (const r of dseForSurface(data, surfaceUrn)) {
+      const urn = String(r.image || "").split("@")[0].trim();
+      if (!urn || seen.has(urn)) continue;
+      seen.add(urn);
+      const image = byUrn.get(urn) || null;
+      out.push({ urn, label: image && image.description ? image.description : urn, image });
+    }
+    return out;
+  }
+
+  /** Where catalogued image files are served: an image's URL is this + "/" + its `path`. */
+  const IMAGE_BASE_URL = "https://shot.holycross.edu/images/mousike";
+
+  /** URL of an `#!images` row's file, or null if the row (or its path) is missing. */
+  function imageUrl(image) {
+    if (!image || !image.path) return null;
+    return `${IMAGE_BASE_URL}/${String(image.path).trim().replace(/^\/+/, "")}`;
+  }
+
   return {
     surfaceMenu, dseForSurface, resolvePassage, surfaceContents,
-    textBase, alignLines, surfaceLines,
+    textBase, alignLines, surfaceLines, surfaceImages,
+    IMAGE_BASE_URL, imageUrl,
   };
 });
 
@@ -910,11 +947,190 @@
 
 </script>
 <script>
-/* app.js — UI for the agm reader. Depends on globals AgmCex and AgmEdition. */
+/*
+ * viewer.js — a small pan/zoom image viewer with no dependencies.
+ *
+ * Classic UMD script: global `AgmViewer` in the browser, CommonJS in Node (where only the
+ * pure geometry helpers are useful).
+ *
+ * View state is { scale, x, y }: the image is drawn at its natural size times `scale`, with its
+ * top-left corner at (x, y) in frame pixels.
+ *
+ * Controls: drag to pan; mouse wheel / trackpad / pinch to zoom about the pointer;
+ * double-click to zoom in; buttons for zoom in, zoom out and fit.
+ */
+(function (root, factory) {
+  if (typeof module === "object" && module.exports) {
+    module.exports = factory();
+  } else {
+    root.AgmViewer = factory();
+  }
+})(typeof self !== "undefined" ? self : this, function () {
+  "use strict";
+
+  const MAX_SCALE = 8; // at most 8× the image's natural size
+
+  /** State that fits an imgW×imgH image entirely in a frameW×frameH frame, centred. */
+  function fitState(imgW, imgH, frameW, frameH) {
+    if (!(imgW > 0 && imgH > 0 && frameW > 0 && frameH > 0)) return { scale: 1, x: 0, y: 0 };
+    const scale = Math.min(frameW / imgW, frameH / imgH);
+    return { scale, x: (frameW - imgW * scale) / 2, y: (frameH - imgH * scale) / 2 };
+  }
+
+  /**
+   * Zoom by `factor` keeping frame point (px, py) fixed on the same image point.
+   * The scale is clamped to [minScale, MAX_SCALE].
+   */
+  function zoomAt(state, factor, px, py, minScale) {
+    const lo = Math.min(minScale || state.scale, 1);
+    const scale = Math.max(lo, Math.min(MAX_SCALE, state.scale * factor));
+    const k = scale / state.scale;
+    return { scale, x: px - (px - state.x) * k, y: py - (py - state.y) * k };
+  }
+
+  /**
+   * Build a viewer inside `container` (emptied first).
+   * Returns { load(url, alt), fit(), zoom(factor), state(), element }.
+   */
+  function createViewer(container) {
+    const doc = container.ownerDocument;
+    const mk = (tag, cls, attrs) => Object.assign(doc.createElement(tag), { className: cls }, attrs || {});
+
+    const frame = mk("div", "viewer-frame", { tabIndex: 0 });
+    const img = mk("img", "viewer-img", { draggable: false, alt: "" });
+    const msg = mk("div", "viewer-msg");
+    frame.append(img, msg);
+
+    const bar = mk("div", "viewer-bar");
+    const btn = (label, title, fn) => {
+      const b = mk("button", "viewer-btn", { type: "button", textContent: label, title });
+      b.setAttribute("aria-label", title);
+      b.addEventListener("click", fn);
+      bar.append(b);
+    };
+    btn("+", "Zoom in", () => zoom(1.5));
+    btn("−", "Zoom out", () => zoom(1 / 1.5));
+    btn("Fit", "Fit image to frame", () => fit());
+    container.replaceChildren(frame, bar);
+
+    let st = { scale: 1, x: 0, y: 0 };
+    let fitScale = 1;
+    let loaded = false;
+
+    function apply() {
+      img.style.transform = `translate(${st.x}px, ${st.y}px) scale(${st.scale})`;
+    }
+    function center() {
+      return { x: frame.clientWidth / 2, y: frame.clientHeight / 2 };
+    }
+    function fit() {
+      if (!loaded) return;
+      st = fitState(img.naturalWidth, img.naturalHeight, frame.clientWidth, frame.clientHeight);
+      fitScale = st.scale;
+      apply();
+    }
+    function zoom(factor, px, py) {
+      if (!loaded) return;
+      const c = center();
+      st = zoomAt(st, factor, px ?? c.x, py ?? c.y, fitScale);
+      apply();
+    }
+    function local(e) {
+      const r = frame.getBoundingClientRect();
+      return { x: e.clientX - r.left, y: e.clientY - r.top };
+    }
+
+    // Pointer handling: one pointer pans, two pointers pinch-zoom.
+    const pointers = new Map();
+    let pinchDist = 0;
+    frame.addEventListener("pointerdown", (e) => {
+      if (!loaded) return;
+      frame.setPointerCapture(e.pointerId);
+      pointers.set(e.pointerId, local(e));
+      if (pointers.size === 2) {
+        const [a, b] = [...pointers.values()];
+        pinchDist = Math.hypot(a.x - b.x, a.y - b.y);
+      }
+      frame.classList.add("dragging");
+    });
+    frame.addEventListener("pointermove", (e) => {
+      if (!pointers.has(e.pointerId)) return;
+      const prev = pointers.get(e.pointerId);
+      const p = local(e);
+      pointers.set(e.pointerId, p);
+      if (pointers.size === 1) {
+        st = { ...st, x: st.x + p.x - prev.x, y: st.y + p.y - prev.y };
+        apply();
+      } else if (pointers.size === 2) {
+        const [a, b] = [...pointers.values()];
+        const d = Math.hypot(a.x - b.x, a.y - b.y);
+        if (pinchDist > 0) zoom(d / pinchDist, (a.x + b.x) / 2, (a.y + b.y) / 2);
+        pinchDist = d;
+      }
+    });
+    const release = (e) => {
+      pointers.delete(e.pointerId);
+      pinchDist = 0;
+      if (!pointers.size) frame.classList.remove("dragging");
+    };
+    frame.addEventListener("pointerup", release);
+    frame.addEventListener("pointercancel", release);
+
+    frame.addEventListener("wheel", (e) => {
+      if (!loaded) return;
+      e.preventDefault();
+      const p = local(e);
+      zoom(Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.002)), p.x, p.y);
+    }, { passive: false });
+    frame.addEventListener("dblclick", (e) => { const p = local(e); zoom(2, p.x, p.y); });
+    frame.addEventListener("keydown", (e) => {
+      const step = 40;
+      const moves = { ArrowLeft: [step, 0], ArrowRight: [-step, 0], ArrowUp: [0, step], ArrowDown: [0, -step] };
+      if (e.key === "+" || e.key === "=") zoom(1.5);
+      else if (e.key === "-") zoom(1 / 1.5);
+      else if (e.key === "0") fit();
+      else if (moves[e.key]) { st = { ...st, x: st.x + moves[e.key][0], y: st.y + moves[e.key][1] }; apply(); }
+      else return;
+      e.preventDefault();
+    });
+
+    img.addEventListener("load", () => {
+      loaded = true;
+      msg.textContent = "";
+      frame.classList.remove("empty");
+      fit();
+    });
+    img.addEventListener("error", () => {
+      loaded = false;
+      img.style.transform = "";
+      frame.classList.add("empty");
+      msg.textContent = `Could not load image ${img.src}`;
+    });
+
+    function load(url, alt) {
+      loaded = false;
+      frame.classList.add("empty");
+      msg.textContent = "Loading image…";
+      img.alt = alt || "";
+      img.src = url;
+    }
+
+    return { load, fit, zoom, state: () => ({ ...st }), element: frame };
+  }
+
+  return { createViewer, fitState, zoomAt, MAX_SCALE };
+});
+
+</script>
+<script>
+/* app.js — UI for the agm reader. Depends on globals AgmCex, AgmEdition, AgmNotation and AgmViewer. */
 (function () {
   "use strict";
   const $ = (id) => document.getElementById(id);
+  // Data-source controls exist only in some builds (see build.js), so these may be null.
   const urlInput = $("url");
+  const loadButton = $("load");
+  const fileInput = $("file");
   const statusEl = $("status");
   const surfaceSelect = $("surface");
   const surfaceOut = $("surface-out");
@@ -923,10 +1139,11 @@
   /** App state, exposed for console inspection and tests. */
   window.agm = { data: null, selectSurface };
 
-  urlInput.value = AgmCex.DEFAULT_URL;
+  if (urlInput) urlInput.value = AgmCex.DEFAULT_URL;
 
-  function setStatus(msg, isError) {
+  function setStatus(msg, isError, title) {
     statusEl.textContent = msg;
+    statusEl.title = title || "";
     statusEl.className = isError ? "error" : "";
   }
 
@@ -1007,12 +1224,68 @@
       el("h2", { textContent: view.surface ? view.surface.label : urn }),
       el("p", { className: "urn-line" }, el("code", { textContent: urn })),
       linesView(AgmEdition.surfaceLines(d, urn)),
+      imageSection(AgmEdition.surfaceImages(d, urn)),
       el("details", { className: "dse-panel" },
         el("summary", { textContent: `DSE records (${counts.total})` }),
         head,
         list));
     return view;
   }
+
+  /* ---------- image menu: distinct images cited by the surface's DSE records ---------- */
+
+  let imageOut = null; // element holding the viewer for the selected image
+
+  /** Image menu plus a pan/zoom view of the selected image (first one preselected). */
+  function imageSection(images) {
+    window.agm.images = images;
+    window.agm.image = null;
+    if (!images.length) {
+      imageOut = null;
+      return el("p", { className: "note", textContent: "No images cited for this artifact." });
+    }
+    const select = el("select", { id: "image" },
+      ...images.map((im) => el("option", {
+        value: im.urn,
+        textContent: im.image ? im.label : `${im.label} (not in image catalog)`,
+        title: im.urn,
+      })));
+    select.addEventListener("change", () => selectImage(select.value));
+    imageOut = el("div", { className: "image-out" });
+    const sec = el("section", { className: "image-section" },
+      el("div", { className: "image-picker" },
+        el("label", { htmlFor: "image", textContent: "Image" }), select),
+      imageOut);
+    // Defer so the section is in the document (the viewer needs its size to fit the image).
+    setTimeout(() => selectImage(images[0].urn), 0);
+    return sec;
+  }
+
+  /** Make `urn` (an image URN without region of interest) the selected image and show it. */
+  function selectImage(urn) {
+    const im = (window.agm.images || []).find((x) => x.urn === urn);
+    if (!im || !imageOut) return null;
+    window.agm.image = urn;
+    const select = $("image");
+    if (select) select.value = urn;
+
+    const url = AgmEdition.imageUrl(im.image);
+    if (!url) {
+      imageOut.replaceChildren(el("p", { className: "note",
+        textContent: `${urn} is not in the image catalog, so it can't be displayed.` }));
+      return urn;
+    }
+    const holder = el("div", { className: "viewer" });
+    imageOut.replaceChildren(holder);
+    const viewer = AgmViewer.createViewer(holder);
+    viewer.load(url, im.label);
+    if (im.image.credits) {
+      imageOut.append(el("p", { className: "credits", textContent: im.image.credits }));
+    }
+    window.agm.viewer = viewer;
+    return urn;
+  }
+  window.agm.selectImage = selectImage;
 
   /* ---------- line view: syllables with their note groups above ---------- */
 
@@ -1112,25 +1385,25 @@
 
   function accept(d, source) {
     window.agm.data = d;
-    setStatus(`Loaded release ${d.version} from ${source}.`);
+    setStatus(`Loaded mousike release ${d.version}`, false, `Source: ${source}`);
     renderSurfaceMenu(d);
     renderData(d);
   }
   window.agm.accept = accept;
 
   async function loadUrl() {
-    const url = urlInput.value.trim() || AgmCex.DEFAULT_URL;
+    const url = (urlInput && urlInput.value.trim()) || AgmCex.DEFAULT_URL;
     setStatus("Loading…");
     try {
       accept(await AgmCex.loadCex(url), url);
     } catch (e) {
-      setStatus(`Could not load ${url}: ${e.message}. Try loading a local copy instead.`, true);
+      setStatus(`Could not load ${url}: ${e.message}.` + (fileInput ? " Try loading a local copy instead." : ""), true);
     }
   }
 
-  $("load").addEventListener("click", loadUrl);
-  urlInput.addEventListener("keydown", (e) => { if (e.key === "Enter") loadUrl(); });
-  $("file").addEventListener("change", async (e) => {
+  if (loadButton) loadButton.addEventListener("click", loadUrl);
+  if (urlInput) urlInput.addEventListener("keydown", (e) => { if (e.key === "Enter") loadUrl(); });
+  if (fileInput) fileInput.addEventListener("change", async (e) => {
     const f = e.target.files[0];
     if (!f) return;
     try { accept(AgmCex.parseCex(await f.text()), f.name); }

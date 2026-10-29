@@ -162,8 +162,38 @@
     return { work: parts.slice(0, 4).join(":") };
   }
 
+  /**
+   * Distinct images a surface's DSE records cite, with any `@` region of interest removed,
+   * in order of first citation. Each is labelled with the `description` of the `#!images`
+   * row whose `urn` is exactly equal; if there is none, the label is the URN and `image` is null.
+   * Returns [{ urn, label, image }].
+   */
+  function surfaceImages(data, surfaceUrn) {
+    const byUrn = new Map(data.images.map((img) => [img.urn, img]));
+    const out = [];
+    const seen = new Set();
+    for (const r of dseForSurface(data, surfaceUrn)) {
+      const urn = String(r.image || "").split("@")[0].trim();
+      if (!urn || seen.has(urn)) continue;
+      seen.add(urn);
+      const image = byUrn.get(urn) || null;
+      out.push({ urn, label: image && image.description ? image.description : urn, image });
+    }
+    return out;
+  }
+
+  /** Where catalogued image files are served: an image's URL is this + "/" + its `path`. */
+  const IMAGE_BASE_URL = "https://shot.holycross.edu/images/mousike";
+
+  /** URL of an `#!images` row's file, or null if the row (or its path) is missing. */
+  function imageUrl(image) {
+    if (!image || !image.path) return null;
+    return `${IMAGE_BASE_URL}/${String(image.path).trim().replace(/^\/+/, "")}`;
+  }
+
   return {
     surfaceMenu, dseForSurface, resolvePassage, surfaceContents,
-    textBase, alignLines, surfaceLines,
+    textBase, alignLines, surfaceLines, surfaceImages,
+    IMAGE_BASE_URL, imageUrl,
   };
 });

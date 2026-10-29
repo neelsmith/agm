@@ -1,8 +1,11 @@
-/* app.js — UI for the agm reader. Depends on globals AgmCex and AgmEdition. */
+/* app.js — UI for the agm reader. Depends on globals AgmCex, AgmEdition, AgmNotation and AgmViewer. */
 (function () {
   "use strict";
   const $ = (id) => document.getElementById(id);
+  // Data-source controls exist only in some builds (see build.js), so these may be null.
   const urlInput = $("url");
+  const loadButton = $("load");
+  const fileInput = $("file");
   const statusEl = $("status");
   const surfaceSelect = $("surface");
   const surfaceOut = $("surface-out");
@@ -11,10 +14,11 @@
   /** App state, exposed for console inspection and tests. */
   window.agm = { data: null, selectSurface };
 
-  urlInput.value = AgmCex.DEFAULT_URL;
+  if (urlInput) urlInput.value = AgmCex.DEFAULT_URL;
 
-  function setStatus(msg, isError) {
+  function setStatus(msg, isError, title) {
     statusEl.textContent = msg;
+    statusEl.title = title || "";
     statusEl.className = isError ? "error" : "";
   }
 
@@ -95,12 +99,68 @@
       el("h2", { textContent: view.surface ? view.surface.label : urn }),
       el("p", { className: "urn-line" }, el("code", { textContent: urn })),
       linesView(AgmEdition.surfaceLines(d, urn)),
+      imageSection(AgmEdition.surfaceImages(d, urn)),
       el("details", { className: "dse-panel" },
         el("summary", { textContent: `DSE records (${counts.total})` }),
         head,
         list));
     return view;
   }
+
+  /* ---------- image menu: distinct images cited by the surface's DSE records ---------- */
+
+  let imageOut = null; // element holding the viewer for the selected image
+
+  /** Image menu plus a pan/zoom view of the selected image (first one preselected). */
+  function imageSection(images) {
+    window.agm.images = images;
+    window.agm.image = null;
+    if (!images.length) {
+      imageOut = null;
+      return el("p", { className: "note", textContent: "No images cited for this artifact." });
+    }
+    const select = el("select", { id: "image" },
+      ...images.map((im) => el("option", {
+        value: im.urn,
+        textContent: im.image ? im.label : `${im.label} (not in image catalog)`,
+        title: im.urn,
+      })));
+    select.addEventListener("change", () => selectImage(select.value));
+    imageOut = el("div", { className: "image-out" });
+    const sec = el("section", { className: "image-section" },
+      el("div", { className: "image-picker" },
+        el("label", { htmlFor: "image", textContent: "Image" }), select),
+      imageOut);
+    // Defer so the section is in the document (the viewer needs its size to fit the image).
+    setTimeout(() => selectImage(images[0].urn), 0);
+    return sec;
+  }
+
+  /** Make `urn` (an image URN without region of interest) the selected image and show it. */
+  function selectImage(urn) {
+    const im = (window.agm.images || []).find((x) => x.urn === urn);
+    if (!im || !imageOut) return null;
+    window.agm.image = urn;
+    const select = $("image");
+    if (select) select.value = urn;
+
+    const url = AgmEdition.imageUrl(im.image);
+    if (!url) {
+      imageOut.replaceChildren(el("p", { className: "note",
+        textContent: `${urn} is not in the image catalog, so it can't be displayed.` }));
+      return urn;
+    }
+    const holder = el("div", { className: "viewer" });
+    imageOut.replaceChildren(holder);
+    const viewer = AgmViewer.createViewer(holder);
+    viewer.load(url, im.label);
+    if (im.image.credits) {
+      imageOut.append(el("p", { className: "credits", textContent: im.image.credits }));
+    }
+    window.agm.viewer = viewer;
+    return urn;
+  }
+  window.agm.selectImage = selectImage;
 
   /* ---------- line view: syllables with their note groups above ---------- */
 
@@ -200,25 +260,25 @@
 
   function accept(d, source) {
     window.agm.data = d;
-    setStatus(`Loaded release ${d.version} from ${source}.`);
+    setStatus(`Loaded mousike release ${d.version}`, false, `Source: ${source}`);
     renderSurfaceMenu(d);
     renderData(d);
   }
   window.agm.accept = accept;
 
   async function loadUrl() {
-    const url = urlInput.value.trim() || AgmCex.DEFAULT_URL;
+    const url = (urlInput && urlInput.value.trim()) || AgmCex.DEFAULT_URL;
     setStatus("Loading…");
     try {
       accept(await AgmCex.loadCex(url), url);
     } catch (e) {
-      setStatus(`Could not load ${url}: ${e.message}. Try loading a local copy instead.`, true);
+      setStatus(`Could not load ${url}: ${e.message}.` + (fileInput ? " Try loading a local copy instead." : ""), true);
     }
   }
 
-  $("load").addEventListener("click", loadUrl);
-  urlInput.addEventListener("keydown", (e) => { if (e.key === "Enter") loadUrl(); });
-  $("file").addEventListener("change", async (e) => {
+  if (loadButton) loadButton.addEventListener("click", loadUrl);
+  if (urlInput) urlInput.addEventListener("keydown", (e) => { if (e.key === "Enter") loadUrl(); });
+  if (fileInput) fileInput.addEventListener("change", async (e) => {
     const f = e.target.files[0];
     if (!f) return;
     try { accept(AgmCex.parseCex(await f.text()), f.name); }
