@@ -23,14 +23,25 @@
     images: ["path", "description", "credits", "urn"],
     surfaces: ["urn", "label"],
     audio: ["file", "label", "notation"],
+    catalog_annotated: ["urn", "citationScheme", "groupName", "workTitle", "versionLabel",
+      "exemplarLabel", "online", "language"],
+    catalog_embedded: ["urn", "citationScheme", "groupName", "workTitle", "versionLabel",
+      "exemplarLabel", "online", "language"],
+    mss: ["manuscript", "urn", "manifest", "urnmap"],
     texts: ["urn", "text"],
+    // Parsed by parseTextsCols, not parseTable: `text` holds `columns` cells separated by "|".
+    texts_cols: ["urn", "columns", "text"],
     notes: ["urn", "text"],
     syllables: ["urn", "text"],
     dse: ["image", "text", "surface"],
+    mspages: ["urn", "label", "image"],
   };
 
-  /** All 8 blocks the app expects, in source order. */
+  /** All blocks the app reads, in source order. */
   const BLOCK_NAMES = ["version"].concat(Object.keys(BLOCK_SCHEMAS));
+
+  /** Blocks older releases may lack; their absence is handled, not reported as missing. */
+  const OPTIONAL_BLOCKS = ["catalog_annotated", "catalog_embedded", "mss", "mspages", "texts_cols"];
 
   /**
    * Split raw CEX text into named blocks of non-empty lines.
@@ -85,6 +96,39 @@
         header.forEach((h, j) => (row[h] = cols[j].trim()));
         rows.push(row);
       }
+    }
+    return rows;
+  }
+
+  /**
+   * Parse `#!texts_cols`: texts laid out in columns (e.g. a sign's name, its vocal and its
+   * instrumental notation). Each line is `urn|columns|cell1|cell2|…`: the text after the
+   * second delimiter is split into cells on "|" and should have `columns` cells. Repeated header
+   * lines are skipped. Rows: { urn, columns (number), cells: [string], text (cells joined " | ") }.
+   */
+  function parseTextsCols(blockLists, warnings) {
+    const expected = BLOCK_SCHEMAS.texts_cols.join("|");
+    const rows = [];
+    for (const lines of blockLists) {
+      lines.forEach((line, i) => {
+        const parts = line.split(DELIMITER);
+        if (parts.map((p) => p.trim()).join("|") === expected) {
+          if (i > 0) warnings.push(`#!texts_cols: repeated header line ${i} skipped`);
+          return;
+        }
+        if (i === 0) warnings.push(`#!texts_cols: header "${line}" differs from expected "${expected}"`);
+        const urn = parts[0].trim();
+        const columns = Number(parts[1]);
+        if (parts.length < 3 || !Number.isInteger(columns) || columns < 1) {
+          warnings.push(`#!texts_cols: row ${i} needs urn|columns|text: ${line}`);
+          return;
+        }
+        const cells = parts.slice(2).map((c) => c.trim());
+        if (cells.length !== columns) {
+          warnings.push(`#!texts_cols: ${urn} has ${cells.length} cell(s), expected ${columns}`);
+        }
+        rows.push({ urn, columns, cells, text: cells.join(" | ") });
+      });
     }
     return rows;
   }
@@ -222,15 +266,23 @@
   /**
    * Parse a complete mousike CEX release.
    * @param {string} src raw CEX text
-   * @returns {object} { version, images, surfaces, audio, texts, notes,
-   *   syllables, dse, index: {...Maps}, warnings: string[] }
+   * @returns {object} { version, images, surfaces, audio, catalog_annotated, texts, notes,
+   *   syllables, dse, mspages, dseAll, index: {...Maps}, warnings: string[], cataloged: boolean }
+   *
+   * `dse` holds the DSE records for cataloged texts; `dseAll` holds every DSE record.
+   *
+   * Only texts cataloged in `#!catalog_annotated` are handled: rows of `#!texts`, `#!notes`,
+   * `#!syllables`, DSE records citing a passage, and audio tracks whose notation URN is in a
+   * work that isn't cataloged are dropped (one warning per work and block). A release with no
+   * `#!catalog_annotated` block (before 2026h) keeps everything, with one warning;
+   * `cataloged` is then false.
    */
   function parseCex(src) {
     const warnings = [];
     const blocks = splitBlocks(src);
 
     for (const name of BLOCK_NAMES) {
-      if (!blocks[name]) warnings.push(`missing block #!${name}`);
+      if (!blocks[name] && !OPTIONAL_BLOCKS.includes(name)) warnings.push(`missing block #!${name}`);
     }
     for (const name of Object.keys(blocks)) {
       if (!BLOCK_NAMES.includes(name)) warnings.push(`unrecognized block #!${name} ignored`);
@@ -249,13 +301,61 @@
       return Object.assign(r, { cite2 });
     });
     const surfaces = table("surfaces");
-    const audio = table("audio");
-    const texts = table("texts").map((r) => Object.assign(r, ctsParts(r.urn)));
-    const notes = table("notes").map((r) =>
+
+    // Catalog of texts with musical annotation; URNs are work-level, e.g. "…seikilos.notes:".
+    const cataloged = Boolean(blocks.catalog_annotated);
+    const catalog_annotated = table("catalog_annotated").map((r) => {
+      const { work } = ctsParts(r.urn);
+      if (!/^urn:cts:/.test(r.urn)) warnings.push(`#!catalog_annotated: not a CTS URN: ${r.urn}`);
+      return Object.assign(r, { work: work.replace(/:$/, ""), isOnline: r.online === "true" });
+    });
+    const catalogWorks = new Set(catalog_annotated.map((r) => r.work));
+    if (!cataloged) {
+      warnings.push("no #!catalog_annotated block: treating every text in the release as cataloged");
+    }
+    /** Keep rows whose CTS work (from `urnOf(row)`) is cataloged; warn once per dropped work. */
+    const onlyCataloged = (name, rows, urnOf) => {
+      if (!cataloged) return rows;
+      const dropped = new Map();
+      const kept = rows.filter((r) => {
+        const { work } = ctsParts(String(urnOf(r) || ""));
+        if (catalogWorks.has(work)) return true;
+        dropped.set(work, (dropped.get(work) || 0) + 1);
+        return false;
+      });
+      for (const [work, n] of dropped) {
+        warnings.push(`#!${name}: ${n} row(s) for uncataloged ${work} ignored`);
+      }
+      return kept;
+    };
+
+    // Catalog of texts with embedded notation (2026h): theoretical texts quoting musical signs.
+    // Only these works' `#!texts_cols` rows are kept. A release without the block keeps them all.
+    const catalogedEmbedded = Boolean(blocks.catalog_embedded);
+    const catalog_embedded = table("catalog_embedded").map((r) => {
+      const { work } = ctsParts(r.urn);
+      if (!/^urn:cts:/.test(r.urn)) warnings.push(`#!catalog_embedded: not a CTS URN: ${r.urn}`);
+      return Object.assign(r, { work: work.replace(/:$/, ""), isOnline: r.online === "true" });
+    });
+    const embeddedWorks = new Set(catalog_embedded.map((r) => r.work));
+    const texts_cols = parseTextsCols(blocks.texts_cols || [], warnings)
+      .map((r) => Object.assign(r, ctsParts(r.urn)))
+      .filter((r) => {
+        if (!catalogedEmbedded || embeddedWorks.has(r.work)) return true;
+        warnings.push(`#!texts_cols: uncataloged ${r.urn} ignored`);
+        return false;
+      });
+
+    const audio = onlyCataloged("audio", table("audio"), (r) => r.notation);
+    const texts = onlyCataloged("texts", table("texts"), (r) => r.urn)
+      .map((r) => Object.assign(r, ctsParts(r.urn)));
+    const notes = onlyCataloged("notes", table("notes"), (r) => r.urn).map((r) =>
       Object.assign(r, ctsParts(r.urn), { tokens: tokenizeNotes(r.text) })
     );
-    const syllables = table("syllables").map((r) => Object.assign(r, ctsParts(r.urn)));
-    const dse = table("dse").map((r) => {
+    const syllables = onlyCataloged("syllables", table("syllables"), (r) => r.urn)
+      .map((r) => Object.assign(r, ctsParts(r.urn)));
+    // All DSE records (kept as `dseAll`, e.g. for images in mss.html), and those for cataloged texts.
+    const dseAll = table("dse").map((r) => {
       const cite2 = parseCite2(r.image);
       if (!cite2 || !cite2.object) {
         warnings.push(`#!dse: image is not a CITE2 object URN: ${r.image}`);
@@ -268,6 +368,12 @@
         cite2,
       });
     });
+    const dse = onlyCataloged("dse", dseAll, (r) => r.text);
+
+    // Manuscripts (2026h): a collection-level CITE2 URN, an IIIF manifest and a urnmap per manuscript,
+    // and one row per page with its CITE2 URN, label and image URN.
+    const mss = table("mss");
+    const mspages = table("mspages");
 
     const index = {
       images: indexBy(images, "urn", "images", warnings),
@@ -275,11 +381,20 @@
       texts: indexBy(texts, "urn", "texts", warnings),
       notes: indexBy(notes, "urn", "notes", warnings),
       syllables: indexBy(syllables, "urn", "syllables", warnings),
+      // Cataloged works, keyed by work URN without passage ("urn:cts:ns:group.work.version")
+      catalog: indexBy(catalog_annotated, "work", "catalog_annotated", warnings),
+      catalogEmbedded: indexBy(catalog_embedded, "work", "catalog_embedded", warnings),
+      textsCols: indexBy(texts_cols, "urn", "texts_cols", warnings),
+      mss: indexBy(mss, "urn", "mss", warnings),
+      mspages: indexBy(mspages, "urn", "mspages", warnings),
       // Derived from #!notes: one entry per note group, cited line.group
       noteGroups: indexBy(noteGroups(notes.filter((n) => n.passage)), "urn", "notes (groups)", warnings),
     };
 
-    return { version, images, surfaces, audio, texts, notes, syllables, dse, index, warnings };
+    return {
+      version, images, surfaces, audio, catalog_annotated, catalog_embedded, mss, texts, texts_cols,
+      notes, syllables, dse, mspages, dseAll, index, warnings, cataloged, catalogedEmbedded,
+    };
   }
 
   /** Fetch and parse a CEX release (browser or Node 18+). */
@@ -295,7 +410,9 @@
     DEFAULT_URL,
     BLOCK_NAMES,
     BLOCK_SCHEMAS,
+    OPTIONAL_BLOCKS,
     splitBlocks,
+    parseTextsCols,
     splitExtension,
     parseRoi,
     parseCite2,

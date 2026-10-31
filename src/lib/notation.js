@@ -149,6 +149,32 @@
       .join(" ");
   }
 
+  /** Collections in the sign table ("gvn", "gin", "gcn"), for spotting note URNs in running text. */
+  const COLLECTIONS = [...new Set(Object.keys(TABLE).map((k) => k.split(":")[0]))];
+  const ONE_NOTE = `(?:${URN_PREFIX.replace(/[.]/g, "\\.")})?(?:${COLLECTIONS.join("|")}):\\d+(?:\\.\\d+){0,4}`;
+  const EMBEDDED_RE = new RegExp(`(?<![\\w:.])${ONE_NOTE}(?:${JOINER}${ONE_NOTE})*(?![\\w:])`, "g");
+
+  /**
+   * Split running text into plain text and note URNs (e.g. "ζῆτα … gvn:7.1.1.0.0"), converting
+   * each note (or `~`-joined group of notes) to Unicode.
+   * Returns [{ text } | { urn, unicode, ok }], in order; `ok` is false when a note isn't in the
+   * table (its `unicode` is then "[urn]").
+   */
+  function splitEmbeddedNotation(text) {
+    const out = [];
+    const src = String(text ?? "");
+    let last = 0;
+    for (const m of src.matchAll(EMBEDDED_RE)) {
+      if (m.index > last) out.push({ text: src.slice(last, m.index) });
+      let unicode, ok = true;
+      try { unicode = notesToUnicode(m[0]); } catch (e) { unicode = `[${m[0]}]`; ok = false; }
+      out.push({ urn: m[0], unicode, ok });
+      last = m.index + m[0].length;
+    }
+    if (last < src.length) out.push({ text: src.slice(last) });
+    return out;
+  }
+
   return {
     URN_PREFIX,
     LENGTH_MARKS,
@@ -160,5 +186,6 @@
     groupsToUnicode,
     notesToUnicode,
     notesToUnicodeSafe,
+    splitEmbeddedNotation,
   };
 });

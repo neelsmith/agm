@@ -7,6 +7,7 @@ const ed = require("../lib/edition.js");
 
 const fixture = fs.readFileSync(path.join(__dirname, "fixtures", "current-2026a.cex"), "utf8");
 const data = cex.parseCex(fixture);
+const NO_CATALOG = "no #!catalog_annotated block: treating every text in the release as cataloged";
 const STELE = "urn:cite2:mousike:epigraphic.seikilos";
 
 // Small well-formed release where every DSE text URN exists.
@@ -145,7 +146,7 @@ test("surfaceLines collects the texts a surface cites", () => {
 test("surfaceImages: 2026d cites one image, labelled from #!images", () => {
   const d = cex.parseCex(fs.readFileSync(path.join(__dirname, "fixtures", "current-2026d.cex"), "utf8"));
   assert.equal(d.version, "2026d");
-  assert.deepEqual(d.warnings, []);
+  assert.deepEqual(d.warnings, [NO_CATALOG]); // pre-2026h: no #!catalog_annotated
   const imgs = ed.surfaceImages(d, STELE);
   assert.equal(imgs.length, 1);
   assert.equal(imgs[0].urn, "urn:cite2:mousike:images.v1:Seikilos2");
@@ -197,7 +198,7 @@ test("imageRegions: 2026d stele regions, keyed by DSE text URN, with kinds", () 
 const d2026g = cex.parseCex(fs.readFileSync(path.join(__dirname, "fixtures", "current-2026g.cex"), "utf8"));
 
 test("2026g: six lines, each with as many syllables as note groups", () => {
-  assert.deepEqual(d2026g.warnings, []);
+  assert.deepEqual(d2026g.warnings, [NO_CATALOG]);
   const lines = ed.alignLines(d2026g, SEIKILOS);
   assert.deepEqual(lines.map((l) => [l.line, l.syllables.length, l.groups.length]),
     [["1", 5, 5], ["2", 5, 5], ["3", 5, 5], ["4", 5, 5], ["5", 5, 5], ["6", 4, 4]]);

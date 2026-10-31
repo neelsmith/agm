@@ -12,28 +12,55 @@
   font-display: block;
 }
 .mousike-notation { font-family: 'Mousike Notation', serif; }
-  :root { --bg:#fbfaf7; --fg:#222; --muted:#666; --line:#ddd; --accent:#7a3b12; --warn:#9a5b00; }
-  @media (prefers-color-scheme: dark) {
-    :root { --bg:#1b1a18; --fg:#e8e6e1; --muted:#9a968e; --line:#3a3834; --accent:#e0a070; --warn:#e0b050; }
-  }
-  body { margin:0; background:var(--bg); color:var(--fg); font:15px/1.45 system-ui, sans-serif; }
-  header, main { max-width: 1100px; margin: 0 auto; padding: 0 16px; }
-  header { padding-top: 20px; border-bottom: 1px solid var(--line); }
-  h1 { margin: 0 0 14px; font-size: 1.4rem; }
-  .controls { display:flex; gap:8px; flex-wrap:wrap; align-items:center; padding-bottom: 14px; }
-  .controls input[type=url] { flex: 1 1 380px; min-width: 0; padding: 6px 8px; font: inherit;
-    background: transparent; color: inherit; border: 1px solid var(--line); border-radius: 4px; }
-  button { font: inherit; padding: 6px 12px; border-radius: 4px; border: 1px solid var(--accent);
-    background: var(--accent); color: var(--bg); cursor: pointer; }
-  #status { color: var(--muted); overflow-wrap: anywhere; }
-  #status.error { color: #c0392b; }
+/* base.css: page styles shared by agm.html and mss.html (inlined by build.js). */
+:root { --bg:#fbfaf7; --fg:#222; --muted:#666; --line:#ddd; --accent:#7a3b12; --warn:#9a5b00; }
+@media (prefers-color-scheme: dark) {
+  :root { --bg:#1b1a18; --fg:#e8e6e1; --muted:#9a968e; --line:#3a3834; --accent:#e0a070; --warn:#e0b050; }
+}
+body { margin:0; background:var(--bg); color:var(--fg); font:15px/1.45 system-ui, sans-serif; }
+header, main { max-width: 1100px; margin: 0 auto; padding: 0 16px; }
+header { padding-top: 20px; border-bottom: 1px solid var(--line); }
+h1 { margin: 0 0 14px; font-size: 1.4rem; }
+.controls { display:flex; gap:8px; flex-wrap:wrap; align-items:center; padding-bottom: 14px; }
+.controls input[type=url] { flex: 1 1 380px; min-width: 0; padding: 6px 8px; font: inherit;
+  background: transparent; color: inherit; border: 1px solid var(--line); border-radius: 4px; }
+button { font: inherit; padding: 6px 12px; border-radius: 4px; border: 1px solid var(--accent);
+  background: var(--accent); color: var(--bg); cursor: pointer; }
+#status { color: var(--muted); overflow-wrap: anywhere; }
+#status.error { color: #c0392b; }
+details { border-top: 1px solid var(--line); padding: 8px 0; }
+summary { cursor: pointer; font-weight: 600; }
+.note.muted { color: var(--muted); font-size: .85rem; }
+.app-footer { max-width: 1100px; margin: 32px auto 0; padding: 10px 16px 18px; color: var(--muted);
+  font-size: .72rem; opacity: .7; text-align: right; }
+
+/* viewer.css: styles for lib/viewer.js (inlined by build.js). */
+.viewer-frame { position: relative; overflow: hidden; height: min(70vh, 640px); border: 1px solid var(--line);
+  border-radius: 6px; background: #111; cursor: grab; touch-action: none; user-select: none; }
+.viewer-frame.dragging { cursor: grabbing; }
+.viewer-frame:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.viewer-img { position: absolute; left: 0; top: 0; transform-origin: 0 0; max-width: none; }
+.viewer-frame.empty .viewer-img { visibility: hidden; }
+.viewer-msg { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  color: #bbb; font-size: .9rem; padding: 16px; text-align: center; overflow-wrap: anywhere; pointer-events: none; }
+.viewer-msg:empty { display: none; }
+.viewer-regions { position: absolute; inset: 0; pointer-events: none; }
+.viewer-frame.empty .viewer-regions { display: none; }
+.viewer-region { position: absolute; box-sizing: border-box; pointer-events: auto;
+  border: 1.5px solid var(--roi, rgba(255,255,255,.75)); border-radius: 2px; }
+.viewer-region.kind-notes { --roi: rgba(255, 190, 60, .85); --roi-fill: rgba(255, 190, 60, .30); }
+.viewer-region.kind-syllables { --roi: rgba(80, 200, 255, .85); --roi-fill: rgba(80, 200, 255, .30); }
+.viewer-region:hover, .viewer-region.active { border-width: 3px; border-color: #ff3b6b;
+  background: rgba(255, 59, 107, .28); box-shadow: 0 0 0 1px rgba(0,0,0,.5); }
+.viewer-bar { display: flex; gap: 6px; margin-top: 6px; }
+.viewer-btn { min-width: 40px; padding: 4px 10px; }
+.credits { color: var(--muted); font-size: .8rem; margin: 6px 0 0; overflow-wrap: anywhere; }
+
   .summary { display:grid; grid-template-columns: repeat(auto-fill, minmax(120px,1fr)); gap:8px; margin: 18px 0; }
   .summary div { border:1px solid var(--line); border-radius:6px; padding:8px 10px; }
   .summary b { display:block; font-size: 1.3rem; }
   .summary span { color: var(--muted); font-size: .85rem; }
   .warnings { color: var(--warn); }
-  details { border-top: 1px solid var(--line); padding: 8px 0; }
-  summary { cursor: pointer; font-weight: 600; }
   .scroll { overflow-x: auto; }
   table { border-collapse: collapse; margin-top: 8px; font-size: .9rem; }
   th, td { text-align: left; vertical-align: top; padding: 4px 10px 4px 0; border-bottom: 1px solid var(--line); }
@@ -73,40 +100,18 @@
   .col.unmatched { opacity: .75; }
   .audio-picker audio { height: 36px; max-width: 100%; }
   .audio-picker .note { color: var(--warn); font-size: .85rem; overflow-wrap: anywhere; }
-  .note.muted { color: var(--muted); font-size: .85rem; }
   .dse-panel > summary { font-size: .95rem; }
   .image-section { margin: 18px 0; }
-  .viewer-frame { position: relative; overflow: hidden; height: min(70vh, 640px); border: 1px solid var(--line);
-    border-radius: 6px; background: #111; cursor: grab; touch-action: none; user-select: none; }
-  .viewer-frame.dragging { cursor: grabbing; }
-  .viewer-frame:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-  .viewer-img { position: absolute; left: 0; top: 0; transform-origin: 0 0; max-width: none; }
-  .viewer-frame.empty .viewer-img { visibility: hidden; }
-  .viewer-msg { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-    color: #bbb; font-size: .9rem; padding: 16px; text-align: center; overflow-wrap: anywhere; pointer-events: none; }
-  .viewer-msg:empty { display: none; }
-  .viewer-regions { position: absolute; inset: 0; pointer-events: none; }
-  .viewer-frame.empty .viewer-regions { display: none; }
-  .viewer-region { position: absolute; box-sizing: border-box; pointer-events: auto;
-    border: 1.5px solid var(--roi, rgba(255,255,255,.75)); border-radius: 2px; }
-  .viewer-region.kind-notes { --roi: rgba(255, 190, 60, .85); --roi-fill: rgba(255, 190, 60, .30); }
-  .viewer-region.kind-syllables { --roi: rgba(80, 200, 255, .85); --roi-fill: rgba(80, 200, 255, .30); }
-  .viewer-region:hover, .viewer-region.active { border-width: 3px; border-color: #ff3b6b;
-    background: rgba(255, 59, 107, .28); box-shadow: 0 0 0 1px rgba(0,0,0,.5); }
   .col-notes.has-roi, .col-syl.has-roi { cursor: default; border-radius: 4px; }
   .col-notes.hl, .col-syl.hl { background: rgba(255, 59, 107, .22); box-shadow: 0 0 0 2px rgba(255, 59, 107, .7); }
   .roi-key { color: var(--muted); font-size: .8rem; margin: 6px 0 0; }
   .roi-key .sw { display: inline-block; width: 10px; height: 10px; border: 2px solid; border-radius: 2px;
     vertical-align: -1px; margin: 0 4px 0 10px; }
   .roi-key .sw:first-child { margin-left: 0; }
-  .viewer-bar { display: flex; gap: 6px; margin-top: 6px; }
-  .viewer-btn { min-width: 40px; padding: 4px 10px; }
-  .credits { color: var(--muted); font-size: .8rem; margin: 6px 0 0; overflow-wrap: anywhere; }
   .data-panel { margin-top: 28px; }
-  .app-footer { max-width: 1100px; margin: 32px auto 0; padding: 10px 16px 18px; color: var(--muted);
-    font-size: .72rem; opacity: .7; text-align: right; }
   .data-panel > summary { font-size: 1.05rem; }
   td.greek { font-family: "Gentium Plus", "New Athena Unicode", Georgia, serif; font-size: 1.05rem; }
+
 </style>
 </head>
 <body>
@@ -126,7 +131,7 @@
     <div id="data-out"></div>
   </details>
 </main>
-<footer class="app-footer">agm <span id="app-version">1.0.0</span></footer>
+<footer class="app-footer">agm <span id="app-version">1.1.0</span></footer>
 
 <script>
 /*
@@ -154,14 +159,25 @@
     images: ["path", "description", "credits", "urn"],
     surfaces: ["urn", "label"],
     audio: ["file", "label", "notation"],
+    catalog_annotated: ["urn", "citationScheme", "groupName", "workTitle", "versionLabel",
+      "exemplarLabel", "online", "language"],
+    catalog_embedded: ["urn", "citationScheme", "groupName", "workTitle", "versionLabel",
+      "exemplarLabel", "online", "language"],
+    mss: ["manuscript", "urn", "manifest", "urnmap"],
     texts: ["urn", "text"],
+    // Parsed by parseTextsCols, not parseTable: `text` holds `columns` cells separated by "|".
+    texts_cols: ["urn", "columns", "text"],
     notes: ["urn", "text"],
     syllables: ["urn", "text"],
     dse: ["image", "text", "surface"],
+    mspages: ["urn", "label", "image"],
   };
 
-  /** All 8 blocks the app expects, in source order. */
+  /** All blocks the app reads, in source order. */
   const BLOCK_NAMES = ["version"].concat(Object.keys(BLOCK_SCHEMAS));
+
+  /** Blocks older releases may lack; their absence is handled, not reported as missing. */
+  const OPTIONAL_BLOCKS = ["catalog_annotated", "catalog_embedded", "mss", "mspages", "texts_cols"];
 
   /**
    * Split raw CEX text into named blocks of non-empty lines.
@@ -216,6 +232,39 @@
         header.forEach((h, j) => (row[h] = cols[j].trim()));
         rows.push(row);
       }
+    }
+    return rows;
+  }
+
+  /**
+   * Parse `#!texts_cols`: texts laid out in columns (e.g. a sign's name, its vocal and its
+   * instrumental notation). Each line is `urn|columns|cell1|cell2|…`: the text after the
+   * second delimiter is split into cells on "|" and should have `columns` cells. Repeated header
+   * lines are skipped. Rows: { urn, columns (number), cells: [string], text (cells joined " | ") }.
+   */
+  function parseTextsCols(blockLists, warnings) {
+    const expected = BLOCK_SCHEMAS.texts_cols.join("|");
+    const rows = [];
+    for (const lines of blockLists) {
+      lines.forEach((line, i) => {
+        const parts = line.split(DELIMITER);
+        if (parts.map((p) => p.trim()).join("|") === expected) {
+          if (i > 0) warnings.push(`#!texts_cols: repeated header line ${i} skipped`);
+          return;
+        }
+        if (i === 0) warnings.push(`#!texts_cols: header "${line}" differs from expected "${expected}"`);
+        const urn = parts[0].trim();
+        const columns = Number(parts[1]);
+        if (parts.length < 3 || !Number.isInteger(columns) || columns < 1) {
+          warnings.push(`#!texts_cols: row ${i} needs urn|columns|text: ${line}`);
+          return;
+        }
+        const cells = parts.slice(2).map((c) => c.trim());
+        if (cells.length !== columns) {
+          warnings.push(`#!texts_cols: ${urn} has ${cells.length} cell(s), expected ${columns}`);
+        }
+        rows.push({ urn, columns, cells, text: cells.join(" | ") });
+      });
     }
     return rows;
   }
@@ -353,15 +402,23 @@
   /**
    * Parse a complete mousike CEX release.
    * @param {string} src raw CEX text
-   * @returns {object} { version, images, surfaces, audio, texts, notes,
-   *   syllables, dse, index: {...Maps}, warnings: string[] }
+   * @returns {object} { version, images, surfaces, audio, catalog_annotated, texts, notes,
+   *   syllables, dse, mspages, dseAll, index: {...Maps}, warnings: string[], cataloged: boolean }
+   *
+   * `dse` holds the DSE records for cataloged texts; `dseAll` holds every DSE record.
+   *
+   * Only texts cataloged in `#!catalog_annotated` are handled: rows of `#!texts`, `#!notes`,
+   * `#!syllables`, DSE records citing a passage, and audio tracks whose notation URN is in a
+   * work that isn't cataloged are dropped (one warning per work and block). A release with no
+   * `#!catalog_annotated` block (before 2026h) keeps everything, with one warning;
+   * `cataloged` is then false.
    */
   function parseCex(src) {
     const warnings = [];
     const blocks = splitBlocks(src);
 
     for (const name of BLOCK_NAMES) {
-      if (!blocks[name]) warnings.push(`missing block #!${name}`);
+      if (!blocks[name] && !OPTIONAL_BLOCKS.includes(name)) warnings.push(`missing block #!${name}`);
     }
     for (const name of Object.keys(blocks)) {
       if (!BLOCK_NAMES.includes(name)) warnings.push(`unrecognized block #!${name} ignored`);
@@ -380,13 +437,61 @@
       return Object.assign(r, { cite2 });
     });
     const surfaces = table("surfaces");
-    const audio = table("audio");
-    const texts = table("texts").map((r) => Object.assign(r, ctsParts(r.urn)));
-    const notes = table("notes").map((r) =>
+
+    // Catalog of texts with musical annotation; URNs are work-level, e.g. "…seikilos.notes:".
+    const cataloged = Boolean(blocks.catalog_annotated);
+    const catalog_annotated = table("catalog_annotated").map((r) => {
+      const { work } = ctsParts(r.urn);
+      if (!/^urn:cts:/.test(r.urn)) warnings.push(`#!catalog_annotated: not a CTS URN: ${r.urn}`);
+      return Object.assign(r, { work: work.replace(/:$/, ""), isOnline: r.online === "true" });
+    });
+    const catalogWorks = new Set(catalog_annotated.map((r) => r.work));
+    if (!cataloged) {
+      warnings.push("no #!catalog_annotated block: treating every text in the release as cataloged");
+    }
+    /** Keep rows whose CTS work (from `urnOf(row)`) is cataloged; warn once per dropped work. */
+    const onlyCataloged = (name, rows, urnOf) => {
+      if (!cataloged) return rows;
+      const dropped = new Map();
+      const kept = rows.filter((r) => {
+        const { work } = ctsParts(String(urnOf(r) || ""));
+        if (catalogWorks.has(work)) return true;
+        dropped.set(work, (dropped.get(work) || 0) + 1);
+        return false;
+      });
+      for (const [work, n] of dropped) {
+        warnings.push(`#!${name}: ${n} row(s) for uncataloged ${work} ignored`);
+      }
+      return kept;
+    };
+
+    // Catalog of texts with embedded notation (2026h): theoretical texts quoting musical signs.
+    // Only these works' `#!texts_cols` rows are kept. A release without the block keeps them all.
+    const catalogedEmbedded = Boolean(blocks.catalog_embedded);
+    const catalog_embedded = table("catalog_embedded").map((r) => {
+      const { work } = ctsParts(r.urn);
+      if (!/^urn:cts:/.test(r.urn)) warnings.push(`#!catalog_embedded: not a CTS URN: ${r.urn}`);
+      return Object.assign(r, { work: work.replace(/:$/, ""), isOnline: r.online === "true" });
+    });
+    const embeddedWorks = new Set(catalog_embedded.map((r) => r.work));
+    const texts_cols = parseTextsCols(blocks.texts_cols || [], warnings)
+      .map((r) => Object.assign(r, ctsParts(r.urn)))
+      .filter((r) => {
+        if (!catalogedEmbedded || embeddedWorks.has(r.work)) return true;
+        warnings.push(`#!texts_cols: uncataloged ${r.urn} ignored`);
+        return false;
+      });
+
+    const audio = onlyCataloged("audio", table("audio"), (r) => r.notation);
+    const texts = onlyCataloged("texts", table("texts"), (r) => r.urn)
+      .map((r) => Object.assign(r, ctsParts(r.urn)));
+    const notes = onlyCataloged("notes", table("notes"), (r) => r.urn).map((r) =>
       Object.assign(r, ctsParts(r.urn), { tokens: tokenizeNotes(r.text) })
     );
-    const syllables = table("syllables").map((r) => Object.assign(r, ctsParts(r.urn)));
-    const dse = table("dse").map((r) => {
+    const syllables = onlyCataloged("syllables", table("syllables"), (r) => r.urn)
+      .map((r) => Object.assign(r, ctsParts(r.urn)));
+    // All DSE records (kept as `dseAll`, e.g. for images in mss.html), and those for cataloged texts.
+    const dseAll = table("dse").map((r) => {
       const cite2 = parseCite2(r.image);
       if (!cite2 || !cite2.object) {
         warnings.push(`#!dse: image is not a CITE2 object URN: ${r.image}`);
@@ -399,6 +504,12 @@
         cite2,
       });
     });
+    const dse = onlyCataloged("dse", dseAll, (r) => r.text);
+
+    // Manuscripts (2026h): a collection-level CITE2 URN, an IIIF manifest and a urnmap per manuscript,
+    // and one row per page with its CITE2 URN, label and image URN.
+    const mss = table("mss");
+    const mspages = table("mspages");
 
     const index = {
       images: indexBy(images, "urn", "images", warnings),
@@ -406,11 +517,20 @@
       texts: indexBy(texts, "urn", "texts", warnings),
       notes: indexBy(notes, "urn", "notes", warnings),
       syllables: indexBy(syllables, "urn", "syllables", warnings),
+      // Cataloged works, keyed by work URN without passage ("urn:cts:ns:group.work.version")
+      catalog: indexBy(catalog_annotated, "work", "catalog_annotated", warnings),
+      catalogEmbedded: indexBy(catalog_embedded, "work", "catalog_embedded", warnings),
+      textsCols: indexBy(texts_cols, "urn", "texts_cols", warnings),
+      mss: indexBy(mss, "urn", "mss", warnings),
+      mspages: indexBy(mspages, "urn", "mspages", warnings),
       // Derived from #!notes: one entry per note group, cited line.group
       noteGroups: indexBy(noteGroups(notes.filter((n) => n.passage)), "urn", "notes (groups)", warnings),
     };
 
-    return { version, images, surfaces, audio, texts, notes, syllables, dse, index, warnings };
+    return {
+      version, images, surfaces, audio, catalog_annotated, catalog_embedded, mss, texts, texts_cols,
+      notes, syllables, dse, mspages, dseAll, index, warnings, cataloged, catalogedEmbedded,
+    };
   }
 
   /** Fetch and parse a CEX release (browser or Node 18+). */
@@ -426,7 +546,9 @@
     DEFAULT_URL,
     BLOCK_NAMES,
     BLOCK_SCHEMAS,
+    OPTIONAL_BLOCKS,
     splitBlocks,
+    parseTextsCols,
     splitExtension,
     parseRoi,
     parseCite2,
@@ -455,9 +577,13 @@
 })(typeof self !== "undefined" ? self : this, function () {
   "use strict";
 
-  /** Surfaces for a menu: [{ urn, label }] in source order. */
+  /**
+   * Surfaces for a menu: [{ urn, label }] in source order. Only surfaces with at least one DSE
+   * record are listed (DSE records citing uncataloged texts are already dropped by parseCex).
+   */
   function surfaceMenu(data) {
-    return data.surfaces.map((s) => ({ urn: s.urn, label: s.label }));
+    const withDse = new Set(data.dse.map((r) => r.surface));
+    return data.surfaces.filter((s) => withDse.has(s.urn)).map((s) => ({ urn: s.urn, label: s.label }));
   }
 
   /** All DSE records whose surface column equals `surfaceUrn`, in source order. */
@@ -1027,6 +1153,32 @@
       .join(" ");
   }
 
+  /** Collections in the sign table ("gvn", "gin", "gcn"), for spotting note URNs in running text. */
+  const COLLECTIONS = [...new Set(Object.keys(TABLE).map((k) => k.split(":")[0]))];
+  const ONE_NOTE = `(?:${URN_PREFIX.replace(/[.]/g, "\\.")})?(?:${COLLECTIONS.join("|")}):\\d+(?:\\.\\d+){0,4}`;
+  const EMBEDDED_RE = new RegExp(`(?<![\\w:.])${ONE_NOTE}(?:${JOINER}${ONE_NOTE})*(?![\\w:])`, "g");
+
+  /**
+   * Split running text into plain text and note URNs (e.g. "ζῆτα … gvn:7.1.1.0.0"), converting
+   * each note (or `~`-joined group of notes) to Unicode.
+   * Returns [{ text } | { urn, unicode, ok }], in order; `ok` is false when a note isn't in the
+   * table (its `unicode` is then "[urn]").
+   */
+  function splitEmbeddedNotation(text) {
+    const out = [];
+    const src = String(text ?? "");
+    let last = 0;
+    for (const m of src.matchAll(EMBEDDED_RE)) {
+      if (m.index > last) out.push({ text: src.slice(last, m.index) });
+      let unicode, ok = true;
+      try { unicode = notesToUnicode(m[0]); } catch (e) { unicode = `[${m[0]}]`; ok = false; }
+      out.push({ urn: m[0], unicode, ok });
+      last = m.index + m[0].length;
+    }
+    if (last < src.length) out.push({ text: src.slice(last) });
+    return out;
+  }
+
   return {
     URN_PREFIX,
     LENGTH_MARKS,
@@ -1038,6 +1190,7 @@
     groupsToUnicode,
     notesToUnicode,
     notesToUnicodeSafe,
+    splitEmbeddedNotation,
   };
 });
 

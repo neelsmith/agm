@@ -12,9 +12,13 @@
 })(typeof self !== "undefined" ? self : this, function () {
   "use strict";
 
-  /** Surfaces for a menu: [{ urn, label }] in source order. */
+  /**
+   * Surfaces for a menu: [{ urn, label }] in source order. Only surfaces with at least one DSE
+   * record are listed (DSE records citing uncataloged texts are already dropped by parseCex).
+   */
   function surfaceMenu(data) {
-    return data.surfaces.map((s) => ({ urn: s.urn, label: s.label }));
+    const withDse = new Set(data.dse.map((r) => r.surface));
+    return data.surfaces.filter((s) => withDse.has(s.urn)).map((s) => ({ urn: s.urn, label: s.label }));
   }
 
   /** All DSE records whose surface column equals `surfaceUrn`, in source order. */

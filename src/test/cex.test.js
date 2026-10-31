@@ -7,6 +7,8 @@ const cex = require("../lib/cex.js");
 
 const fixture = fs.readFileSync(path.join(__dirname, "fixtures", "current-2026a.cex"), "utf8");
 
+const NO_CATALOG = "no #!catalog_annotated block: treating every text in the release as cataloged";
+
 test("parses all 8 blocks of the 2026a release", () => {
   const d = cex.parseCex(fixture);
   assert.equal(d.version, "2026a");
@@ -17,9 +19,12 @@ test("parses all 8 blocks of the 2026a release", () => {
   assert.equal(d.notes.length, 4);
   assert.equal(d.syllables.length, 29);
   assert.equal(d.dse.length, 34);
-  // Only problems in 2026a: DSE image URNs lack an object part (images.Seikilos2@…).
-  assert.equal(d.warnings.length, 34);
-  assert.ok(d.warnings.every((w) => w.startsWith("#!dse: image is not a CITE2 object URN")));
+  // Only problems in 2026a: DSE image URNs lack an object part (images.Seikilos2@…),
+  // plus the notice that a pre-2026h release has no catalog.
+  assert.equal(d.cataloged, false);
+  assert.equal(d.warnings.length, 35);
+  assert.equal(d.warnings.filter((w) => w.startsWith("#!dse: image is not a CITE2 object URN")).length, 34);
+  assert.ok(d.warnings.includes(NO_CATALOG));
 });
 
 test("rows are keyed by column name and indexed by urn", () => {
@@ -133,4 +138,55 @@ test("loadCex uses an injected fetch", async () => {
   assert.equal(d.version, "2026a");
   const bad = async () => ({ ok: false, status: 404 });
   await assert.rejects(cex.loadCex("x", bad), /HTTP 404/);
+});
+
+/* ---------- #!catalog_annotated: only cataloged texts are handled ---------- */
+
+// Small invented release: one cataloged work set (w.notes, w.syllables) and an uncataloged
+// work (other.text) with its own surface, DSE record and audio track.
+const catalogedRelease = [
+  "#!version", "test",
+  "#!images", "path|description|credits|urn", "x.png|X|c|urn:cite2:t:img.v1:x",
+  "#!surfaces", "urn|label", "urn:cite2:t:obj.v1:a|A", "urn:cite2:t:obj.v1:b|B",
+  "#!audio", "file|label|notation", "a.wav|A|urn:cts:t:g.w.notes:1-2", "b.wav|B|urn:cts:t:g.other.text:1",
+  "#!catalog_annotated",
+  "urn|citationScheme|groupName|workTitle|versionLabel|exemplarLabel|online|language",
+  "urn:cts:t:g.w.notes:|line|Group|Work|notation||true|grc",
+  "urn:cts:t:g.w.syllables:|line/syllable|Group|Work|syllables||false|grc",
+  "#!texts", "urn|text", "urn:cts:t:g.other.text:1|alpha",
+  "#!notes", "urn|text", "urn:cts:t:g.w.notes:1|gvn:1.1.1.0.0",
+  "#!syllables", "urn|text", "urn:cts:t:g.w.syllables:1.1|a", "urn:cts:t:g.other.syllables:1.1|b",
+  "#!dse", "image|text|surface",
+  "urn:cite2:t:img.v1:x@0,0,.1,.1|urn:cts:t:g.w.notes:1.1|urn:cite2:t:obj.v1:a",
+  "urn:cite2:t:img.v1:x@0,0,.1,.1|urn:cts:t:g.other.text:1|urn:cite2:t:obj.v1:b",
+].join("\n");
+
+test("#!catalog_annotated is parsed and indexed by work", () => {
+  const d = cex.parseCex(catalogedRelease);
+  assert.equal(d.cataloged, true);
+  assert.equal(d.catalog_annotated.length, 2);
+  const c = d.index.catalog.get("urn:cts:t:g.w.notes");
+  assert.equal(c.urn, "urn:cts:t:g.w.notes:");
+  assert.equal(c.workTitle, "Work");
+  assert.equal(c.citationScheme, "line");
+  assert.equal(c.isOnline, true);
+  assert.equal(d.index.catalog.get("urn:cts:t:g.w.syllables").isOnline, false);
+});
+
+test("rows for uncataloged works are dropped, with one warning per work and block", () => {
+  const d = cex.parseCex(catalogedRelease);
+  assert.deepEqual(d.texts, []);
+  assert.deepEqual(d.syllables.map((r) => r.urn), ["urn:cts:t:g.w.syllables:1.1"]);
+  assert.deepEqual(d.notes.map((r) => r.urn), ["urn:cts:t:g.w.notes:1"]);
+  assert.deepEqual(d.dse.map((r) => r.text), ["urn:cts:t:g.w.notes:1.1"]);
+  assert.deepEqual(d.audio.map((r) => r.file), ["a.wav"]);
+  assert.deepEqual(d.warnings.sort(), [
+    "#!audio: 1 row(s) for uncataloged urn:cts:t:g.other.text ignored",
+    "#!dse: 1 row(s) for uncataloged urn:cts:t:g.other.text ignored",
+    "#!syllables: 1 row(s) for uncataloged urn:cts:t:g.other.syllables ignored",
+    "#!texts: 1 row(s) for uncataloged urn:cts:t:g.other.text ignored",
+  ]);
+  // surface B cites only the uncataloged text, so it drops out of the artifact menu
+  const ed = require("../lib/edition.js");
+  assert.deepEqual(ed.surfaceMenu(d).map((s) => s.label), ["A"]);
 });
