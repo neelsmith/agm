@@ -1,0 +1,1751 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>agm-mss: Ancient Greek Music manuscripts</title>
+<style>
+/* Mousike Notation font: SIL Open Font License 1.1, derived from Noto Serif and Noto Music. */
+@font-face {
+  font-family: 'Mousike Notation';
+  src: url('data:font/woff2;base64,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') format('woff2');
+  font-display: block;
+}
+.mousike-notation { font-family: 'Mousike Notation', serif; }
+/* base.css: page styles shared by agm.html and mss.html (inlined by build.js). */
+:root { --bg:#fbfaf7; --fg:#222; --muted:#666; --line:#ddd; --accent:#7a3b12; --warn:#9a5b00; }
+@media (prefers-color-scheme: dark) {
+  :root { --bg:#1b1a18; --fg:#e8e6e1; --muted:#9a968e; --line:#3a3834; --accent:#e0a070; --warn:#e0b050; }
+}
+body { margin:0; background:var(--bg); color:var(--fg); font:15px/1.45 system-ui, sans-serif; }
+header, main { max-width: 1100px; margin: 0 auto; padding: 0 16px; }
+header { padding-top: 20px; border-bottom: 1px solid var(--line); }
+h1 { margin: 0 0 14px; font-size: 1.4rem; }
+.controls { display:flex; gap:8px; flex-wrap:wrap; align-items:center; padding-bottom: 14px; }
+.controls input[type=url] { flex: 1 1 380px; min-width: 0; padding: 6px 8px; font: inherit;
+  background: transparent; color: inherit; border: 1px solid var(--line); border-radius: 4px; }
+button { font: inherit; padding: 6px 12px; border-radius: 4px; border: 1px solid var(--accent);
+  background: var(--accent); color: var(--bg); cursor: pointer; }
+#status { color: var(--muted); overflow-wrap: anywhere; }
+#status.error { color: #c0392b; }
+details { border-top: 1px solid var(--line); padding: 8px 0; }
+summary { cursor: pointer; font-weight: 600; }
+.note.muted { color: var(--muted); font-size: .85rem; }
+.app-footer { max-width: 1100px; margin: 32px auto 0; padding: 10px 16px 18px; color: var(--muted);
+  font-size: .72rem; opacity: .7; text-align: right; }
+
+/* viewer.css: styles for lib/viewer.js (inlined by build.js). */
+.viewer-frame { position: relative; overflow: hidden; height: min(70vh, 640px); border: 1px solid var(--line);
+  border-radius: 6px; background: #111; cursor: grab; touch-action: none; user-select: none; }
+.viewer-frame.dragging { cursor: grabbing; }
+.viewer-frame:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.viewer-img { position: absolute; left: 0; top: 0; transform-origin: 0 0; max-width: none; }
+.viewer-frame.empty .viewer-img { visibility: hidden; }
+.viewer-msg { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  color: #bbb; font-size: .9rem; padding: 16px; text-align: center; overflow-wrap: anywhere; pointer-events: none; }
+.viewer-msg:empty { display: none; }
+.viewer-regions { position: absolute; inset: 0; pointer-events: none; }
+.viewer-frame.empty .viewer-regions { display: none; }
+.viewer-region { position: absolute; box-sizing: border-box; pointer-events: auto;
+  border: 1.5px solid var(--roi, rgba(255,255,255,.75)); border-radius: 2px; }
+.viewer-region.kind-notes { --roi: rgba(255, 190, 60, .85); --roi-fill: rgba(255, 190, 60, .30); }
+.viewer-region.kind-syllables { --roi: rgba(80, 200, 255, .85); --roi-fill: rgba(80, 200, 255, .30); }
+.viewer-region:hover, .viewer-region.active { border-width: 3px; border-color: #ff3b6b;
+  background: rgba(255, 59, 107, .28); box-shadow: 0 0 0 1px rgba(0,0,0,.5); }
+.viewer-bar { display: flex; gap: 6px; margin-top: 6px; }
+.viewer-btn { min-width: 40px; padding: 4px 10px; }
+.credits { color: var(--muted); font-size: .8rem; margin: 6px 0 0; overflow-wrap: anywhere; }
+
+  .ms-picker { display:flex; flex-wrap: wrap; gap:10px; align-items:center; margin: 14px 0; }
+  .ms-picker label { font-weight: 600; }
+  .ms-picker select { font: inherit; padding: 6px 8px; max-width: 100%; min-width: 0;
+    background: var(--bg); color: inherit; border: 1px solid var(--line); border-radius: 4px; }
+  #ms-out h2 { margin: 18px 0 2px; font-size: 1.15rem; }
+  .urn-line, .counts { color: var(--muted); margin: 2px 0 8px; }
+  .urn-line code { overflow-wrap: anywhere; }
+  .counts .missing { color: var(--warn); }
+  .ms-warnings { color: var(--warn); font-size: .85rem; }
+  .note { color: var(--warn); font-size: .9rem; }
+
+  /* The light table and the full-image view share one fixed-height "stage"; only one shows at a time. */
+  #ms-out { --stage-h: min(62vh, 600px); }
+  .stage { margin: 10px 0 0; }
+  .stage [hidden] { display: none !important; }
+  .page-view { height: var(--stage-h); display: flex; flex-direction: column; }
+  .page-view .viewer { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+  .page-view .viewer-frame { flex: 1 1 auto; height: auto; min-height: 0; }
+  .page-head { display: flex; flex-wrap: wrap; gap: 4px 14px; align-items: baseline; margin-bottom: 6px; }
+  .page-head h3 { margin: 0; font-size: 1.05rem; }
+  .page-head .meta { color: var(--muted); font-size: .8rem; font-family: ui-monospace, Menlo, monospace;
+    overflow-wrap: anywhere; }
+  .page-head .not-found { color: var(--warn); }
+  .page-nav { display: flex; gap: 6px; margin-left: auto; }
+  .page-nav .close { background: transparent; color: var(--accent); }
+  .page-nav button { padding: 4px 10px; }
+  .page-nav button:disabled { opacity: .4; cursor: default; }
+
+  .light-table { display: grid; grid-template-columns: repeat(auto-fill, minmax(124px, 1fr)); gap: 12px;
+    align-content: start; max-height: var(--stage-h); overflow-y: auto; overscroll-behavior: contain;
+    box-sizing: border-box; margin: 0; padding: 12px; border-radius: 8px; background: color-mix(in srgb, var(--fg) 6%, var(--bg)); }
+  .thumb { display: flex; flex-direction: column; align-items: stretch; gap: 4px; margin: 0; padding: 6px;
+    border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: inherit; cursor: pointer;
+    font: inherit; text-align: center; }
+  .thumb:hover { border-color: var(--accent); }
+  .thumb:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .thumb.selected { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
+  .thumb img { width: 100%; height: 150px; object-fit: contain; background: #111; border-radius: 3px; }
+  .thumb img.broken { visibility: hidden; }
+  /* Images cited by DSE records */
+  #ms-out { --dse: #1f7a8c; }
+  @media (prefers-color-scheme: dark) { #ms-out { --dse: #4fb3c8; } }
+  .thumb figure { position: relative; }
+  .thumb.has-dse { border-color: var(--dse); box-shadow: inset 0 0 0 2px var(--dse);
+    background: color-mix(in srgb, var(--dse) 12%, var(--bg)); }
+  .thumb.has-dse.selected { box-shadow: inset 0 0 0 2px var(--dse), 0 0 0 3px var(--accent); }
+  .dse-badge { position: absolute; top: 4px; right: 4px; min-width: 18px; padding: 1px 6px; border-radius: 10px;
+    background: var(--dse); color: #fff; font-size: .72rem; font-weight: 600; line-height: 1.5; }
+  .light-table.dse-only .thumb:not(.has-dse) { display: none; }
+  .counts .dse-count { color: var(--dse); font-weight: 600; }
+  .dse-filter { display: inline-flex; align-items: center; gap: 4px; font-size: .9rem; margin: 2px 0 4px; cursor: pointer; }
+  .dse-swatch { display: inline-block; width: 12px; height: 12px; border-radius: 3px; background: var(--dse); margin-left: 4px; }
+  /* Text indexed to the open image (texts with embedded notation) */
+  .page-text { margin: 14px 0 0; border-top: 1px solid var(--line); padding-top: 8px; }
+  .page-text h3 { margin: 0 0 6px; font-size: 1rem; }
+  .page-text h3 .work { color: var(--muted); font-weight: 400; }
+  .passages { list-style: none; margin: 0; padding: 0; }
+  .passage { display: grid; grid-template-columns: 6.5em 1fr; gap: 4px 12px; align-items: baseline;
+    padding: 5px 0; border-top: 1px solid color-mix(in srgb, var(--line) 60%, transparent); }
+  .passage .ref { font-family: ui-monospace, Menlo, monospace; font-size: .8rem; color: var(--muted);
+    overflow-wrap: anywhere; }
+  .passage .cells { display: grid; gap: 2px 22px; align-items: baseline; }
+  .greek { font-family: "Gentium Plus", "New Athena Unicode", Georgia, serif; font-size: 1.1rem; }
+  .note-sign { font-size: 1.35em; line-height: 1; }
+  /* Regions of interest on the image, linked with the passages (active style from viewer.css) */
+  .viewer-region.kind-text { --roi: color-mix(in srgb, var(--dse) 80%, white); }
+  .passage { border-radius: 4px; padding-left: 4px; padding-right: 4px; }
+  .passage.has-roi { cursor: default; }
+  .passage.hl { background: rgba(255, 59, 107, .14); box-shadow: inset 3px 0 0 rgba(255, 59, 107, .85); }
+  .note-sign.unknown { color: var(--warn); font-size: .8em; font-family: ui-monospace, Menlo, monospace; }
+  .thumb figcaption { font-size: .8rem; line-height: 1.25; overflow-wrap: anywhere; }
+  .thumb.not-found figcaption { color: var(--warn); font-style: italic; }
+</style>
+</head>
+<body>
+<header>
+  <h1>agm · Manuscripts</h1>
+
+</header>
+<main>
+  <p id="status">Not loaded.</p>
+  <section class="ms-picker">
+    <label for="ms">Manuscript</label>
+    <select id="ms" disabled><option value="">Load data first</option></select>
+  </section>
+  <section id="ms-out"></section>
+</main>
+<footer class="app-footer">agm-mss <span id="app-version">2.0.0</span></footer>
+
+<script>
+/*
+ * cex.js — parse a `mousike` CEX release into plain JS data structures.
+ *
+ * Classic script (no ES modules) so the built app works from file://.
+ * In the browser it defines a global `AgmCex`; in Node it is a CommonJS module.
+ */
+(function (root, factory) {
+  if (typeof module === "object" && module.exports) {
+    module.exports = factory();
+  } else {
+    root.AgmCex = factory();
+  }
+})(typeof self !== "undefined" ? self : this, function () {
+  "use strict";
+
+  const DEFAULT_URL =
+    "https://raw.githubusercontent.com/neelsmith/mousike/refs/heads/main/releases/current.cex";
+
+  const DELIMITER = "|";
+
+  /** Expected column headers for each tabular block. */
+  const BLOCK_SCHEMAS = {
+    images: ["path", "description", "credits", "urn"],
+    surfaces: ["urn", "label"],
+    audio: ["file", "label", "notation"],
+    catalog_annotated: ["urn", "citationScheme", "groupName", "workTitle", "versionLabel",
+      "exemplarLabel", "online", "language"],
+    catalog_embedded: ["urn", "citationScheme", "groupName", "workTitle", "versionLabel",
+      "exemplarLabel", "online", "language"],
+    mss: ["manuscript", "urn", "manifest", "urnmap"],
+    texts: ["urn", "text"],
+    // Parsed by parseTextsCols, not parseTable: `text` holds `columns` cells separated by "|".
+    texts_cols: ["urn", "columns", "text"],
+    notes: ["urn", "text"],
+    syllables: ["urn", "text"],
+    dse: ["image", "text", "surface"],
+    mspages: ["urn", "label", "image"],
+  };
+
+  /** All blocks the app reads, in source order. */
+  const BLOCK_NAMES = ["version"].concat(Object.keys(BLOCK_SCHEMAS));
+
+  /** Blocks older releases may lack; their absence is handled, not reported as missing. */
+  const OPTIONAL_BLOCKS = ["catalog_annotated", "catalog_embedded", "mss", "mspages", "texts_cols"];
+
+  /**
+   * Split raw CEX text into named blocks of non-empty lines.
+   * Lines beginning with `//` are CEX comments and are skipped.
+   * Lines before the first `#!` header are ignored.
+   * @returns {Object<string, string[][]>} block name -> list of line arrays
+   *   (a list of lists, because a block label may in principle repeat).
+   */
+  function splitBlocks(src) {
+    const blocks = {};
+    let current = null;
+    const lines = String(src).replace(/^﻿/, "").split(/\r?\n/);
+    for (const raw of lines) {
+      const line = raw.trim();
+      if (line.startsWith("#!")) {
+        const name = line.slice(2).trim().toLowerCase();
+        current = [];
+        (blocks[name] = blocks[name] || []).push(current);
+        continue;
+      }
+      if (current === null || line === "" || line.startsWith("//")) continue;
+      current.push(raw.replace(/\s+$/, ""));
+    }
+    return blocks;
+  }
+
+  /**
+   * Parse a delimited block whose first line is a header row.
+   * Repeated blocks with the same name are concatenated.
+   * Returns { rows, warnings } where rows are objects keyed by column name.
+   */
+  function parseTable(name, blockLists, warnings) {
+    const expected = BLOCK_SCHEMAS[name];
+    const rows = [];
+    for (const lines of blockLists) {
+      if (lines.length === 0) continue;
+      const header = lines[0].split(DELIMITER).map((h) => h.trim());
+      if (header.join("|") !== expected.join("|")) {
+        warnings.push(
+          `#!${name}: header "${header.join("|")}" differs from expected "${expected.join("|")}"`
+        );
+      }
+      for (let i = 1; i < lines.length; i++) {
+        const cols = lines[i].split(DELIMITER);
+        if (cols.length !== header.length) {
+          warnings.push(
+            `#!${name}: row ${i} has ${cols.length} columns, expected ${header.length}: ${lines[i]}`
+          );
+          continue;
+        }
+        const row = {};
+        header.forEach((h, j) => (row[h] = cols[j].trim()));
+        rows.push(row);
+      }
+    }
+    return rows;
+  }
+
+  /**
+   * Parse `#!texts_cols`: texts laid out in columns (e.g. a sign's name, its vocal and its
+   * instrumental notation). Each line is `urn|columns|cell1|cell2|…`: the text after the
+   * second delimiter is split into cells on "|" and should have `columns` cells. Repeated header
+   * lines are skipped. Rows: { urn, columns (number), cells: [string], text (cells joined " | ") }.
+   */
+  function parseTextsCols(blockLists, warnings) {
+    const expected = BLOCK_SCHEMAS.texts_cols.join("|");
+    const rows = [];
+    for (const lines of blockLists) {
+      lines.forEach((line, i) => {
+        const parts = line.split(DELIMITER);
+        if (parts.map((p) => p.trim()).join("|") === expected) {
+          if (i > 0) warnings.push(`#!texts_cols: repeated header line ${i} skipped`);
+          return;
+        }
+        if (i === 0) warnings.push(`#!texts_cols: header "${line}" differs from expected "${expected}"`);
+        const urn = parts[0].trim();
+        const columns = Number(parts[1]);
+        if (parts.length < 3 || !Number.isInteger(columns) || columns < 1) {
+          warnings.push(`#!texts_cols: row ${i} needs urn|columns|text: ${line}`);
+          return;
+        }
+        const cells = parts.slice(2).map((c) => c.trim());
+        if (cells.length !== columns) {
+          warnings.push(`#!texts_cols: ${urn} has ${cells.length} cell(s), expected ${columns}`);
+        }
+        rows.push({ urn, columns, cells, text: cells.join(" | ") });
+      });
+    }
+    return rows;
+  }
+
+  /* ---------- URN helpers ---------- */
+
+  /** Split a URN with an optional `@extension` (e.g. a CITE2 image ROI). */
+  function splitExtension(urn) {
+    const at = urn.indexOf("@");
+    return at < 0
+      ? { base: urn, extension: null }
+      : { base: urn.slice(0, at), extension: urn.slice(at + 1) };
+  }
+
+  /**
+   * Parse an image region of interest (four comma-separated fractions of image size)
+   * or return null. Order is left,top,width,height: in the 2026a DSE data the first
+   * value increases across a line of the stele and the second increases line by line.
+   */
+  function parseRoi(extension) {
+    if (!extension) return null;
+    const nums = extension.split(",").map(Number);
+    if (nums.length !== 4 || nums.some((n) => !Number.isFinite(n))) return null;
+    const [left, top, width, height] = nums;
+    return { left, top, width, height };
+  }
+
+  /**
+   * Parse a CITE2 URN: colon-separated parts
+   *   urn:cite2:NAMESPACE:COLLECTION[.VERSION]:OBJECT[@EXTENSION]
+   * The final part is the object identifier; it may carry `@` + a region of interest.
+   * A URN with only four parts identifies a collection, not an object (object = null).
+   * Returns null if the string is not a cite2 URN.
+   */
+  function parseCite2(urn) {
+    const { base, extension } = splitExtension(String(urn).trim());
+    const parts = base.split(":");
+    if (parts.length < 4 || parts.length > 5 || parts[0] !== "urn" || parts[1] !== "cite2") {
+      return null;
+    }
+    const [collection, ...ver] = parts[3].split(".");
+    return {
+      urn: base, // object (or collection) URN without the extension
+      namespace: parts[2],
+      collection,
+      version: ver.length ? ver.join(".") : null,
+      object: parts.length === 5 ? parts[4] : null,
+      extension,
+      roi: parseRoi(extension),
+    };
+  }
+
+  /**
+   * Find the catalog image for a (possibly ROI-extended) image URN.
+   * Matches on namespace, collection and object; when the reference omits a version,
+   * any version in the catalog matches. Returns the image row or null.
+   */
+  function resolveImage(images, ref) {
+    const r = typeof ref === "string" ? parseCite2(ref) : ref;
+    if (!r || !r.object) return null;
+    for (const img of images) {
+      const c = img.cite2;
+      if (!c) continue;
+      if (c.namespace === r.namespace && c.collection === r.collection && c.object === r.object &&
+          (r.version === null || r.version === c.version)) {
+        return img;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Split a CTS URN into work component and passage reference.
+   * urn:cts:mousike:epigraphic.seikilos.text:1.2
+   *   -> { work: "urn:cts:mousike:epigraphic.seikilos.text", passage: "1.2" }
+   */
+  function ctsParts(urn) {
+    const parts = urn.split(":");
+    if (parts.length < 4 || parts[0] !== "urn" || parts[1] !== "cts") {
+      return { work: urn, passage: null };
+    }
+    if (parts.length === 4) return { work: urn, passage: null };
+    return { work: parts.slice(0, 4).join(":"), passage: parts.slice(4).join(":") };
+  }
+
+  /**
+   * Tokenize a line of notation: whitespace separates note groups;
+   * `~` joins notes sung to a single syllable (melisma).
+   */
+  function tokenizeNotes(text) {
+    return text
+      .split(/\s+/)
+      .filter(Boolean)
+      .map((group) => group.split("~").filter(Boolean));
+  }
+
+  /**
+   * Derive the 2-tier citation of a notes edition: a line `…notes:L` with groups
+   * g1 g2 … yields one record per note group, cited `…notes:L.N` (N counts from 1),
+   * analogous to syllables `…syllables:L.N`.
+   * Each record: { urn, work, passage, line (URN of the line), group (N),
+   *   notes: [note, …], text: notes joined with "~" }
+   */
+  function noteGroups(noteLines) {
+    const out = [];
+    for (const line of noteLines) {
+      line.tokens.forEach((notes, i) => {
+        const passage = `${line.passage}.${i + 1}`;
+        out.push({
+          urn: `${line.work}:${passage}`,
+          work: line.work,
+          passage,
+          line: line.urn,
+          group: i + 1,
+          notes,
+          text: notes.join("~"),
+        });
+      });
+    }
+    return out;
+  }
+
+  /** Build a Map from key column to row; warn on duplicate keys. */
+  function indexBy(rows, key, name, warnings) {
+    const m = new Map();
+    for (const r of rows) {
+      if (m.has(r[key])) warnings.push(`#!${name}: duplicate ${key} ${r[key]}`);
+      m.set(r[key], r);
+    }
+    return m;
+  }
+
+  /* ---------- main entry point ---------- */
+
+  /**
+   * Parse a complete mousike CEX release.
+   * @param {string} src raw CEX text
+   * @returns {object} { version, images, surfaces, audio, catalog_annotated, texts, notes,
+   *   syllables, dse, mspages, dseAll, index: {...Maps}, warnings: string[], cataloged: boolean }
+   *
+   * `dse` holds the DSE records for cataloged texts; `dseAll` holds every DSE record.
+   *
+   * Only texts cataloged in `#!catalog_annotated` are handled: rows of `#!texts`, `#!notes`,
+   * `#!syllables`, DSE records citing a passage, and audio tracks whose notation URN is in a
+   * work that isn't cataloged are dropped (one warning per work and block). A release with no
+   * `#!catalog_annotated` block (before 2026h) keeps everything, with one warning;
+   * `cataloged` is then false.
+   */
+  function parseCex(src) {
+    const warnings = [];
+    const blocks = splitBlocks(src);
+
+    for (const name of BLOCK_NAMES) {
+      if (!blocks[name] && !OPTIONAL_BLOCKS.includes(name)) warnings.push(`missing block #!${name}`);
+    }
+    for (const name of Object.keys(blocks)) {
+      if (!BLOCK_NAMES.includes(name)) warnings.push(`unrecognized block #!${name} ignored`);
+    }
+
+    // 1. version: a single bare value
+    const versionLines = (blocks.version || []).flat();
+    const version = versionLines.length ? versionLines[0].trim() : null;
+    if (versionLines.length > 1) warnings.push("#!version: more than one line; using the first");
+
+    const table = (name) => parseTable(name, blocks[name] || [], warnings);
+
+    const images = table("images").map((r) => {
+      const cite2 = parseCite2(r.urn);
+      if (!cite2 || !cite2.object) warnings.push(`#!images: not a CITE2 object URN: ${r.urn}`);
+      return Object.assign(r, { cite2 });
+    });
+    const surfaces = table("surfaces");
+
+    // Catalog of texts with musical annotation; URNs are work-level, e.g. "…seikilos.notes:".
+    const cataloged = Boolean(blocks.catalog_annotated);
+    const catalog_annotated = table("catalog_annotated").map((r) => {
+      const { work } = ctsParts(r.urn);
+      if (!/^urn:cts:/.test(r.urn)) warnings.push(`#!catalog_annotated: not a CTS URN: ${r.urn}`);
+      return Object.assign(r, { work: work.replace(/:$/, ""), isOnline: r.online === "true" });
+    });
+    const catalogWorks = new Set(catalog_annotated.map((r) => r.work));
+    if (!cataloged) {
+      warnings.push("no #!catalog_annotated block: treating every text in the release as cataloged");
+    }
+    /** Keep rows whose CTS work (from `urnOf(row)`) is cataloged; warn once per dropped work. */
+    const onlyCataloged = (name, rows, urnOf) => {
+      if (!cataloged) return rows;
+      const dropped = new Map();
+      const kept = rows.filter((r) => {
+        const { work } = ctsParts(String(urnOf(r) || ""));
+        if (catalogWorks.has(work)) return true;
+        dropped.set(work, (dropped.get(work) || 0) + 1);
+        return false;
+      });
+      for (const [work, n] of dropped) {
+        warnings.push(`#!${name}: ${n} row(s) for uncataloged ${work} ignored`);
+      }
+      return kept;
+    };
+
+    // Catalog of texts with embedded notation (2026h): theoretical texts quoting musical signs.
+    // Only these works' `#!texts_cols` rows are kept. A release without the block keeps them all.
+    const catalogedEmbedded = Boolean(blocks.catalog_embedded);
+    const catalog_embedded = table("catalog_embedded").map((r) => {
+      const { work } = ctsParts(r.urn);
+      if (!/^urn:cts:/.test(r.urn)) warnings.push(`#!catalog_embedded: not a CTS URN: ${r.urn}`);
+      return Object.assign(r, { work: work.replace(/:$/, ""), isOnline: r.online === "true" });
+    });
+    const embeddedWorks = new Set(catalog_embedded.map((r) => r.work));
+    const texts_cols = parseTextsCols(blocks.texts_cols || [], warnings)
+      .map((r) => Object.assign(r, ctsParts(r.urn)))
+      .filter((r) => {
+        if (!catalogedEmbedded || embeddedWorks.has(r.work)) return true;
+        warnings.push(`#!texts_cols: uncataloged ${r.urn} ignored`);
+        return false;
+      });
+
+    const audio = onlyCataloged("audio", table("audio"), (r) => r.notation);
+    const texts = onlyCataloged("texts", table("texts"), (r) => r.urn)
+      .map((r) => Object.assign(r, ctsParts(r.urn)));
+    const notes = onlyCataloged("notes", table("notes"), (r) => r.urn).map((r) =>
+      Object.assign(r, ctsParts(r.urn), { tokens: tokenizeNotes(r.text) })
+    );
+    const syllables = onlyCataloged("syllables", table("syllables"), (r) => r.urn)
+      .map((r) => Object.assign(r, ctsParts(r.urn)));
+    // All DSE records (kept as `dseAll`, e.g. for images in agm-mss.html), and those for cataloged texts.
+    const dseAll = table("dse").map((r) => {
+      const cite2 = parseCite2(r.image);
+      if (!cite2 || !cite2.object) {
+        warnings.push(`#!dse: image is not a CITE2 object URN: ${r.image}`);
+      } else if (cite2.extension && !cite2.roi) {
+        warnings.push(`#!dse: unparseable region of interest: ${r.image}`);
+      }
+      return Object.assign(r, {
+        imageObject: cite2 ? cite2.urn : null,
+        roi: cite2 ? cite2.roi : null,
+        cite2,
+      });
+    });
+    const dse = onlyCataloged("dse", dseAll, (r) => r.text);
+
+    // Manuscripts (2026h): a collection-level CITE2 URN, an IIIF manifest and a urnmap per manuscript,
+    // and one row per page with its CITE2 URN, label and image URN.
+    const mss = table("mss");
+    const mspages = table("mspages");
+
+    const index = {
+      images: indexBy(images, "urn", "images", warnings),
+      surfaces: indexBy(surfaces, "urn", "surfaces", warnings),
+      texts: indexBy(texts, "urn", "texts", warnings),
+      notes: indexBy(notes, "urn", "notes", warnings),
+      syllables: indexBy(syllables, "urn", "syllables", warnings),
+      // Cataloged works, keyed by work URN without passage ("urn:cts:ns:group.work.version")
+      catalog: indexBy(catalog_annotated, "work", "catalog_annotated", warnings),
+      catalogEmbedded: indexBy(catalog_embedded, "work", "catalog_embedded", warnings),
+      textsCols: indexBy(texts_cols, "urn", "texts_cols", warnings),
+      mss: indexBy(mss, "urn", "mss", warnings),
+      mspages: indexBy(mspages, "urn", "mspages", warnings),
+      // Derived from #!notes: one entry per note group, cited line.group
+      noteGroups: indexBy(noteGroups(notes.filter((n) => n.passage)), "urn", "notes (groups)", warnings),
+    };
+
+    return {
+      version, images, surfaces, audio, catalog_annotated, catalog_embedded, mss, texts, texts_cols,
+      notes, syllables, dse, mspages, dseAll, index, warnings, cataloged, catalogedEmbedded,
+    };
+  }
+
+  /** Fetch and parse a CEX release (browser or Node 18+). */
+  async function loadCex(url, fetchImpl) {
+    const f = fetchImpl || (typeof fetch !== "undefined" ? fetch : null);
+    if (!f) throw new Error("No fetch implementation available");
+    const res = await f(url || DEFAULT_URL);
+    if (!res.ok) throw new Error(`HTTP ${res.status} loading ${url || DEFAULT_URL}`);
+    return parseCex(await res.text());
+  }
+
+  return {
+    DEFAULT_URL,
+    BLOCK_NAMES,
+    BLOCK_SCHEMAS,
+    OPTIONAL_BLOCKS,
+    splitBlocks,
+    parseTextsCols,
+    splitExtension,
+    parseRoi,
+    parseCite2,
+    resolveImage,
+    ctsParts,
+    tokenizeNotes,
+    noteGroups,
+    parseCex,
+    loadCex,
+  };
+});
+
+</script>
+<script>
+/*
+ * viewer.js — a small pan/zoom image viewer with no dependencies.
+ *
+ * Classic UMD script: global `AgmViewer` in the browser, CommonJS in Node (where only the
+ * pure geometry helpers are useful).
+ *
+ * View state is { scale, x, y }: the image is drawn at its natural size times `scale`, with its
+ * top-left corner at (x, y) in frame pixels.
+ *
+ * Regions of interest (fractions 0..1 of the image's width/height: left, top, width, height)
+ * are drawn as outlined boxes in an overlay; their screen positions are recomputed on every
+ * pan/zoom, so outlines stay a constant width at any zoom.
+ *
+ * Controls: drag to pan; mouse wheel / trackpad / pinch to zoom about the pointer;
+ * double-click to zoom in; buttons for zoom in, zoom out and fit.
+ */
+(function (root, factory) {
+  if (typeof module === "object" && module.exports) {
+    module.exports = factory();
+  } else {
+    root.AgmViewer = factory();
+  }
+})(typeof self !== "undefined" ? self : this, function () {
+  "use strict";
+
+  const MAX_SCALE = 8; // at most 8× the image's natural size
+
+  /** State that fits an imgW×imgH image entirely in a frameW×frameH frame, centred. */
+  function fitState(imgW, imgH, frameW, frameH) {
+    if (!(imgW > 0 && imgH > 0 && frameW > 0 && frameH > 0)) return { scale: 1, x: 0, y: 0 };
+    const scale = Math.min(frameW / imgW, frameH / imgH);
+    return { scale, x: (frameW - imgW * scale) / 2, y: (frameH - imgH * scale) / 2 };
+  }
+
+  /**
+   * Zoom by `factor` keeping frame point (px, py) fixed on the same image point.
+   * The scale is clamped to [minScale, MAX_SCALE].
+   */
+  function zoomAt(state, factor, px, py, minScale) {
+    const lo = Math.min(minScale || state.scale, 1);
+    const scale = Math.max(lo, Math.min(MAX_SCALE, state.scale * factor));
+    const k = scale / state.scale;
+    return { scale, x: px - (px - state.x) * k, y: py - (py - state.y) * k };
+  }
+
+  /** Screen-pixel box of a region `roi` {left, top, width, height} (fractions of the image). */
+  function regionBox(state, imgW, imgH, roi) {
+    return {
+      left: state.x + roi.left * imgW * state.scale,
+      top: state.y + roi.top * imgH * state.scale,
+      width: roi.width * imgW * state.scale,
+      height: roi.height * imgH * state.scale,
+    };
+  }
+
+  /**
+   * State that shows region `roi` (fractions of an imgW×imgH image) centred in the frame, with
+   * `margin` (a fraction of the region's size) of context on each side, never zoomed in past
+   * `maxScale` nor out past the whole-image fit.
+   */
+  function regionFitState(imgW, imgH, frameW, frameH, roi, margin = 0.6, maxScale = MAX_SCALE) {
+    const fit = fitState(imgW, imgH, frameW, frameH);
+    if (!roi || !(roi.width > 0 && roi.height > 0)) return fit;
+    const w = roi.width * imgW * (1 + 2 * margin);
+    const h = roi.height * imgH * (1 + 2 * margin);
+    const scale = Math.max(fit.scale, Math.min(maxScale, frameW / w, frameH / h));
+    const cx = (roi.left + roi.width / 2) * imgW;
+    const cy = (roi.top + roi.height / 2) * imgH;
+    return { scale, x: frameW / 2 - cx * scale, y: frameH / 2 - cy * scale };
+  }
+
+  /**
+   * Build a viewer inside `container` (emptied first).
+   * Returns { load(url, alt), fit(), zoom(factor), focusRegion(roi), state(), element,
+   *   setRegions([{ id, roi, kind, title }]), highlight(id | [ids] | null), onRegionHover(fn) }.
+   * Several regions may share an id; highlight(id) marks all of them.
+   * onRegionHover(fn) calls fn(id) when the pointer enters a region and fn(null) when it leaves.
+   */
+  function createViewer(container) {
+    const doc = container.ownerDocument;
+    const mk = (tag, cls, attrs) => Object.assign(doc.createElement(tag), { className: cls }, attrs || {});
+
+    const frame = mk("div", "viewer-frame", { tabIndex: 0 });
+    const img = mk("img", "viewer-img", { draggable: false, alt: "" });
+    const msg = mk("div", "viewer-msg");
+    const overlay = mk("div", "viewer-regions");
+    frame.append(img, overlay, msg);
+
+    const bar = mk("div", "viewer-bar");
+    const btn = (label, title, fn) => {
+      const b = mk("button", "viewer-btn", { type: "button", textContent: label, title });
+      b.setAttribute("aria-label", title);
+      b.addEventListener("click", fn);
+      bar.append(b);
+    };
+    btn("+", "Zoom in", () => zoom(1.5));
+    btn("−", "Zoom out", () => zoom(1 / 1.5));
+    btn("Fit", "Fit image to frame", () => fit());
+    container.replaceChildren(frame, bar);
+
+    let st = { scale: 1, x: 0, y: 0 };
+    let fitScale = 1;
+    let loaded = false;
+    let regions = []; // [{ id, roi, el }]
+    let hoverFn = null;
+    let highlighted = null;
+    let dragging = false;
+
+    function apply() {
+      img.style.transform = `translate(${st.x}px, ${st.y}px) scale(${st.scale})`;
+      if (!loaded) return;
+      for (const r of regions) {
+        const b = regionBox(st, img.naturalWidth, img.naturalHeight, r.roi);
+        Object.assign(r.el.style, {
+          left: `${b.left}px`, top: `${b.top}px`, width: `${b.width}px`, height: `${b.height}px`,
+        });
+      }
+    }
+
+    function setRegions(list) {
+      regions = (list || []).filter((r) => r && r.roi).map((r) => {
+        const e = mk("div", `viewer-region${r.kind ? " kind-" + r.kind : ""}`, { title: r.title || r.id });
+        e.dataset.id = r.id;
+        e.addEventListener("pointerenter", () => { if (!dragging && hoverFn) hoverFn(r.id); });
+        e.addEventListener("pointerleave", () => { if (!dragging && hoverFn) hoverFn(null); });
+        return { id: r.id, roi: r.roi, el: e };
+      });
+      overlay.replaceChildren(...regions.map((r) => r.el));
+      highlight(highlighted);
+      apply();
+    }
+
+    /** Highlight the region(s) with id `ids` (one id, or an array of ids); null clears. */
+    function highlight(ids) {
+      highlighted = ids || null;
+      const set = new Set(Array.isArray(ids) ? ids : ids ? [ids] : []);
+      for (const r of regions) r.el.classList.toggle("active", set.has(r.id));
+    }
+    function center() {
+      return { x: frame.clientWidth / 2, y: frame.clientHeight / 2 };
+    }
+    function fit() {
+      if (!loaded) return;
+      st = fitState(img.naturalWidth, img.naturalHeight, frame.clientWidth, frame.clientHeight);
+      fitScale = st.scale;
+      apply();
+    }
+    /** Zoom to region `roi` with some context around it (no-op until the image has loaded). */
+    function focusRegion(roi, margin) {
+      if (!loaded || !roi) return;
+      st = regionFitState(img.naturalWidth, img.naturalHeight, frame.clientWidth, frame.clientHeight, roi, margin);
+      apply();
+    }
+    function zoom(factor, px, py) {
+      if (!loaded) return;
+      const c = center();
+      st = zoomAt(st, factor, px ?? c.x, py ?? c.y, fitScale);
+      apply();
+    }
+    function local(e) {
+      const r = frame.getBoundingClientRect();
+      return { x: e.clientX - r.left, y: e.clientY - r.top };
+    }
+
+    // Pointer handling: one pointer pans, two pointers pinch-zoom.
+    const pointers = new Map();
+    let pinchDist = 0;
+    frame.addEventListener("pointerdown", (e) => {
+      if (!loaded) return;
+      frame.setPointerCapture(e.pointerId);
+      pointers.set(e.pointerId, local(e));
+      if (pointers.size === 2) {
+        const [a, b] = [...pointers.values()];
+        pinchDist = Math.hypot(a.x - b.x, a.y - b.y);
+      }
+      dragging = true;
+      frame.classList.add("dragging");
+    });
+    frame.addEventListener("pointermove", (e) => {
+      if (!pointers.has(e.pointerId)) return;
+      const prev = pointers.get(e.pointerId);
+      const p = local(e);
+      pointers.set(e.pointerId, p);
+      if (pointers.size === 1) {
+        st = { ...st, x: st.x + p.x - prev.x, y: st.y + p.y - prev.y };
+        apply();
+      } else if (pointers.size === 2) {
+        const [a, b] = [...pointers.values()];
+        const d = Math.hypot(a.x - b.x, a.y - b.y);
+        if (pinchDist > 0) zoom(d / pinchDist, (a.x + b.x) / 2, (a.y + b.y) / 2);
+        pinchDist = d;
+      }
+    });
+    const release = (e) => {
+      pointers.delete(e.pointerId);
+      pinchDist = 0;
+      if (!pointers.size) { dragging = false; frame.classList.remove("dragging"); }
+    };
+    frame.addEventListener("pointerup", release);
+    frame.addEventListener("pointercancel", release);
+
+    frame.addEventListener("wheel", (e) => {
+      if (!loaded) return;
+      e.preventDefault();
+      const p = local(e);
+      zoom(Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.002)), p.x, p.y);
+    }, { passive: false });
+    frame.addEventListener("dblclick", (e) => { const p = local(e); zoom(2, p.x, p.y); });
+    frame.addEventListener("keydown", (e) => {
+      const step = 40;
+      const moves = { ArrowLeft: [step, 0], ArrowRight: [-step, 0], ArrowUp: [0, step], ArrowDown: [0, -step] };
+      if (e.key === "+" || e.key === "=") zoom(1.5);
+      else if (e.key === "-") zoom(1 / 1.5);
+      else if (e.key === "0") fit();
+      else if (moves[e.key]) { st = { ...st, x: st.x + moves[e.key][0], y: st.y + moves[e.key][1] }; apply(); }
+      else return;
+      e.preventDefault();
+    });
+
+    img.addEventListener("load", () => {
+      loaded = true;
+      msg.textContent = "";
+      frame.classList.remove("empty");
+      fit();
+    });
+    img.addEventListener("error", () => {
+      loaded = false;
+      img.style.transform = "";
+      frame.classList.add("empty");
+      msg.textContent = `Could not load image ${img.src}`;
+    });
+
+    function load(url, alt) {
+      loaded = false;
+      frame.classList.add("empty");
+      msg.textContent = "Loading image…";
+      img.alt = alt || "";
+      img.src = url;
+    }
+
+    return {
+      load, fit, zoom, focusRegion, setRegions, highlight,
+      onRegionHover: (fn) => { hoverFn = fn; },
+      state: () => ({ ...st }),
+      element: frame,
+    };
+  }
+
+  return { createViewer, fitState, zoomAt, regionBox, regionFitState, MAX_SCALE };
+});
+
+</script>
+<script>
+/*
+ * GENERATED by src/tools/gen-sowerby-table.js — do not edit by hand.
+ * Source: sowerby_system.cex from the mousike project (Zach Sowerby's notation table).
+ * Maps short note URNs (e.g. "gvn:11.1") to [unicode sign, description].
+ */
+(function (root, factory) {
+  if (typeof module === "object" && module.exports) module.exports = factory();
+  else root.AgmSowerbyTable = factory();
+})(typeof self !== "undefined" ? self : this, function () {
+  "use strict";
+  return {
+    "gvn:1.1": ["𝈀", "vocal E"],
+    "gvn:1.2": ["𝈁", "vocal first sharp of E"],
+    "gvn:1.3": ["𝈂", "vocal second sharp of E"],
+    "gvn:2.1": ["𝈃", "vocal F"],
+    "gvn:2.2": ["𝈄", "vocal first sharp of F"],
+    "gvn:2.3": ["𝈅", "vocal second sharp of F"],
+    "gvn:3.1": ["𝈆", "vocal G"],
+    "gvn:3.2": ["𝈇", "vocal first sharp of G"],
+    "gvn:3.3": ["𝈈", "vocal second sharp of G"],
+    "gvn:4.1": ["𝈉", "vocal A"],
+    "gvn:4.2": ["𝈊", "vocal first sharp of A"],
+    "gvn:4.3": ["𝈋", "vocal second sharp of A"],
+    "gvn:5.1": ["𝈌", "vocal B"],
+    "gvn:5.2": ["𝈍", "vocal first sharp of B"],
+    "gvn:5.3": ["𝈎", "vocal second sharp of B"],
+    "gvn:6.1": ["𝈏", "vocal c"],
+    "gvn:6.2": ["𝈐", "vocal first sharp of c"],
+    "gvn:6.3": ["𝈑", "vocal second sharp of c"],
+    "gvn:7.1": ["𝈒", "vocal d"],
+    "gvn:7.2": ["𝈓", "vocal first sharp of d"],
+    "gvn:7.3": ["𝈔", "vocal second sharp of d"],
+    "gvn:8.1": ["𝈕", "vocal e"],
+    "gvn:8.2": ["𝈖", "vocal first sharp of e"],
+    "gvn:8.3": ["𝈗", "vocal second sharp of e"],
+    "gvn:9.1": ["Ω", "vocal f"],
+    "gvn:9.2": ["Ψ", "vocal first sharp of f"],
+    "gvn:9.3": ["Χ", "vocal second sharp of f"],
+    "gvn:10.1": ["Φ", "vocal g"],
+    "gvn:10.2": ["Υ", "vocal first sharp of g"],
+    "gvn:10.3": ["Τ", "vocal second sharp of g"],
+    "gvn:11.1": ["Ϲ", "vocal a"],
+    "gvn:11.2": ["Ρ", "vocal first sharp of a"],
+    "gvn:11.3": ["Π", "vocal second sharp of a"],
+    "gvn:12.1": ["Ο", "vocal b"],
+    "gvn:12.2": ["Ξ", "vocal first sharp of b"],
+    "gvn:12.3": ["Ν", "vocal second sharp of b"],
+    "gvn:13.1": ["Μ", "vocal c′"],
+    "gvn:13.2": ["Λ", "vocal first sharp of c′"],
+    "gvn:13.3": ["Κ", "vocal second sharp of c′"],
+    "gvn:14.1": ["Ι", "vocal d′"],
+    "gvn:14.2": ["Θ", "vocal first sharp of d′"],
+    "gvn:14.3": ["Η", "vocal second sharp of d′"],
+    "gvn:15.1": ["Ζ", "vocal e′"],
+    "gvn:15.2": ["Ε", "vocal first sharp of e′"],
+    "gvn:15.3": ["Δ", "vocal second sharp of e′"],
+    "gvn:16.1": ["Γ", "vocal f′"],
+    "gvn:16.2": ["Β", "vocal first sharp of f′"],
+    "gvn:16.3": ["Α", "vocal second sharp of f′"],
+    "gvn:17.1": ["Ʊ", "vocal g′"],
+    "gvn:17.2": ["𝈘", "vocal first sharp of g′"],
+    "gvn:17.3": ["𝈙", "vocal second sharp of g′"],
+    "gvn:18.1": ["𝈚", "vocal a′"],
+    "gvn:18.2": ["𝈛", "vocal first sharp of a′"],
+    "gvn:18.3": ["𝈜", "vocal second sharp of a′"],
+    "gvn:19.1": ["Ο′", "vocal b′"],
+    "gvn:19.2": ["Ξ′", "vocal first sharp of b′"],
+    "gvn:19.3": ["Ν′", "vocal second sharp of b′"],
+    "gvn:20.1": ["Μ′", "vocal c′′"],
+    "gvn:20.2": ["Λ′", "vocal first sharp of c′′"],
+    "gvn:20.3": ["Κ′", "vocal second sharp of c′′"],
+    "gvn:21.1": ["Ι′", "vocal d′′"],
+    "gvn:21.2": ["Θ′", "vocal first sharp of d′′"],
+    "gvn:21.3": ["Η′", "vocal second sharp of d′′"],
+    "gvn:22.1": ["Ζ′", "vocal e′′"],
+    "gvn:22.2": ["Ε′", "vocal first sharp of e′′"],
+    "gvn:22.3": ["Δ′", "vocal second sharp of e′′"],
+    "gvn:23.1": ["Γ′", "vocal f′′"],
+    "gvn:23.2": ["Β′", "vocal first sharp of f′′"],
+    "gvn:23.3": ["Α′", "vocal second sharp of f′′"],
+    "gvn:24.1": ["Ʊ′", "vocal g′′"],
+    "gin:1.1": ["𝈝", "instrumental E"],
+    "gin:1.2": ["𝈞", "instrumental first sharp of E"],
+    "gin:1.3": ["𝈂", "instrumental second sharp of E"],
+    "gin:2.1": ["𝈟", "instrumental F"],
+    "gin:2.2": ["𝈠", "instrumental first sharp of F"],
+    "gin:2.3": ["Τ", "instrumental second sharp of F"],
+    "gin:3.1": ["𝈡", "instrumental G"],
+    "gin:3.2": ["𝈢", "instrumental first sharp of G"],
+    "gin:3.3": ["𝈆", "instrumental second sharp of G"],
+    "gin:4.1": ["Η", "instrumental A"],
+    "gin:4.2": ["𝈣", "instrumental first sharp of A"],
+    "gin:4.3": ["𝈤", "instrumental second sharp of A"],
+    "gin:5.1": ["𝈥", "instrumental B"],
+    "gin:5.2": ["𝈦", "instrumental first sharp of B"],
+    "gin:5.3": ["𝈑", "instrumental second sharp of B"],
+    "gin:6.1": ["Ε", "instrumental c"],
+    "gin:6.2": ["𝈧", "instrumental first sharp of c"],
+    "gin:6.3": ["𝈨", "instrumental second sharp of c"],
+    "gin:7.1": ["𝈩", "instrumental d"],
+    "gin:7.2": ["𝈜", "instrumental first sharp of d"],
+    "gin:7.3": ["𝈅", "instrumental second sharp of d"],
+    "gin:8.1": ["Γ", "instrumental e"],
+    "gin:8.2": ["𝈪", "instrumental first sharp of e"],
+    "gin:8.3": ["𝈫", "instrumental second sharp of e"],
+    "gin:9.1": ["𝈬", "instrumental f"],
+    "gin:9.2": ["𝈭", "instrumental first sharp of f"],
+    "gin:9.3": ["𝈮", "instrumental second sharp of f"],
+    "gin:10.1": ["𝈓", "instrumental g"],
+    "gin:10.2": ["𝈯", "instrumental first sharp of g"],
+    "gin:10.3": ["𝈰", "instrumental second sharp of g"],
+    "gin:11.1": ["Ϲ", "instrumental a"],
+    "gin:11.2": ["𝈱", "instrumental first sharp of a"],
+    "gin:11.3": ["Ͻ", "instrumental second sharp of a"],
+    "gin:12.1": ["Κ", "instrumental b"],
+    "gin:12.2": ["𝈎", "instrumental first sharp of b"],
+    "gin:12.3": ["𝈲", "instrumental second sharp of b"],
+    "gin:13.1": ["𝈳", "instrumental c′"],
+    "gin:13.2": ["𝈴", "instrumental first sharp of c′"],
+    "gin:13.3": ["𝈵", "instrumental second sharp c′"],
+    "gin:14.1": ["𝈶", "instrumental d′"],
+    "gin:14.2": ["𝈍", "instrumental first sharp of d′"],
+    "gin:14.3": ["𝈷", "instrumental second sharp of d′"],
+    "gin:15.1": ["𝈸", "instrumental e′"],
+    "gin:15.2": ["𝈈", "instrumental first sharp of e′"],
+    "gin:15.3": ["𝈹", "instrumental second sharp of e′"],
+    "gin:16.1": ["Ν", "instrumental f′"],
+    "gin:16.2": ["𝈺", "instrumental first sharp of f′"],
+    "gin:16.3": ["𝈻", "instrumental second sharp of f′"],
+    "gin:17.1": ["𝈼", "instrumental g′"],
+    "gin:17.2": ["𝈽", "instrumental first sharp of g′"],
+    "gin:17.3": ["𝈾", "instrumental second sharp of g′"],
+    "gin:18.1": ["𝈿", "instrumental a′"],
+    "gin:18.2": ["𝉀", "instrumental first sharp of a′"],
+    "gin:18.3": ["𝉁", "instrumental second sharp of a′"],
+    "gin:19.1": ["Κ′", "instrumental b′"],
+    "gin:19.2": ["𝈎′", "instrumental first sharp of b′"],
+    "gin:19.3": ["𝈲′", "instrumental second sharp of b′"],
+    "gin:20.1": ["𝈳′", "instrumental c′′"],
+    "gin:20.2": ["𝈴′", "instrumental first sharp of c′′"],
+    "gin:20.3": ["𝈵′", "instrumental second sharp of c′′"],
+    "gin:21.1": ["𝈶′", "instrumental d′′"],
+    "gin:21.2": ["𝈍′", "instrumental first sharp of d′′"],
+    "gin:21.3": ["𝈷′", "instrumental second sharp of d′′"],
+    "gin:22.1": ["𝈸′", "instrumental e′′"],
+    "gin:22.2": ["𝈈′", "instrumental first sharp of e′′"],
+    "gin:22.3": ["𝈹′", "instrumental second sharp of e′′"],
+    "gin:23.1": ["Ν′", "instrumental f′′"],
+    "gin:23.2": ["𝈺′", "instrumental first sharp of f′′"],
+    "gin:23.3": ["𝈻′", "instrumental second sharp of f′′"],
+    "gin:24.1": ["𝈼′", "instrumental g′′"],
+    "gcn:1": ["𝉅", "rest"],
+  };
+});
+
+</script>
+<script>
+/*
+ * notation.js — Greek musical notation in Zach Sowerby's URN scheme, rendered as Unicode.
+ *
+ * A JavaScript port of mousike's `note.py` / `unicode.py`; output should be identical.
+ *
+ * A note is cited by a URN in `urn:cite2:zst:` (the short form drops the prefix) with up to
+ * five dot-separated tiers, e.g. `gvn:11.1.1.0.0`:
+ *   1. base note
+ *   2. sharpening (1 = unsharpened, 2 = first sharp, 3 = second sharp)
+ *   3. length: 1 = no length sign, 2–5 = diseme, triseme, tetraseme, pentaseme
+ *   4. arsis: 1 if the note carries an arsis dot (stigme), else 0
+ *   5. hyphen: 1 if the note carries a hyphen, else 0 (not rendered)
+ * Collections: `gvn` (vocal), `gin` (instrumental), `gcn` (other signs, e.g. the rest `gcn:1`,
+ * which has a single tier).
+ *
+ * Rendering: the first two tiers choose the sign from Sowerby's table; length and arsis are
+ * added as combining marks after the sign's first character (so on the letter, not the
+ * prime, in upper-octave signs like `Ο′`). Groups are separated by one space; notes joined
+ * with `~` (several notes over one syllable) are written with no space.
+ *
+ * Classic UMD script: global `AgmNotation` in the browser (needs `AgmSowerbyTable` loaded
+ * first), CommonJS in Node.
+ */
+(function (root, factory) {
+  if (typeof module === "object" && module.exports) {
+    module.exports = factory(require("./sowerby-table.js"));
+  } else {
+    root.AgmNotation = factory(root.AgmSowerbyTable);
+  }
+})(typeof self !== "undefined" ? self : this, function (TABLE) {
+  "use strict";
+
+  const URN_PREFIX = "urn:cite2:zst:";
+  const JOINER = "~";
+
+  /** Combining marks for lengths 2–5. */
+  const LENGTH_MARKS = {
+    2: "̅",        // diseme: COMBINING OVERLINE
+    3: "\u{1D242}",     // COMBINING GREEK MUSICAL TRISEME
+    4: "\u{1D243}",     // COMBINING GREEK MUSICAL TETRASEME
+    5: "\u{1D244}",     // COMBINING GREEK MUSICAL PENTASEME
+  };
+  const ARSIS_MARK = "̇"; // arsis dot (stigme): COMBINING DOT ABOVE
+
+  function flag(value, tier, urn) {
+    if (value !== "0" && value !== "1") {
+      throw new Error(`${JSON.stringify(urn)}: ${tier} must be 0 or 1, not ${JSON.stringify(value)}`);
+    }
+    return value === "1";
+  }
+
+  /**
+   * Parse one note URN (full or short form).
+   * Returns a frozen object { collection, base, sharpening, length, arsis, hyphen, key,
+   *   urn (short, all tiers), pitchUnicode, marks, unicode, name }.
+   * Throws Error for a malformed URN or a sign not in the table.
+   */
+  function parseNote(urn) {
+    let short = String(urn).trim();
+    if (short.startsWith(URN_PREFIX)) short = short.slice(URN_PREFIX.length);
+    const colon = short.indexOf(":");
+    const collection = colon < 0 ? "" : short.slice(0, colon);
+    const ref = colon < 0 ? "" : short.slice(colon + 1);
+    if (!collection || !ref) throw new Error(`Not a note URN: ${JSON.stringify(urn)}`);
+    const tiers = ref.split(".");
+    if (tiers.length > 5 || !tiers.every((t) => /^\d+$/.test(t))) {
+      throw new Error(`Not a note URN: ${JSON.stringify(urn)}`);
+    }
+
+    let key, sharpening;
+    if (tiers.length >= 2 && Object.hasOwn(TABLE, `${collection}:${tiers[0]}.${tiers[1]}`)) {
+      key = `${collection}:${tiers[0]}.${tiers[1]}`;
+      sharpening = parseInt(tiers[1], 10);
+    } else if (tiers.length === 1 && Object.hasOwn(TABLE, `${collection}:${tiers[0]}`)) {
+      key = `${collection}:${tiers[0]}`;
+      sharpening = null;
+    } else {
+      throw new Error(`No such note in the table: ${JSON.stringify(urn)}`);
+    }
+
+    const length = tiers.length > 2 ? parseInt(tiers[2], 10) : 1;
+    if (length < 1 || length > 5) {
+      throw new Error(`${JSON.stringify(urn)}: length must be 1-5, not ${length}`);
+    }
+    const arsis = tiers.length > 3 ? flag(tiers[3], "arsis", urn) : false;
+    const hyphen = tiers.length > 4 ? flag(tiers[4], "hyphen", urn) : false;
+
+    const [pitchUnicode, name] = TABLE[key];
+    const marks = (LENGTH_MARKS[length] || "") + (arsis ? ARSIS_MARK : "");
+    // Split by code point, not UTF-16 unit: many signs are astral (U+1D2xx).
+    const chars = Array.from(pitchUnicode);
+    const unicode = chars[0] + marks + chars.slice(1).join("");
+
+    return Object.freeze({
+      collection,
+      base: parseInt(tiers[0], 10),
+      sharpening,
+      length,
+      arsis,
+      hyphen,
+      key,
+      urn: sharpening === null ? key : `${key}.${length}.${arsis ? 1 : 0}.${hyphen ? 1 : 0}`,
+      pitchUnicode,
+      marks,
+      unicode,
+      name,
+      vocal: collection === "gvn",
+      instrumental: collection === "gin",
+    });
+  }
+
+  /** Unicode for a single note URN. noteToUnicode("gvn:11.1.1.0.0") === "Ϲ" */
+  function noteToUnicode(urn) {
+    return parseNote(urn).unicode;
+  }
+
+  /** Parse a notation string into note groups (arrays of parsed notes), one per syllable. */
+  function parseNoteGroups(notes) {
+    return String(notes)
+      .split(/\s+/)
+      .filter(Boolean)
+      .map((token) => token.split(JOINER).filter(Boolean).map(parseNote));
+  }
+
+  /** Render groups (arrays of URN strings or parsed notes): space between, none within. */
+  function groupsToUnicode(groups) {
+    return groups
+      .map((g) => g.map((n) => (typeof n === "string" ? noteToUnicode(n) : n.unicode)).join(""))
+      .join(" ");
+  }
+
+  /**
+   * Convert a notation-edition string to Unicode.
+   * notesToUnicode("gvn:11.1.1.0.0 gvn:13.3.1.0.0~gvn:14.1.1.0.0") === "Ϲ ΚΙ"
+   */
+  function notesToUnicode(notes) {
+    return groupsToUnicode(parseNoteGroups(notes));
+  }
+
+  /** Like notesToUnicode but never throws: unknown notes render as `fallback(urn)`. */
+  function notesToUnicodeSafe(notes, fallback) {
+    const fb = fallback || ((u) => `[${u}]`);
+    return String(notes)
+      .split(/\s+/)
+      .filter(Boolean)
+      .map((token) => token.split(JOINER).filter(Boolean).map((u) => {
+        try { return noteToUnicode(u); } catch (e) { return fb(u); }
+      }).join(""))
+      .join(" ");
+  }
+
+  /** Collections in the sign table ("gvn", "gin", "gcn"), for spotting note URNs in running text. */
+  const COLLECTIONS = [...new Set(Object.keys(TABLE).map((k) => k.split(":")[0]))];
+  const ONE_NOTE = `(?:${URN_PREFIX.replace(/[.]/g, "\\.")})?(?:${COLLECTIONS.join("|")}):\\d+(?:\\.\\d+){0,4}`;
+  const EMBEDDED_RE = new RegExp(`(?<![\\w:.])${ONE_NOTE}(?:${JOINER}${ONE_NOTE})*(?![\\w:])`, "g");
+
+  /**
+   * Split running text into plain text and note URNs (e.g. "ζῆτα … gvn:7.1.1.0.0"), converting
+   * each note (or `~`-joined group of notes) to Unicode.
+   * Returns [{ text } | { urn, unicode, ok }], in order; `ok` is false when a note isn't in the
+   * table (its `unicode` is then "[urn]").
+   */
+  function splitEmbeddedNotation(text) {
+    const out = [];
+    const src = String(text ?? "");
+    let last = 0;
+    for (const m of src.matchAll(EMBEDDED_RE)) {
+      if (m.index > last) out.push({ text: src.slice(last, m.index) });
+      let unicode, ok = true;
+      try { unicode = notesToUnicode(m[0]); } catch (e) { unicode = `[${m[0]}]`; ok = false; }
+      out.push({ urn: m[0], unicode, ok });
+      last = m.index + m[0].length;
+    }
+    if (last < src.length) out.push({ text: src.slice(last) });
+    return out;
+  }
+
+  return {
+    URN_PREFIX,
+    LENGTH_MARKS,
+    ARSIS_MARK,
+    TABLE,
+    parseNote,
+    noteToUnicode,
+    parseNoteGroups,
+    groupsToUnicode,
+    notesToUnicode,
+    notesToUnicodeSafe,
+    splitEmbeddedNotation,
+  };
+});
+
+</script>
+<script>
+/*
+ * mss.js — manuscripts: the `#!mss` / `#!mspages` blocks of a mousike release, IIIF manifests,
+ * and the delimited-text "urnmap" files that pair IIIF images with CITE2 URNs and labels.
+ *
+ * Classic UMD script: global `AgmMss` in the browser, CommonJS in Node. Pure functions only;
+ * fetching is done by the app (or by `loadManuscript` with an injected fetch).
+ */
+(function (root, factory) {
+  if (typeof module === "object" && module.exports) {
+    module.exports = factory();
+  } else {
+    root.AgmMss = factory();
+  }
+})(typeof self !== "undefined" ? self : this, function () {
+  "use strict";
+
+  const THUMB_WIDTH = 256;      // px width of light-table thumbnails
+  const VIEW_SIZE = 2400;       // longest side, px, of the image shown in the pan/zoom viewer
+
+  /** Manuscripts for a menu: [{ urn, label, manifest, urnmap }] in `#!mss` order. */
+  function manuscriptMenu(data) {
+    return (data.mss || []).map((m) => ({
+      urn: m.urn, label: m.manuscript, manifest: m.manifest, urnmap: m.urnmap,
+    }));
+  }
+
+  /** Normalise an IIIF Image service / image id for matching: no `/info.json`, no trailing `/`. */
+  function serviceKey(id) {
+    return String(id || "").trim().replace(/\/info\.json$/, "").replace(/\/+$/, "");
+  }
+
+  /**
+   * Parse a urnmap file: `//` comment lines, then a header line, then `|`-delimited rows.
+   * Returns { rows: [{ image, urn, label, … }], warnings }.
+   */
+  function parseUrnMap(text) {
+    const warnings = [];
+    const lines = String(text).replace(/^﻿/, "").split(/\r?\n/)
+      .map((l) => l.replace(/\s+$/, ""))
+      .filter((l) => l.trim() && !l.trim().startsWith("//"));
+    if (!lines.length) return { rows: [], warnings: ["urnmap: no header line"] };
+    const header = lines[0].split("|").map((h) => h.trim());
+    for (const col of ["image", "urn", "label"]) {
+      if (!header.includes(col)) warnings.push(`urnmap: header has no "${col}" column`);
+    }
+    const rows = [];
+    for (let i = 1; i < lines.length; i++) {
+      const cols = lines[i].split("|");
+      if (cols.length !== header.length) {
+        warnings.push(`urnmap: row ${i} has ${cols.length} columns, expected ${header.length}`);
+        continue;
+      }
+      const row = {};
+      header.forEach((h, j) => (row[h] = cols[j].trim()));
+      rows.push(row);
+    }
+    return { rows, warnings };
+  }
+
+  /** First value of a IIIF v3 language map, or a plain string label. */
+  function labelText(label) {
+    if (label == null) return "";
+    if (typeof label === "string") return label;
+    if (Array.isArray(label)) return labelText(label[0]);
+    if (typeof label === "object") {
+      if ("@value" in label) return String(label["@value"]);
+      const vals = Object.values(label);
+      return vals.length ? labelText(vals[0]) : "";
+    }
+    return String(label);
+  }
+
+  const first = (x) => (Array.isArray(x) ? x[0] : x);
+
+  /**
+   * The images of a IIIF Presentation manifest (v2 or v3), one per canvas, in order.
+   * Returns [{ service, canvas, label, width, height }] where `service` is the IIIF Image
+   * service id (or the image resource id if there is no service).
+   */
+  function manifestImages(manifest) {
+    const out = [];
+    if (!manifest || typeof manifest !== "object") return out;
+    // v2: sequences[0].canvases[].images[0].resource
+    const v2 = manifest.sequences && first(manifest.sequences);
+    if (v2 && Array.isArray(v2.canvases)) {
+      for (const c of v2.canvases) {
+        const res = c.images && first(c.images) && first(c.images).resource;
+        if (!res) continue;
+        const svc = first(res.service);
+        out.push({
+          service: serviceKey((svc && (svc["@id"] || svc.id)) || res["@id"] || res.id),
+          canvas: c["@id"] || c.id || null,
+          label: labelText(c.label),
+          width: c.width || res.width || null,
+          height: c.height || res.height || null,
+        });
+      }
+      return out;
+    }
+    // v3: items[] (Canvas) → items[0] (AnnotationPage) → items[0] (Annotation) → body
+    for (const c of manifest.items || []) {
+      const page = first(c.items);
+      const anno = page && first(page.items);
+      const body = anno && first(anno.body);
+      if (!body) continue;
+      const svc = first(body.service);
+      out.push({
+        service: serviceKey((svc && (svc.id || svc["@id"])) || body.id),
+        canvas: c.id || null,
+        label: labelText(c.label),
+        width: c.width || body.width || null,
+        height: c.height || body.height || null,
+      });
+    }
+    return out;
+  }
+
+  /** IIIF Image API URL for `service`, scaled to fit within size×size (whole image, default quality). */
+  function iiifImageUrl(service, size) {
+    return `${serviceKey(service)}/full/!${size},${size}/0/default.jpg`;
+  }
+
+  /**
+   * One light-table entry per manifest image, captioned from the urnmap row whose `image`
+   * matches the image's service (caption "not found" when there is none). Pages from
+   * `#!mspages` whose `image` equals the urnmap row's `urn` are attached as `page`.
+   * `dseCounts` (from dseImageCounts) gives each entry `dse`: how many DSE records cite its URN.
+   * Returns [{ service, label, found, urn, page, dse, manifestLabel, thumb, full, width, height }].
+   */
+  function lightTable(images, urnmapRows, mspages, dseCounts) {
+    const byService = new Map();
+    for (const r of urnmapRows || []) {
+      const k = serviceKey(r.image);
+      if (k && !byService.has(k)) byService.set(k, r);
+    }
+    const pageByImage = new Map();
+    for (const p of mspages || []) if (p.image && !pageByImage.has(p.image)) pageByImage.set(p.image, p);
+    return images.map((im) => {
+      const row = byService.get(im.service) || null;
+      return {
+        service: im.service,
+        label: row && row.label ? row.label : "not found",
+        found: Boolean(row),
+        urn: row ? row.urn : null,
+        page: row ? pageByImage.get(row.urn) || null : null,
+        dse: row && dseCounts ? dseCounts.get(row.urn) || 0 : 0,
+        manifestLabel: im.label,
+        thumb: iiifImageUrl(im.service, THUMB_WIDTH),
+        full: iiifImageUrl(im.service, VIEW_SIZE),
+        width: im.width,
+        height: im.height,
+      };
+    });
+  }
+
+  /** An image URN without its `@` region of interest. */
+  const imageBase = (urn) => String(urn || "").split("@")[0].trim();
+
+  /** Number of DSE records citing each image (keyed by image URN without `@…`). */
+  function dseImageCounts(dseRows) {
+    const m = new Map();
+    for (const r of dseRows || []) {
+      const k = imageBase(r.image);
+      if (k) m.set(k, (m.get(k) || 0) + 1);
+    }
+    return m;
+  }
+
+  /** "urn:cts:ns:work:passage" -> "urn:cts:ns:work" (null if not a CTS URN). */
+  function ctsWork(urn) {
+    const parts = String(urn || "").split(":");
+    return parts.length >= 4 && parts[0] === "urn" && parts[1] === "cts" ? parts.slice(0, 4).join(":") : null;
+  }
+
+  /**
+   * The DSE records agm-mss.html uses: those citing texts cataloged in `#!catalog_embedded`
+   * (as agm-artifacts.html uses `#!catalog_annotated`). A release without that block uses all DSE records.
+   */
+  function embeddedDse(data) {
+    const all = data.dseAll || data.dse || [];
+    if (!data.catalogedEmbedded) return all;
+    const works = new Set((data.catalog_embedded || []).map((c) => c.work));
+    return all.filter((r) => works.has(ctsWork(r.text)));
+  }
+
+  /**
+   * Passages indexed to one image (URN without `@`), in DSE order:
+   * [{ urn, passage, roi, dse, row, catalog }] where `row` is the `#!texts_cols` row for the
+   * passage (or null) and `catalog` its work's `#!catalog_embedded` row (or null).
+   */
+  function imagePassages(data, imageUrn) {
+    const cols = (data.index && data.index.textsCols) || new Map();
+    const cats = (data.index && data.index.catalogEmbedded) || new Map();
+    return embeddedDse(data)
+      .filter((r) => imageBase(r.image) === imageUrn)
+      .map((r) => {
+        const work = ctsWork(r.text);
+        return {
+          urn: r.text,
+          passage: work ? r.text.slice(work.length + 1) : r.text,
+          roi: r.roi || null,
+          dse: r,
+          row: cols.get(r.text) || null,
+          catalog: (work && cats.get(work)) || null,
+        };
+      });
+  }
+
+  /** `#!mspages` rows belonging to manuscript `msUrn` (a collection URN such as "…mss.barocci41:"). */
+  function pagesFor(data, msUrn) {
+    const prefix = String(msUrn || "").replace(/:?$/, ":");
+    return (data.mspages || []).filter((p) => String(p.urn).startsWith(prefix));
+  }
+
+  /**
+   * Fetch a manuscript's manifest and urnmap and build its light table.
+   * Images are matched with the DSE records from embeddedDse(data).
+   * Returns { entries, counts: { images, found, missing, withDse }, warnings }.
+   */
+  async function loadManuscript(data, ms, fetchImpl) {
+    const f = fetchImpl || (typeof fetch !== "undefined" ? fetch : null);
+    if (!f) throw new Error("No fetch implementation available");
+    const get = async (url, what) => {
+      if (!url) throw new Error(`${ms.label}: no ${what} URL in #!mss`);
+      const res = await f(url);
+      if (!res.ok) throw new Error(`HTTP ${res.status} loading ${what} ${url}`);
+      return res;
+    };
+    const [manifestRes, mapRes] = await Promise.all([get(ms.manifest, "manifest"), get(ms.urnmap, "urnmap")]);
+    const manifest = await manifestRes.json();
+    const map = parseUrnMap(await mapRes.text());
+    const images = manifestImages(manifest);
+    const dseRows = embeddedDse(data);
+    const entries = lightTable(images, map.rows, pagesFor(data, ms.urn), dseImageCounts(dseRows));
+    const found = entries.filter((e) => e.found).length;
+    const withDse = entries.filter((e) => e.dse > 0).length;
+    const warnings = map.warnings.slice();
+    if (!images.length) warnings.push(`manifest ${ms.manifest}: no images found`);
+    return { entries, counts: { images: entries.length, found, missing: entries.length - found, withDse }, warnings };
+  }
+
+  return {
+    THUMB_WIDTH, VIEW_SIZE,
+    manuscriptMenu, serviceKey, parseUrnMap, labelText, manifestImages, iiifImageUrl,
+    lightTable, pagesFor, loadManuscript, imageBase, dseImageCounts, embeddedDse, imagePassages,
+  };
+});
+
+</script>
+<script>
+/* mss-app.js — UI for agm-mss.html. Depends on globals AgmCex, AgmViewer, AgmMss and AgmNotation. */
+(function () {
+  "use strict";
+  const $ = (id) => document.getElementById(id);
+  // Data-source controls exist only in the fixture build (see build.js), so these may be null.
+  const urlInput = $("url");
+  const loadButton = $("load");
+  const fileInput = $("file");
+  const statusEl = $("status");
+  const msSelect = $("ms");
+  const msOut = $("ms-out");
+
+  /** App state, exposed for console inspection. */
+  window.mss = { data: null, ms: null, entries: [], selected: null, viewer: null, selectManuscript, selectImage, closeImage };
+
+  if (urlInput) urlInput.value = AgmCex.DEFAULT_URL;
+
+  function setStatus(msg, isError, title) {
+    statusEl.textContent = msg;
+    statusEl.title = title || "";
+    statusEl.className = isError ? "error" : "";
+  }
+
+  function el(tag, attrs, ...kids) {
+    const e = document.createElement(tag);
+    Object.assign(e, attrs || {});
+    for (const k of kids) if (k !== null && k !== undefined && k !== "") e.append(k);
+    return e;
+  }
+
+  /* ---------- manuscript menu ---------- */
+
+  function renderMenu(d) {
+    const menu = AgmMss.manuscriptMenu(d);
+    msSelect.replaceChildren(
+      el("option", { value: "", textContent: menu.length ? "Choose a manuscript…" : "No manuscripts in this release" }),
+      ...menu.map((m) => el("option", { value: m.urn, textContent: m.label })));
+    msSelect.disabled = menu.length === 0;
+    msOut.replaceChildren();
+  }
+
+  let loadToken = 0; // ignore results for a manuscript the user has since moved away from
+
+  async function selectManuscript(urn) {
+    msSelect.value = urn || "";
+    const token = ++loadToken;
+    Object.assign(window.mss, { ms: null, entries: [], selected: null, viewer: null });
+    grid = pageSection = pageHead = viewerHolder = textSection = null;
+    const ms = AgmMss.manuscriptMenu(window.mss.data || {}).find((m) => m.urn === urn);
+    if (!ms) { msOut.replaceChildren(); return null; }
+    window.mss.ms = ms;
+
+    const status = el("p", { className: "counts", textContent: "Loading manifest and URN map…" });
+    msOut.replaceChildren(
+      el("h2", { textContent: ms.label }),
+      el("p", { className: "urn-line" }, el("code", { textContent: ms.urn })),
+      status);
+
+    let result;
+    try {
+      result = await AgmMss.loadManuscript(window.mss.data, ms);
+    } catch (e) {
+      if (token === loadToken) status.replaceChildren(el("span", { className: "note", textContent: `Could not load: ${e.message}` }));
+      return null;
+    }
+    if (token !== loadToken) return null;
+
+    const { entries, counts, warnings } = result;
+    window.mss.entries = entries;
+    status.replaceChildren(`${counts.images} image(s), ${counts.found} captioned from the URN map`,
+      counts.missing ? el("span", { className: "missing", textContent: `, ${counts.missing} not found` }) : "",
+      ", ",
+      el("span", { className: "dse-count", textContent: `${counts.withDse} with DSE records` }),
+      ".");
+    if (warnings.length) {
+      msOut.append(el("details", { className: "ms-warnings" },
+        el("summary", { textContent: `${warnings.length} warning(s)` }),
+        el("ul", null, ...warnings.map((w) => el("li", { textContent: w })))));
+    }
+    grid = lightTableEl(entries);
+    textSection = el("section", { className: "page-text", id: "page-text" });
+    textSection.hidden = true;
+    msOut.append(dseFilter(counts.withDse), el("div", { className: "stage" }, pageView(), grid), textSection);
+    return result;
+  }
+
+  /* ---------- light table ---------- */
+
+  function lightTableEl(entries) {
+    const grid = el("div", { className: "light-table", id: "light-table" });
+    entries.forEach((e, i) => {
+      const img = el("img", { src: e.thumb, alt: e.label, loading: "lazy", decoding: "async" });
+      img.addEventListener("error", () => img.classList.add("broken"));
+      const badge = e.dse
+        ? el("span", { className: "dse-badge", textContent: String(e.dse), title: `${e.dse} DSE record(s)` })
+        : null;
+      const btn = el("button", {
+        type: "button",
+        className: "thumb" + (e.found ? "" : " not-found") + (e.dse ? " has-dse" : ""),
+        title: (e.urn || e.service) + (e.dse ? `\n${e.dse} DSE record(s)` : ""),
+      }, el("figure", { style: "margin:0" }, img, badge, el("figcaption", { textContent: e.label })));
+      btn.dataset.index = String(i);
+      btn.addEventListener("click", () => selectImage(i));
+      grid.append(btn);
+    });
+    return grid;
+  }
+
+  /** "Only images with DSE records" toggle for the light table (hides the others). */
+  function dseFilter(n) {
+    const box = el("input", { type: "checkbox", id: "dse-only", disabled: n === 0 });
+    box.addEventListener("change", () => {
+      if (grid) grid.classList.toggle("dse-only", box.checked);
+    });
+    return el("label", { className: "dse-filter", htmlFor: "dse-only" }, box,
+      el("span", { className: "dse-swatch" }), ` Only images with DSE records (${n})`);
+  }
+
+  /* ---------- selected image: pan/zoom view ---------- */
+
+  let grid = null;         // the light table
+  let pageHead = null;
+  let viewerHolder = null;
+  let pageSection = null;  // the full-image view; replaces the light table while open
+  let gridScroll = 0;      // light-table scroll position, restored on close
+  let textSection = null;  // passages indexed to the open image, shown below it
+
+  function pageView() {
+    pageHead = el("div", { className: "page-head" });
+    viewerHolder = el("div", { className: "viewer" });
+    pageSection = el("section", { className: "page-view", id: "page-view" }, pageHead, viewerHolder);
+    pageSection.hidden = true;
+    return pageSection;
+  }
+
+  /**
+   * Show light-table entry `i` in the pan/zoom viewer, in place of the light table
+   * (Close or Escape returns to the light table).
+   */
+  function selectImage(i) {
+    const entries = window.mss.entries;
+    const e = entries[i];
+    if (!e || !pageSection) return null;
+    window.mss.selected = i;
+    for (const t of document.querySelectorAll(".thumb.selected")) t.classList.remove("selected");
+    const thumb = document.querySelector(`.thumb[data-index="${i}"]`);
+    if (thumb) thumb.classList.add("selected");
+
+    const prev = el("button", { type: "button", textContent: "‹ Previous", disabled: i === 0 });
+    const next = el("button", { type: "button", textContent: "Next ›", disabled: i === entries.length - 1 });
+    const close = el("button", { type: "button", className: "close", textContent: "✕ Close", title: "Back to the light table (Esc)" });
+    prev.addEventListener("click", () => selectImage(i - 1));
+    next.addEventListener("click", () => selectImage(i + 1));
+    close.addEventListener("click", closeImage);
+    const meta = [e.page ? e.page.urn : null, e.urn, e.dse ? `${e.dse} DSE record(s)` : null]
+      .filter(Boolean).join(" · ");
+    pageHead.replaceChildren(
+      el("h3", { className: e.found ? "" : "not-found", textContent: e.page ? e.page.label : e.label }),
+      meta ? el("span", { className: "meta", textContent: meta }) : el("span", { className: "meta not-found", textContent: `not in URN map: ${e.service}` }),
+      el("span", { className: "page-nav" }, prev, next, close));
+
+    if (pageSection.hidden) {
+      gridScroll = grid ? grid.scrollTop : 0; // display:none can lose it, so keep it ourselves
+      if (grid) grid.hidden = true;
+      pageSection.hidden = false;
+    }
+    if (!window.mss.viewer) window.mss.viewer = AgmViewer.createViewer(viewerHolder);
+    window.mss.viewer.load(e.full, e.label);
+    renderPassages(e);
+    if (!isOnScreen(pageSection)) pageSection.scrollIntoView({ block: "nearest" });
+    return e;
+  }
+
+  /** Close the full-image view and return to the light table where it was. */
+  function closeImage() {
+    if (!pageSection || pageSection.hidden) return;
+    pageSection.hidden = true;
+    if (textSection) textSection.hidden = true;
+    if (!grid) return;
+    grid.hidden = false;
+    grid.scrollTop = gridScroll;
+    // Keep the last-viewed thumbnail (Previous/Next may have moved on) visible and focused.
+    const thumb = grid.querySelector(".thumb.selected");
+    if (thumb) {
+      const g = grid.getBoundingClientRect(), t = thumb.getBoundingClientRect();
+      if (t.top < g.top) grid.scrollTop -= g.top - t.top + 12;
+      else if (t.bottom > g.bottom) grid.scrollTop += t.bottom - g.bottom + 12;
+      thumb.focus({ preventScroll: true });
+    }
+  }
+
+  document.addEventListener("keydown", (e) => {
+    if (!pageSection || pageSection.hidden) return;
+    if (e.key === "Escape") { closeImage(); e.preventDefault(); }
+  });
+
+  /* ---------- text indexed to the open image ---------- */
+
+  /** Show the `#!texts_cols` passages that DSE records index to entry `e`'s image. */
+  function renderPassages(e) {
+    if (!textSection) return;
+    const passages = e.urn ? AgmMss.imagePassages(window.mss.data, e.urn) : [];
+    showRegions(passages); // always: clears the previous image's regions when there are none
+    textSection.hidden = passages.length === 0;
+    if (!passages.length) { textSection.replaceChildren(); return; }
+
+    const works = [...new Set(passages.map((p) => p.catalog)
+      .filter(Boolean).map((c) => [c.groupName, c.workTitle].filter(Boolean).join(", ")))];
+    const list = el("ol", { className: "passages" });
+    for (const p of passages) {
+      list.append(linked(el("li", { className: "passage" + (p.row ? "" : " missing") + (p.roi ? " has-roi" : "") },
+        el("span", { className: "ref", textContent: p.passage, title: p.urn }),
+        p.row ? passageBody(p.row)
+          : el("span", { className: "note", textContent: "not found in #!texts_cols" })), p.urn));
+    }
+    textSection.replaceChildren(
+      el("h3", { textContent: `Text on this image (${passages.length} passage${passages.length === 1 ? "" : "s"})` },
+        works.length ? el("span", { className: "work", textContent: ` · ${works.join("; ")}` }) : null),
+      list);
+  }
+
+  /* ---------- linked highlighting: image regions ↔ text passages ---------- */
+
+  let highlighted = null;
+
+  /** Draw the passages' regions of interest on the image, keyed by passage URN. */
+  function showRegions(passages) {
+    const viewer = window.mss.viewer;
+    highlighted = null;
+    if (!viewer) return;
+    viewer.setRegions(passages.filter((p) => p.roi)
+      .map((p) => ({ id: p.urn, roi: p.roi, kind: "text", title: p.passage })));
+    viewer.onRegionHover((id) => highlight(id));
+    viewer.highlight(null);
+  }
+
+  /** Highlight passage `urn` in the text panel and its region(s) on the image; null clears. */
+  function highlight(urn) {
+    highlighted = urn || null;
+    if (textSection) {
+      for (const li of textSection.querySelectorAll(".passage")) {
+        li.classList.toggle("hl", highlighted !== null && li.dataset.urn === highlighted);
+      }
+    }
+    if (window.mss.viewer) window.mss.viewer.highlight(highlighted);
+  }
+  window.mss.highlight = highlight;
+
+  /** Tag a passage element with its URN so hovering it highlights its region. */
+  function linked(node, urn) {
+    node.dataset.urn = urn;
+    node.addEventListener("pointerenter", () => highlight(urn));
+    node.addEventListener("pointerleave", () => { if (highlighted === urn) highlight(null); });
+    return node;
+  }
+
+  /** A `#!texts_cols` row: its cells side by side, with Sowerby note URNs shown as Unicode signs. */
+  function passageBody(row) {
+    const body = el("div", { className: "cells" });
+    body.style.gridTemplateColumns = `repeat(${Math.max(row.cells.length, 1)}, minmax(0, auto))`;
+    for (const cell of row.cells) body.append(cellEl(cell));
+    return body;
+  }
+
+  function cellEl(text) {
+    const cell = el("span", { className: "cell greek" });
+    for (const seg of AgmNotation.splitEmbeddedNotation(text)) {
+      cell.append(seg.urn
+        ? el("span", {
+            className: "mousike-notation note-sign" + (seg.ok ? "" : " unknown"),
+            textContent: seg.unicode,
+            title: seg.urn,
+          })
+        : seg.text);
+    }
+    return cell;
+  }
+
+  /** True when all of `node` is within the window. */
+  function isOnScreen(node) {
+    const r = node.getBoundingClientRect();
+    return r.top >= 0 && r.bottom <= window.innerHeight;
+  }
+
+  msSelect.addEventListener("change", () => selectManuscript(msSelect.value));
+
+  /* ---------- loading the release ---------- */
+
+  function accept(d, source) {
+    window.mss.data = d;
+    setStatus(`Loaded mousike release ${d.version}`, false, `Source: ${source}`);
+    renderMenu(d);
+  }
+  window.mss.accept = accept;
+
+  async function loadUrl() {
+    const url = (urlInput && urlInput.value.trim()) || AgmCex.DEFAULT_URL;
+    setStatus("Loading…");
+    try {
+      accept(await AgmCex.loadCex(url), url);
+    } catch (e) {
+      setStatus(`Could not load ${url}: ${e.message}.` + (fileInput ? " Try loading a local copy instead." : ""), true);
+    }
+  }
+
+  if (loadButton) loadButton.addEventListener("click", loadUrl);
+  if (urlInput) urlInput.addEventListener("keydown", (e) => { if (e.key === "Enter") loadUrl(); });
+  if (fileInput) fileInput.addEventListener("change", async (e) => {
+    const f = e.target.files[0];
+    if (!f) return;
+    try { accept(AgmCex.parseCex(await f.text()), f.name); }
+    catch (err) { setStatus(`Could not parse ${f.name}: ${err.message}`, true); }
+  });
+
+  if (!window.AGM_NO_AUTOLOAD) loadUrl();
+})();
+
+</script>
+</body>
+</html>

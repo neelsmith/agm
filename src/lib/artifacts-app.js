@@ -1,4 +1,4 @@
-/* app.js — UI for the agm reader. Depends on globals AgmCex, AgmEdition, AgmNotation and AgmViewer. */
+/* artifacts-app.js — UI for agm-artifacts.html. Depends on globals AgmCex, AgmEdition, AgmNotation and AgmViewer. */
 (function () {
   "use strict";
   const $ = (id) => document.getElementById(id);

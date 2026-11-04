@@ -54,9 +54,25 @@
   }
 
   /**
+   * State that shows region `roi` (fractions of an imgW×imgH image) centred in the frame, with
+   * `margin` (a fraction of the region's size) of context on each side, never zoomed in past
+   * `maxScale` nor out past the whole-image fit.
+   */
+  function regionFitState(imgW, imgH, frameW, frameH, roi, margin = 0.6, maxScale = MAX_SCALE) {
+    const fit = fitState(imgW, imgH, frameW, frameH);
+    if (!roi || !(roi.width > 0 && roi.height > 0)) return fit;
+    const w = roi.width * imgW * (1 + 2 * margin);
+    const h = roi.height * imgH * (1 + 2 * margin);
+    const scale = Math.max(fit.scale, Math.min(maxScale, frameW / w, frameH / h));
+    const cx = (roi.left + roi.width / 2) * imgW;
+    const cy = (roi.top + roi.height / 2) * imgH;
+    return { scale, x: frameW / 2 - cx * scale, y: frameH / 2 - cy * scale };
+  }
+
+  /**
    * Build a viewer inside `container` (emptied first).
-   * Returns { load(url, alt), fit(), zoom(factor), state(), element,
-   *   setRegions([{ id, roi, kind, title }]), highlight(id | null), onRegionHover(fn) }.
+   * Returns { load(url, alt), fit(), zoom(factor), focusRegion(roi), state(), element,
+   *   setRegions([{ id, roi, kind, title }]), highlight(id | [ids] | null), onRegionHover(fn) }.
    * Several regions may share an id; highlight(id) marks all of them.
    * onRegionHover(fn) calls fn(id) when the pointer enters a region and fn(null) when it leaves.
    */
@@ -114,9 +130,11 @@
       apply();
     }
 
-    function highlight(id) {
-      highlighted = id || null;
-      for (const r of regions) r.el.classList.toggle("active", highlighted !== null && r.id === highlighted);
+    /** Highlight the region(s) with id `ids` (one id, or an array of ids); null clears. */
+    function highlight(ids) {
+      highlighted = ids || null;
+      const set = new Set(Array.isArray(ids) ? ids : ids ? [ids] : []);
+      for (const r of regions) r.el.classList.toggle("active", set.has(r.id));
     }
     function center() {
       return { x: frame.clientWidth / 2, y: frame.clientHeight / 2 };
@@ -125,6 +143,12 @@
       if (!loaded) return;
       st = fitState(img.naturalWidth, img.naturalHeight, frame.clientWidth, frame.clientHeight);
       fitScale = st.scale;
+      apply();
+    }
+    /** Zoom to region `roi` with some context around it (no-op until the image has loaded). */
+    function focusRegion(roi, margin) {
+      if (!loaded || !roi) return;
+      st = regionFitState(img.naturalWidth, img.naturalHeight, frame.clientWidth, frame.clientHeight, roi, margin);
       apply();
     }
     function zoom(factor, px, py) {
@@ -215,12 +239,12 @@
     }
 
     return {
-      load, fit, zoom, setRegions, highlight,
+      load, fit, zoom, focusRegion, setRegions, highlight,
       onRegionHover: (fn) => { hoverFn = fn; },
       state: () => ({ ...st }),
       element: frame,
     };
   }
 
-  return { createViewer, fitState, zoomAt, regionBox, MAX_SCALE };
+  return { createViewer, fitState, zoomAt, regionBox, regionFitState, MAX_SCALE };
 });

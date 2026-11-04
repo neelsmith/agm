@@ -1,4 +1,5 @@
-// Build the single self-contained app file: node src/build.js  ->  src/dist/agm.html
+// Build the self-contained single-file apps: node src/build.js  ->  src/dist/agm-<app>.html
+// (agm-artifacts.html, agm-mss.html, agm-texts.html)
 const fs = require("node:fs");
 const path = require("node:path");
 
@@ -20,18 +21,47 @@ const fontCss = `/* Mousike Notation font: SIL Open Font License 1.1, derived fr
 }
 .mousike-notation { font-family: 'Mousike Notation', serif; }`;
 
+// Shared pieces, inlined into whichever app template uses them.
 const parts = {
   FONT_CSS: fontCss,
+  BASE_CSS: read("lib/base.css"),
+  VIEWER_CSS: read("lib/viewer.css"),
   CEX_JS: read("lib/cex.js"),
   EDITION_JS: read("lib/edition.js"),
   SOWERBY_TABLE_JS: read("lib/sowerby-table.js"),
   NOTATION_JS: read("lib/notation.js"),
   VIEWER_JS: read("lib/viewer.js"),
-  APP_JS: read("lib/app.js"),
+  ARTIFACTS_APP_JS: read("lib/artifacts-app.js"),
+  MSS_JS: read("lib/mss.js"),
+  MSS_APP_JS: read("lib/mss-app.js"),
+  TEXTS_JS: read("lib/texts.js"),
+  TEXTS_APP_JS: read("lib/texts-app.js"),
 };
 
-// Data-source controls (URL box, Load button, local file). Only the fixture preview has
-// them; dist/agm.html always loads the default mousike release.
+// The apps: template plus the parts it needs (every one must appear in the template, once).
+const APPS = {
+  artifacts: {
+    template: "artifacts-app.html",
+    parts: ["FONT_CSS", "BASE_CSS", "VIEWER_CSS", "CEX_JS", "EDITION_JS", "SOWERBY_TABLE_JS",
+      "NOTATION_JS", "VIEWER_JS", "ARTIFACTS_APP_JS"],
+  },
+  mss: {
+    template: "mss-app.html",
+    parts: ["FONT_CSS", "BASE_CSS", "VIEWER_CSS", "CEX_JS", "VIEWER_JS", "SOWERBY_TABLE_JS",
+      "NOTATION_JS", "MSS_JS", "MSS_APP_JS"],
+  },
+  texts: {
+    template: "texts-app.html",
+    parts: ["FONT_CSS", "BASE_CSS", "VIEWER_CSS", "CEX_JS", "SOWERBY_TABLE_JS", "NOTATION_JS", "VIEWER_JS",
+      "EDITION_JS", "MSS_JS", "TEXTS_JS", "TEXTS_APP_JS"],
+  },
+};
+
+/** Output file name of an app: "agm-<app>.html", or "agm-<app>-fixture.html" with load controls. */
+const fileName = (app, fixture = false) => `agm-${app}${fixture ? "-fixture" : ""}.html`;
+
+// Data-source controls (URL box, Load button, local file). Only the fixture builds have
+// them; the plain dist/agm-<app>.html files always load the default mousike release.
 const LOAD_CONTROLS = `  <div class="controls">
     <input id="url" type="url" aria-label="CEX URL">
     <button id="load">Load</button>
@@ -39,27 +69,32 @@ const LOAD_CONTROLS = `  <div class="controls">
   </div>`;
 
 /**
- * Render the single-file app.
- * @param {{loadControls?: boolean}} opts  loadControls: include the URL box, Load button
- *   and local-file input (off for dist/agm.html, on for the fixture preview).
+ * Render one single-file app.
+ * @param {{app?: "artifacts"|"mss"|"texts", loadControls?: boolean}} opts  loadControls: include
+ *   the URL box, Load button and local-file input (off for dist/agm-<app>.html, on for
+ *   dist/agm-<app>-fixture.html).
  */
-function render({ loadControls = false } = {}) {
-  let html = read("app.html");
+function render({ app = "artifacts", loadControls = false } = {}) {
+  const spec = APPS[app];
+  if (!spec) throw new Error(`unknown app ${app}`);
+  let html = read(spec.template);
   const htmlParts = { LOAD_CONTROLS: loadControls ? LOAD_CONTROLS : "", VERSION: version };
-  const all = { ...parts, ...htmlParts };
+  const all = { ...Object.fromEntries(spec.parts.map((n) => [n, parts[n]])), ...htmlParts };
   for (const [name, content] of Object.entries(all)) {
     const marker = name in htmlParts ? `<!--@@${name}@@-->` : `/*@@${name}@@*/`;
-    if (!html.includes(marker)) throw new Error(`app.html is missing ${marker}`);
+    if (!html.includes(marker)) throw new Error(`${spec.template} is missing ${marker}`);
     // Function replacer so `$` sequences in source aren't treated as patterns.
     html = html.replace(marker, () => content);
   }
   return html;
 }
 
-module.exports = { render, version };
+module.exports = { render, version, APPS, fileName };
 
 if (require.main === module) {
   fs.mkdirSync(path.join(here, "dist"), { recursive: true });
-  fs.writeFileSync(path.join(here, "dist", "agm.html"), render());
-  console.log("wrote src/dist/agm.html");
+  for (const app of Object.keys(APPS)) {
+    fs.writeFileSync(path.join(here, "dist", fileName(app)), render({ app }));
+    console.log(`wrote src/dist/${fileName(app)}`);
+  }
 }

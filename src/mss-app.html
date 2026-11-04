@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>agm-mss: Ancient Greek Music manuscripts</title>
+<style>
+/*@@FONT_CSS@@*/
+/*@@BASE_CSS@@*/
+/*@@VIEWER_CSS@@*/
+  .ms-picker { display:flex; flex-wrap: wrap; gap:10px; align-items:center; margin: 14px 0; }
+  .ms-picker label { font-weight: 600; }
+  .ms-picker select { font: inherit; padding: 6px 8px; max-width: 100%; min-width: 0;
+    background: var(--bg); color: inherit; border: 1px solid var(--line); border-radius: 4px; }
+  #ms-out h2 { margin: 18px 0 2px; font-size: 1.15rem; }
+  .urn-line, .counts { color: var(--muted); margin: 2px 0 8px; }
+  .urn-line code { overflow-wrap: anywhere; }
+  .counts .missing { color: var(--warn); }
+  .ms-warnings { color: var(--warn); font-size: .85rem; }
+  .note { color: var(--warn); font-size: .9rem; }
+
+  /* The light table and the full-image view share one fixed-height "stage"; only one shows at a time. */
+  #ms-out { --stage-h: min(62vh, 600px); }
+  .stage { margin: 10px 0 0; }
+  .stage [hidden] { display: none !important; }
+  .page-view { height: var(--stage-h); display: flex; flex-direction: column; }
+  .page-view .viewer { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+  .page-view .viewer-frame { flex: 1 1 auto; height: auto; min-height: 0; }
+  .page-head { display: flex; flex-wrap: wrap; gap: 4px 14px; align-items: baseline; margin-bottom: 6px; }
+  .page-head h3 { margin: 0; font-size: 1.05rem; }
+  .page-head .meta { color: var(--muted); font-size: .8rem; font-family: ui-monospace, Menlo, monospace;
+    overflow-wrap: anywhere; }
+  .page-head .not-found { color: var(--warn); }
+  .page-nav { display: flex; gap: 6px; margin-left: auto; }
+  .page-nav .close { background: transparent; color: var(--accent); }
+  .page-nav button { padding: 4px 10px; }
+  .page-nav button:disabled { opacity: .4; cursor: default; }
+
+  .light-table { display: grid; grid-template-columns: repeat(auto-fill, minmax(124px, 1fr)); gap: 12px;
+    align-content: start; max-height: var(--stage-h); overflow-y: auto; overscroll-behavior: contain;
+    box-sizing: border-box; margin: 0; padding: 12px; border-radius: 8px; background: color-mix(in srgb, var(--fg) 6%, var(--bg)); }
+  .thumb { display: flex; flex-direction: column; align-items: stretch; gap: 4px; margin: 0; padding: 6px;
+    border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: inherit; cursor: pointer;
+    font: inherit; text-align: center; }
+  .thumb:hover { border-color: var(--accent); }
+  .thumb:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .thumb.selected { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
+  .thumb img { width: 100%; height: 150px; object-fit: contain; background: #111; border-radius: 3px; }
+  .thumb img.broken { visibility: hidden; }
+  /* Images cited by DSE records */
+  #ms-out { --dse: #1f7a8c; }
+  @media (prefers-color-scheme: dark) { #ms-out { --dse: #4fb3c8; } }
+  .thumb figure { position: relative; }
+  .thumb.has-dse { border-color: var(--dse); box-shadow: inset 0 0 0 2px var(--dse);
+    background: color-mix(in srgb, var(--dse) 12%, var(--bg)); }
+  .thumb.has-dse.selected { box-shadow: inset 0 0 0 2px var(--dse), 0 0 0 3px var(--accent); }
+  .dse-badge { position: absolute; top: 4px; right: 4px; min-width: 18px; padding: 1px 6px; border-radius: 10px;
+    background: var(--dse); color: #fff; font-size: .72rem; font-weight: 600; line-height: 1.5; }
+  .light-table.dse-only .thumb:not(.has-dse) { display: none; }
+  .counts .dse-count { color: var(--dse); font-weight: 600; }
+  .dse-filter { display: inline-flex; align-items: center; gap: 4px; font-size: .9rem; margin: 2px 0 4px; cursor: pointer; }
+  .dse-swatch { display: inline-block; width: 12px; height: 12px; border-radius: 3px; background: var(--dse); margin-left: 4px; }
+  /* Text indexed to the open image (texts with embedded notation) */
+  .page-text { margin: 14px 0 0; border-top: 1px solid var(--line); padding-top: 8px; }
+  .page-text h3 { margin: 0 0 6px; font-size: 1rem; }
+  .page-text h3 .work { color: var(--muted); font-weight: 400; }
+  .passages { list-style: none; margin: 0; padding: 0; }
+  .passage { display: grid; grid-template-columns: 6.5em 1fr; gap: 4px 12px; align-items: baseline;
+    padding: 5px 0; border-top: 1px solid color-mix(in srgb, var(--line) 60%, transparent); }
+  .passage .ref { font-family: ui-monospace, Menlo, monospace; font-size: .8rem; color: var(--muted);
+    overflow-wrap: anywhere; }
+  .passage .cells { display: grid; gap: 2px 22px; align-items: baseline; }
+  .greek { font-family: "Gentium Plus", "New Athena Unicode", Georgia, serif; font-size: 1.1rem; }
+  .note-sign { font-size: 1.35em; line-height: 1; }
+  /* Regions of interest on the image, linked with the passages (active style from viewer.css) */
+  .viewer-region.kind-text { --roi: color-mix(in srgb, var(--dse) 80%, white); }
+  .passage { border-radius: 4px; padding-left: 4px; padding-right: 4px; }
+  .passage.has-roi { cursor: default; }
+  .passage.hl { background: rgba(255, 59, 107, .14); box-shadow: inset 3px 0 0 rgba(255, 59, 107, .85); }
+  .note-sign.unknown { color: var(--warn); font-size: .8em; font-family: ui-monospace, Menlo, monospace; }
+  .thumb figcaption { font-size: .8rem; line-height: 1.25; overflow-wrap: anywhere; }
+  .thumb.not-found figcaption { color: var(--warn); font-style: italic; }
+</style>
+</head>
+<body>
+<header>
+  <h1>agm · Manuscripts</h1>
+<!--@@LOAD_CONTROLS@@-->
+</header>
+<main>
+  <p id="status">Not loaded.</p>
+  <section class="ms-picker">
+    <label for="ms">Manuscript</label>
+    <select id="ms" disabled><option value="">Load data first</option></select>
+  </section>
+  <section id="ms-out"></section>
+</main>
+<footer class="app-footer">agm-mss <span id="app-version"><!--@@VERSION@@--></span></footer>
+
+<script>
+/*@@CEX_JS@@*/
+</script>
+<script>
+/*@@VIEWER_JS@@*/
+</script>
+<script>
+/*@@SOWERBY_TABLE_JS@@*/
+</script>
+<script>
+/*@@NOTATION_JS@@*/
+</script>
+<script>
+/*@@MSS_JS@@*/
+</script>
+<script>
+/*@@MSS_APP_JS@@*/
+</script>
+</body>
+</html>

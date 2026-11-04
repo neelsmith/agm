@@ -3,31 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>agm: Ancient Greek Music</title>
+<title>agm-artifacts: Ancient Greek Music artifacts</title>
 <style>
 /*@@FONT_CSS@@*/
-  :root { --bg:#fbfaf7; --fg:#222; --muted:#666; --line:#ddd; --accent:#7a3b12; --warn:#9a5b00; }
-  @media (prefers-color-scheme: dark) {
-    :root { --bg:#1b1a18; --fg:#e8e6e1; --muted:#9a968e; --line:#3a3834; --accent:#e0a070; --warn:#e0b050; }
-  }
-  body { margin:0; background:var(--bg); color:var(--fg); font:15px/1.45 system-ui, sans-serif; }
-  header, main { max-width: 1100px; margin: 0 auto; padding: 0 16px; }
-  header { padding-top: 20px; border-bottom: 1px solid var(--line); }
-  h1 { margin: 0 0 14px; font-size: 1.4rem; }
-  .controls { display:flex; gap:8px; flex-wrap:wrap; align-items:center; padding-bottom: 14px; }
-  .controls input[type=url] { flex: 1 1 380px; min-width: 0; padding: 6px 8px; font: inherit;
-    background: transparent; color: inherit; border: 1px solid var(--line); border-radius: 4px; }
-  button { font: inherit; padding: 6px 12px; border-radius: 4px; border: 1px solid var(--accent);
-    background: var(--accent); color: var(--bg); cursor: pointer; }
-  #status { color: var(--muted); overflow-wrap: anywhere; }
-  #status.error { color: #c0392b; }
+/*@@BASE_CSS@@*/
+/*@@VIEWER_CSS@@*/
   .summary { display:grid; grid-template-columns: repeat(auto-fill, minmax(120px,1fr)); gap:8px; margin: 18px 0; }
   .summary div { border:1px solid var(--line); border-radius:6px; padding:8px 10px; }
   .summary b { display:block; font-size: 1.3rem; }
   .summary span { color: var(--muted); font-size: .85rem; }
   .warnings { color: var(--warn); }
-  details { border-top: 1px solid var(--line); padding: 8px 0; }
-  summary { cursor: pointer; font-weight: 600; }
   .scroll { overflow-x: auto; }
   table { border-collapse: collapse; margin-top: 8px; font-size: .9rem; }
   th, td { text-align: left; vertical-align: top; padding: 4px 10px 4px 0; border-bottom: 1px solid var(--line); }
@@ -67,45 +52,23 @@
   .col.unmatched { opacity: .75; }
   .audio-picker audio { height: 36px; max-width: 100%; }
   .audio-picker .note { color: var(--warn); font-size: .85rem; overflow-wrap: anywhere; }
-  .note.muted { color: var(--muted); font-size: .85rem; }
   .dse-panel > summary { font-size: .95rem; }
   .image-section { margin: 18px 0; }
-  .viewer-frame { position: relative; overflow: hidden; height: min(70vh, 640px); border: 1px solid var(--line);
-    border-radius: 6px; background: #111; cursor: grab; touch-action: none; user-select: none; }
-  .viewer-frame.dragging { cursor: grabbing; }
-  .viewer-frame:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-  .viewer-img { position: absolute; left: 0; top: 0; transform-origin: 0 0; max-width: none; }
-  .viewer-frame.empty .viewer-img { visibility: hidden; }
-  .viewer-msg { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-    color: #bbb; font-size: .9rem; padding: 16px; text-align: center; overflow-wrap: anywhere; pointer-events: none; }
-  .viewer-msg:empty { display: none; }
-  .viewer-regions { position: absolute; inset: 0; pointer-events: none; }
-  .viewer-frame.empty .viewer-regions { display: none; }
-  .viewer-region { position: absolute; box-sizing: border-box; pointer-events: auto;
-    border: 1.5px solid var(--roi, rgba(255,255,255,.75)); border-radius: 2px; }
-  .viewer-region.kind-notes { --roi: rgba(255, 190, 60, .85); --roi-fill: rgba(255, 190, 60, .30); }
-  .viewer-region.kind-syllables { --roi: rgba(80, 200, 255, .85); --roi-fill: rgba(80, 200, 255, .30); }
-  .viewer-region:hover, .viewer-region.active { border-width: 3px; border-color: #ff3b6b;
-    background: rgba(255, 59, 107, .28); box-shadow: 0 0 0 1px rgba(0,0,0,.5); }
   .col-notes.has-roi, .col-syl.has-roi { cursor: default; border-radius: 4px; }
   .col-notes.hl, .col-syl.hl { background: rgba(255, 59, 107, .22); box-shadow: 0 0 0 2px rgba(255, 59, 107, .7); }
   .roi-key { color: var(--muted); font-size: .8rem; margin: 6px 0 0; }
   .roi-key .sw { display: inline-block; width: 10px; height: 10px; border: 2px solid; border-radius: 2px;
     vertical-align: -1px; margin: 0 4px 0 10px; }
   .roi-key .sw:first-child { margin-left: 0; }
-  .viewer-bar { display: flex; gap: 6px; margin-top: 6px; }
-  .viewer-btn { min-width: 40px; padding: 4px 10px; }
-  .credits { color: var(--muted); font-size: .8rem; margin: 6px 0 0; overflow-wrap: anywhere; }
   .data-panel { margin-top: 28px; }
-  .app-footer { max-width: 1100px; margin: 32px auto 0; padding: 10px 16px 18px; color: var(--muted);
-    font-size: .72rem; opacity: .7; text-align: right; }
   .data-panel > summary { font-size: 1.05rem; }
   td.greek { font-family: "Gentium Plus", "New Athena Unicode", Georgia, serif; font-size: 1.05rem; }
+
 </style>
 </head>
 <body>
 <header>
-  <h1>agm · Ancient Greek Music</h1>
+  <h1>agm · Artifacts</h1>
 <!--@@LOAD_CONTROLS@@-->
 </header>
 <main>
@@ -120,7 +83,7 @@
     <div id="data-out"></div>
   </details>
 </main>
-<footer class="app-footer">agm <span id="app-version"><!--@@VERSION@@--></span></footer>
+<footer class="app-footer">agm-artifacts <span id="app-version"><!--@@VERSION@@--></span></footer>
 
 <script>
 /*@@CEX_JS@@*/
@@ -138,7 +101,7 @@
 /*@@VIEWER_JS@@*/
 </script>
 <script>
-/*@@APP_JS@@*/
+/*@@ARTIFACTS_APP_JS@@*/
 </script>
 </body>
 </html>

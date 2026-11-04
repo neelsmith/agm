@@ -4,6 +4,13 @@
     "href": "index.html",
     "title": "Ancient Greek Music",
     "section": "",
-    "text": "agm is a web app for reading the editions of text with Ancient Greek musical notation available from the mousike github project. It’s a single HTML file that reads all its data over the internet. You can\n\nthe app\n\n\n\n\nOverview"
+    "text": "The agm repository hosts a suite of related a web apps for reading texts published in the mousike github project. Each app is a single HTML file that reads all its data over the internet. You can grab any of the HTML files from the agm github repository to use it locally, or use one of these installations available on github pages;"
+  },
+  {
+    "objectID": "index.html#example-browsing-by-artifact",
+    "href": "index.html#example-browsing-by-artifact",
+    "title": "Ancient Greek Music",
+    "section": "Example: browsing by artifact",
+    "text": "Example: browsing by artifact\n\n\n\nOverview"
   }
 ]

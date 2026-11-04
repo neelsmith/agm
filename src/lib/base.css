@@ -1,0 +1,21 @@
+/* base.css: page styles shared by agm.html and mss.html (inlined by build.js). */
+:root { --bg:#fbfaf7; --fg:#222; --muted:#666; --line:#ddd; --accent:#7a3b12; --warn:#9a5b00; }
+@media (prefers-color-scheme: dark) {
+  :root { --bg:#1b1a18; --fg:#e8e6e1; --muted:#9a968e; --line:#3a3834; --accent:#e0a070; --warn:#e0b050; }
+}
+body { margin:0; background:var(--bg); color:var(--fg); font:15px/1.45 system-ui, sans-serif; }
+header, main { max-width: 1100px; margin: 0 auto; padding: 0 16px; }
+header { padding-top: 20px; border-bottom: 1px solid var(--line); }
+h1 { margin: 0 0 14px; font-size: 1.4rem; }
+.controls { display:flex; gap:8px; flex-wrap:wrap; align-items:center; padding-bottom: 14px; }
+.controls input[type=url] { flex: 1 1 380px; min-width: 0; padding: 6px 8px; font: inherit;
+  background: transparent; color: inherit; border: 1px solid var(--line); border-radius: 4px; }
+button { font: inherit; padding: 6px 12px; border-radius: 4px; border: 1px solid var(--accent);
+  background: var(--accent); color: var(--bg); cursor: pointer; }
+#status { color: var(--muted); overflow-wrap: anywhere; }
+#status.error { color: #c0392b; }
+details { border-top: 1px solid var(--line); padding: 8px 0; }
+summary { cursor: pointer; font-weight: 600; }
+.note.muted { color: var(--muted); font-size: .85rem; }
+.app-footer { max-width: 1100px; margin: 32px auto 0; padding: 10px 16px 18px; color: var(--muted);
+  font-size: .72rem; opacity: .7; text-align: right; }

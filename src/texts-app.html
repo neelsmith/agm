@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>agm-texts: Ancient Greek Music texts</title>
+<style>
+/*@@FONT_CSS@@*/
+/*@@BASE_CSS@@*/
+/*@@VIEWER_CSS@@*/
+  .text-picker { display:flex; flex-wrap: wrap; gap:10px; align-items:center; margin: 14px 0; }
+  .text-picker label { font-weight: 600; }
+  .text-picker select { font: inherit; padding: 6px 8px; max-width: 100%; min-width: 0;
+    background: var(--bg); color: inherit; border: 1px solid var(--line); border-radius: 4px; }
+  #text-out h2 { margin: 18px 0 2px; font-size: 1.15rem; }
+  .urn-line { color: var(--muted); margin: 2px 0 8px; }
+  .urn-line code { overflow-wrap: anywhere; }
+  .catalog-record { display: grid; grid-template-columns: max-content 1fr; gap: 3px 14px; margin: 10px 0;
+    font-size: .9rem; }
+  .catalog-record dt { color: var(--muted); }
+  .catalog-record dd { margin: 0; overflow-wrap: anywhere; }
+  .passage-picker { display:flex; flex-wrap: wrap; gap:10px; align-items:center; margin: 16px 0 8px; }
+  .passage-picker label { font-weight: 600; }
+  .passage-picker select { font: inherit; padding: 6px 8px; max-width: 100%; min-width: 0;
+    background: var(--bg); color: inherit; border: 1px solid var(--line); border-radius: 4px; }
+  .note { color: var(--warn); font-size: .9rem; }
+  .passage-picker .or { color: var(--muted); }
+  .passage-picker input[type=text] { font: inherit; padding: 6px 8px; width: 9em; min-width: 0;
+    background: var(--bg); color: inherit; border: 1px solid var(--line); border-radius: 4px; }
+  .passage-picker button { padding: 6px 12px; }
+  #ref-error { flex-basis: 100%; }
+  #ref-error:empty { display: none; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  #passage-out h3 .count { font-family: system-ui, sans-serif; font-size: .85rem; font-weight: 400; color: var(--muted); }
+  .selection { list-style: none; margin: 6px 0 0; padding: 0; }
+  .sel-line { display: grid; grid-template-columns: 6.5em 1fr; gap: 4px 12px; align-items: baseline;
+    padding: 4px; border-top: 1px solid color-mix(in srgb, var(--line) 60%, transparent); }
+  .sel-line .ref { font-family: ui-monospace, Menlo, monospace; font-size: .8rem; color: var(--muted); }
+  .sel-line .line-text { font-size: 1.25rem; }
+  .sel-passage.syl { display: inline; padding: 1px 0; border-radius: 3px; }
+  .sel-passage.syl.hl { background: rgba(255, 59, 107, .22); box-shadow: 0 0 0 2px rgba(255, 59, 107, .7); }
+  li.sel-passage { display: grid; grid-template-columns: 6.5em 1fr; gap: 4px 12px; align-items: baseline;
+    padding: 4px; border-top: 1px solid color-mix(in srgb, var(--line) 60%, transparent); border-radius: 4px; }
+  li.sel-passage .ref { font-family: ui-monospace, Menlo, monospace; font-size: .8rem; color: var(--muted); }
+  li.sel-passage.hl { background: rgba(255, 59, 107, .14); box-shadow: inset 3px 0 0 rgba(255, 59, 107, .85); }
+  #passage-out h3 { margin: 12px 0 0; font-size: 1.05rem; font-family: ui-monospace, Menlo, monospace; }
+  #passage-out h4 { margin: 14px 0 4px; font-size: .9rem; color: var(--muted); font-weight: 600; }
+  #passage-out .cells { display: grid; gap: 2px 22px; align-items: baseline; }
+  .greek { font-family: "Gentium Plus", "New Athena Unicode", Georgia, serif; font-size: 1.15rem; }
+  .note-sign { font-size: 1.35em; line-height: 1; }
+  .note-sign.unknown { color: var(--warn); font-size: .8em; font-family: ui-monospace, Menlo, monospace; }
+  /* The selected passage's image */
+  .image-panel { margin: 14px 0 0; }
+  .image-head { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; margin-bottom: 6px; }
+  .image-head .meta { color: var(--muted); font-size: .75rem; overflow-wrap: anywhere; }
+  .image-actions { margin-left: auto; }
+  .image-actions button { padding: 4px 10px; }
+  .image-actions button:disabled { opacity: .4; cursor: default; }
+  .image-panel .viewer-frame { height: min(62vh, 600px); }
+  .record-chooser { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 12px 0 0; font-size: .9rem; }
+  .record-chooser .record { padding: 3px 9px; background: transparent; color: var(--accent); }
+  .record-chooser .record.selected { background: var(--accent); color: var(--bg); }
+  .viewer-region.kind-passage { --roi: rgba(79, 179, 200, .95); }
+  .viewer-region.kind-other { --roi: rgba(255, 255, 255, .45); border-style: dashed; }
+  .kind { display: inline-block; padding: 0 7px; border-radius: 10px; font-size: .78rem;
+    border: 1px solid var(--line); color: var(--muted); }
+</style>
+</head>
+<body>
+<header>
+  <h1>agm · Texts</h1>
+<!--@@LOAD_CONTROLS@@-->
+</header>
+<main>
+  <p id="status">Not loaded.</p>
+  <section class="text-picker">
+    <label for="text">Text</label>
+    <select id="text" disabled><option value="">Load data first</option></select>
+  </section>
+  <section id="text-out"></section>
+</main>
+<footer class="app-footer">agm-texts <span id="app-version"><!--@@VERSION@@--></span></footer>
+
+<script>
+/*@@CEX_JS@@*/
+</script>
+<script>
+/*@@SOWERBY_TABLE_JS@@*/
+</script>
+<script>
+/*@@NOTATION_JS@@*/
+</script>
+<script>
+/*@@VIEWER_JS@@*/
+</script>
+<script>
+/*@@EDITION_JS@@*/
+</script>
+<script>
+/*@@MSS_JS@@*/
+</script>
+<script>
+/*@@TEXTS_JS@@*/
+</script>
+<script>
+/*@@TEXTS_APP_JS@@*/
+</script>
+</body>
+</html>
