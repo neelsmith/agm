@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>mss: Ancient Greek Music manuscripts</title>
+<title>agm-texts: Ancient Greek Music texts</title>
 <style>
 /* Mousike Notation font: SIL Open Font License 1.1, derived from Noto Serif and Noto Music. */
 @font-face {
@@ -56,94 +56,82 @@ summary { cursor: pointer; font-weight: 600; }
 .viewer-btn { min-width: 40px; padding: 4px 10px; }
 .credits { color: var(--muted); font-size: .8rem; margin: 6px 0 0; overflow-wrap: anywhere; }
 
-  .ms-picker { display:flex; flex-wrap: wrap; gap:10px; align-items:center; margin: 14px 0; }
-  .ms-picker label { font-weight: 600; }
-  .ms-picker select { font: inherit; padding: 6px 8px; max-width: 100%; min-width: 0;
+  .text-picker { display:flex; flex-wrap: wrap; gap:10px; align-items:center; margin: 14px 0; }
+  .text-picker label { font-weight: 600; }
+  .text-picker select { font: inherit; padding: 6px 8px; max-width: 100%; min-width: 0;
     background: var(--bg); color: inherit; border: 1px solid var(--line); border-radius: 4px; }
-  #ms-out h2 { margin: 18px 0 2px; font-size: 1.15rem; }
-  .urn-line, .counts { color: var(--muted); margin: 2px 0 8px; }
+  #text-out h2 { margin: 18px 0 2px; font-size: 1.15rem; }
+  .urn-line { color: var(--muted); margin: 2px 0 8px; }
   .urn-line code { overflow-wrap: anywhere; }
-  .counts .missing { color: var(--warn); }
-  .ms-warnings { color: var(--warn); font-size: .85rem; }
+  .catalog-record { display: grid; grid-template-columns: max-content 1fr; gap: 3px 14px; margin: 10px 0;
+    font-size: .9rem; }
+  .catalog-record dt { color: var(--muted); }
+  .catalog-record dd { margin: 0; overflow-wrap: anywhere; }
+  .passage-picker { display:flex; flex-wrap: wrap; gap:10px; align-items:center; margin: 16px 0 8px; }
+  .passage-picker label { font-weight: 600; }
+  .passage-picker select { font: inherit; padding: 6px 8px; max-width: 100%; min-width: 0;
+    background: var(--bg); color: inherit; border: 1px solid var(--line); border-radius: 4px; }
   .note { color: var(--warn); font-size: .9rem; }
-
-  /* The light table and the full-image view share one fixed-height "stage"; only one shows at a time. */
-  #ms-out { --stage-h: min(62vh, 600px); }
-  .stage { margin: 10px 0 0; }
-  .stage [hidden] { display: none !important; }
-  .page-view { height: var(--stage-h); display: flex; flex-direction: column; }
-  .page-view .viewer { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
-  .page-view .viewer-frame { flex: 1 1 auto; height: auto; min-height: 0; }
-  .page-head { display: flex; flex-wrap: wrap; gap: 4px 14px; align-items: baseline; margin-bottom: 6px; }
-  .page-head h3 { margin: 0; font-size: 1.05rem; }
-  .page-head .meta { color: var(--muted); font-size: .8rem; font-family: ui-monospace, Menlo, monospace;
-    overflow-wrap: anywhere; }
-  .page-head .not-found { color: var(--warn); }
-  .page-nav { display: flex; gap: 6px; margin-left: auto; }
-  .page-nav .close { background: transparent; color: var(--accent); }
-  .page-nav button { padding: 4px 10px; }
-  .page-nav button:disabled { opacity: .4; cursor: default; }
-
-  .light-table { display: grid; grid-template-columns: repeat(auto-fill, minmax(124px, 1fr)); gap: 12px;
-    align-content: start; max-height: var(--stage-h); overflow-y: auto; overscroll-behavior: contain;
-    box-sizing: border-box; margin: 0; padding: 12px; border-radius: 8px; background: color-mix(in srgb, var(--fg) 6%, var(--bg)); }
-  .thumb { display: flex; flex-direction: column; align-items: stretch; gap: 4px; margin: 0; padding: 6px;
-    border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: inherit; cursor: pointer;
-    font: inherit; text-align: center; }
-  .thumb:hover { border-color: var(--accent); }
-  .thumb:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-  .thumb.selected { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
-  .thumb img { width: 100%; height: 150px; object-fit: contain; background: #111; border-radius: 3px; }
-  .thumb img.broken { visibility: hidden; }
-  /* Images cited by DSE records */
-  #ms-out { --dse: #1f7a8c; }
-  @media (prefers-color-scheme: dark) { #ms-out { --dse: #4fb3c8; } }
-  .thumb figure { position: relative; }
-  .thumb.has-dse { border-color: var(--dse); box-shadow: inset 0 0 0 2px var(--dse);
-    background: color-mix(in srgb, var(--dse) 12%, var(--bg)); }
-  .thumb.has-dse.selected { box-shadow: inset 0 0 0 2px var(--dse), 0 0 0 3px var(--accent); }
-  .dse-badge { position: absolute; top: 4px; right: 4px; min-width: 18px; padding: 1px 6px; border-radius: 10px;
-    background: var(--dse); color: #fff; font-size: .72rem; font-weight: 600; line-height: 1.5; }
-  .light-table.dse-only .thumb:not(.has-dse) { display: none; }
-  .counts .dse-count { color: var(--dse); font-weight: 600; }
-  .dse-filter { display: inline-flex; align-items: center; gap: 4px; font-size: .9rem; margin: 2px 0 4px; cursor: pointer; }
-  .dse-swatch { display: inline-block; width: 12px; height: 12px; border-radius: 3px; background: var(--dse); margin-left: 4px; }
-  /* Text indexed to the open image (texts with embedded notation) */
-  .page-text { margin: 14px 0 0; border-top: 1px solid var(--line); padding-top: 8px; }
-  .page-text h3 { margin: 0 0 6px; font-size: 1rem; }
-  .page-text h3 .work { color: var(--muted); font-weight: 400; }
-  .passages { list-style: none; margin: 0; padding: 0; }
-  .passage { display: grid; grid-template-columns: 6.5em 1fr; gap: 4px 12px; align-items: baseline;
-    padding: 5px 0; border-top: 1px solid color-mix(in srgb, var(--line) 60%, transparent); }
-  .passage .ref { font-family: ui-monospace, Menlo, monospace; font-size: .8rem; color: var(--muted);
-    overflow-wrap: anywhere; }
-  .passage .cells { display: grid; gap: 2px 22px; align-items: baseline; }
-  .greek { font-family: "Gentium Plus", "New Athena Unicode", Georgia, serif; font-size: 1.1rem; }
+  .passage-picker .or { color: var(--muted); }
+  .passage-picker input[type=text] { font: inherit; padding: 6px 8px; width: 9em; min-width: 0;
+    background: var(--bg); color: inherit; border: 1px solid var(--line); border-radius: 4px; }
+  .passage-picker button { padding: 6px 12px; }
+  #ref-error { flex-basis: 100%; }
+  #ref-error:empty { display: none; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  #passage-out h3 .count { font-family: system-ui, sans-serif; font-size: .85rem; font-weight: 400; color: var(--muted); }
+  .selection { list-style: none; margin: 6px 0 0; padding: 0; }
+  .sel-line { display: grid; grid-template-columns: 6.5em 1fr; gap: 4px 12px; align-items: baseline;
+    padding: 4px; border-top: 1px solid color-mix(in srgb, var(--line) 60%, transparent); }
+  .sel-line .ref { font-family: ui-monospace, Menlo, monospace; font-size: .8rem; color: var(--muted); }
+  .sel-line .line-text { font-size: 1.25rem; }
+  .sel-passage.syl { display: inline; padding: 1px 0; border-radius: 3px; }
+  .sel-passage.syl.hl { background: rgba(255, 59, 107, .22); box-shadow: 0 0 0 2px rgba(255, 59, 107, .7); }
+  li.sel-passage { display: grid; grid-template-columns: 6.5em 1fr; gap: 4px 12px; align-items: baseline;
+    padding: 4px; border-top: 1px solid color-mix(in srgb, var(--line) 60%, transparent); border-radius: 4px; }
+  li.sel-passage .ref { font-family: ui-monospace, Menlo, monospace; font-size: .8rem; color: var(--muted); }
+  li.sel-passage.hl { background: rgba(255, 59, 107, .14); box-shadow: inset 3px 0 0 rgba(255, 59, 107, .85); }
+  #passage-out h3 { margin: 12px 0 0; font-size: 1.05rem; font-family: ui-monospace, Menlo, monospace; }
+  #passage-out h4 { margin: 14px 0 4px; font-size: .9rem; color: var(--muted); font-weight: 600; }
+  #passage-out .cells { display: grid; gap: 2px 22px; align-items: baseline; }
+  .greek { font-family: "Gentium Plus", "New Athena Unicode", Georgia, serif; font-size: 1.15rem; }
   .note-sign { font-size: 1.35em; line-height: 1; }
-  /* Regions of interest on the image, linked with the passages (active style from viewer.css) */
-  .viewer-region.kind-text { --roi: color-mix(in srgb, var(--dse) 80%, white); }
-  .passage { border-radius: 4px; padding-left: 4px; padding-right: 4px; }
-  .passage.has-roi { cursor: default; }
-  .passage.hl { background: rgba(255, 59, 107, .14); box-shadow: inset 3px 0 0 rgba(255, 59, 107, .85); }
   .note-sign.unknown { color: var(--warn); font-size: .8em; font-family: ui-monospace, Menlo, monospace; }
-  .thumb figcaption { font-size: .8rem; line-height: 1.25; overflow-wrap: anywhere; }
-  .thumb.not-found figcaption { color: var(--warn); font-style: italic; }
+  /* The selected passage's image */
+  .image-panel { margin: 14px 0 0; }
+  .image-head { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; margin-bottom: 6px; }
+  .image-head .meta { color: var(--muted); font-size: .75rem; overflow-wrap: anywhere; }
+  .image-actions { margin-left: auto; }
+  .image-actions button { padding: 4px 10px; }
+  .image-actions button:disabled { opacity: .4; cursor: default; }
+  .image-panel .viewer-frame { height: min(62vh, 600px); }
+  .record-chooser { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 12px 0 0; font-size: .9rem; }
+  .record-chooser .record { padding: 3px 9px; background: transparent; color: var(--accent); }
+  .record-chooser .record.selected { background: var(--accent); color: var(--bg); }
+  .viewer-region.kind-passage { --roi: rgba(79, 179, 200, .95); }
+  .viewer-region.kind-other { --roi: rgba(255, 255, 255, .45); border-style: dashed; }
+  .kind { display: inline-block; padding: 0 7px; border-radius: 10px; font-size: .78rem;
+    border: 1px solid var(--line); color: var(--muted); }
 </style>
 </head>
 <body>
 <header>
-  <h1>mss · Ancient Greek Music manuscripts</h1>
-
+  <h1>agm · Texts</h1>
+  <div class="controls">
+    <input id="url" type="url" aria-label="CEX URL">
+    <button id="load">Load</button>
+    <label>or local file <input id="file" type="file" accept=".cex,.txt"></label>
+  </div>
 </header>
 <main>
   <p id="status">Not loaded.</p>
-  <section class="ms-picker">
-    <label for="ms">Manuscript</label>
-    <select id="ms" disabled><option value="">Load data first</option></select>
+  <section class="text-picker">
+    <label for="text">Text</label>
+    <select id="text" disabled><option value="">Load data first</option></select>
   </section>
-  <section id="ms-out"></section>
+  <section id="text-out"></section>
 </main>
-<footer class="app-footer">mss <span id="app-version">1.1.0</span></footer>
+<footer class="app-footer">agm-texts <span id="app-version">1.1.0</span></footer>
 
 <script>
 /*
@@ -502,7 +490,7 @@ summary { cursor: pointer; font-weight: 600; }
     );
     const syllables = onlyCataloged("syllables", table("syllables"), (r) => r.urn)
       .map((r) => Object.assign(r, ctsParts(r.urn)));
-    // All DSE records (kept as `dseAll`, e.g. for images in mss.html), and those for cataloged texts.
+    // All DSE records (kept as `dseAll`, e.g. for images in agm-mss.html), and those for cataloged texts.
     const dseAll = table("dse").map((r) => {
       const cite2 = parseCite2(r.image);
       if (!cite2 || !cite2.object) {
@@ -571,235 +559,6 @@ summary { cursor: pointer; font-weight: 600; }
     parseCex,
     loadCex,
   };
-});
-
-</script>
-<script>
-/*
- * viewer.js — a small pan/zoom image viewer with no dependencies.
- *
- * Classic UMD script: global `AgmViewer` in the browser, CommonJS in Node (where only the
- * pure geometry helpers are useful).
- *
- * View state is { scale, x, y }: the image is drawn at its natural size times `scale`, with its
- * top-left corner at (x, y) in frame pixels.
- *
- * Regions of interest (fractions 0..1 of the image's width/height: left, top, width, height)
- * are drawn as outlined boxes in an overlay; their screen positions are recomputed on every
- * pan/zoom, so outlines stay a constant width at any zoom.
- *
- * Controls: drag to pan; mouse wheel / trackpad / pinch to zoom about the pointer;
- * double-click to zoom in; buttons for zoom in, zoom out and fit.
- */
-(function (root, factory) {
-  if (typeof module === "object" && module.exports) {
-    module.exports = factory();
-  } else {
-    root.AgmViewer = factory();
-  }
-})(typeof self !== "undefined" ? self : this, function () {
-  "use strict";
-
-  const MAX_SCALE = 8; // at most 8× the image's natural size
-
-  /** State that fits an imgW×imgH image entirely in a frameW×frameH frame, centred. */
-  function fitState(imgW, imgH, frameW, frameH) {
-    if (!(imgW > 0 && imgH > 0 && frameW > 0 && frameH > 0)) return { scale: 1, x: 0, y: 0 };
-    const scale = Math.min(frameW / imgW, frameH / imgH);
-    return { scale, x: (frameW - imgW * scale) / 2, y: (frameH - imgH * scale) / 2 };
-  }
-
-  /**
-   * Zoom by `factor` keeping frame point (px, py) fixed on the same image point.
-   * The scale is clamped to [minScale, MAX_SCALE].
-   */
-  function zoomAt(state, factor, px, py, minScale) {
-    const lo = Math.min(minScale || state.scale, 1);
-    const scale = Math.max(lo, Math.min(MAX_SCALE, state.scale * factor));
-    const k = scale / state.scale;
-    return { scale, x: px - (px - state.x) * k, y: py - (py - state.y) * k };
-  }
-
-  /** Screen-pixel box of a region `roi` {left, top, width, height} (fractions of the image). */
-  function regionBox(state, imgW, imgH, roi) {
-    return {
-      left: state.x + roi.left * imgW * state.scale,
-      top: state.y + roi.top * imgH * state.scale,
-      width: roi.width * imgW * state.scale,
-      height: roi.height * imgH * state.scale,
-    };
-  }
-
-  /**
-   * Build a viewer inside `container` (emptied first).
-   * Returns { load(url, alt), fit(), zoom(factor), state(), element,
-   *   setRegions([{ id, roi, kind, title }]), highlight(id | null), onRegionHover(fn) }.
-   * Several regions may share an id; highlight(id) marks all of them.
-   * onRegionHover(fn) calls fn(id) when the pointer enters a region and fn(null) when it leaves.
-   */
-  function createViewer(container) {
-    const doc = container.ownerDocument;
-    const mk = (tag, cls, attrs) => Object.assign(doc.createElement(tag), { className: cls }, attrs || {});
-
-    const frame = mk("div", "viewer-frame", { tabIndex: 0 });
-    const img = mk("img", "viewer-img", { draggable: false, alt: "" });
-    const msg = mk("div", "viewer-msg");
-    const overlay = mk("div", "viewer-regions");
-    frame.append(img, overlay, msg);
-
-    const bar = mk("div", "viewer-bar");
-    const btn = (label, title, fn) => {
-      const b = mk("button", "viewer-btn", { type: "button", textContent: label, title });
-      b.setAttribute("aria-label", title);
-      b.addEventListener("click", fn);
-      bar.append(b);
-    };
-    btn("+", "Zoom in", () => zoom(1.5));
-    btn("−", "Zoom out", () => zoom(1 / 1.5));
-    btn("Fit", "Fit image to frame", () => fit());
-    container.replaceChildren(frame, bar);
-
-    let st = { scale: 1, x: 0, y: 0 };
-    let fitScale = 1;
-    let loaded = false;
-    let regions = []; // [{ id, roi, el }]
-    let hoverFn = null;
-    let highlighted = null;
-    let dragging = false;
-
-    function apply() {
-      img.style.transform = `translate(${st.x}px, ${st.y}px) scale(${st.scale})`;
-      if (!loaded) return;
-      for (const r of regions) {
-        const b = regionBox(st, img.naturalWidth, img.naturalHeight, r.roi);
-        Object.assign(r.el.style, {
-          left: `${b.left}px`, top: `${b.top}px`, width: `${b.width}px`, height: `${b.height}px`,
-        });
-      }
-    }
-
-    function setRegions(list) {
-      regions = (list || []).filter((r) => r && r.roi).map((r) => {
-        const e = mk("div", `viewer-region${r.kind ? " kind-" + r.kind : ""}`, { title: r.title || r.id });
-        e.dataset.id = r.id;
-        e.addEventListener("pointerenter", () => { if (!dragging && hoverFn) hoverFn(r.id); });
-        e.addEventListener("pointerleave", () => { if (!dragging && hoverFn) hoverFn(null); });
-        return { id: r.id, roi: r.roi, el: e };
-      });
-      overlay.replaceChildren(...regions.map((r) => r.el));
-      highlight(highlighted);
-      apply();
-    }
-
-    function highlight(id) {
-      highlighted = id || null;
-      for (const r of regions) r.el.classList.toggle("active", highlighted !== null && r.id === highlighted);
-    }
-    function center() {
-      return { x: frame.clientWidth / 2, y: frame.clientHeight / 2 };
-    }
-    function fit() {
-      if (!loaded) return;
-      st = fitState(img.naturalWidth, img.naturalHeight, frame.clientWidth, frame.clientHeight);
-      fitScale = st.scale;
-      apply();
-    }
-    function zoom(factor, px, py) {
-      if (!loaded) return;
-      const c = center();
-      st = zoomAt(st, factor, px ?? c.x, py ?? c.y, fitScale);
-      apply();
-    }
-    function local(e) {
-      const r = frame.getBoundingClientRect();
-      return { x: e.clientX - r.left, y: e.clientY - r.top };
-    }
-
-    // Pointer handling: one pointer pans, two pointers pinch-zoom.
-    const pointers = new Map();
-    let pinchDist = 0;
-    frame.addEventListener("pointerdown", (e) => {
-      if (!loaded) return;
-      frame.setPointerCapture(e.pointerId);
-      pointers.set(e.pointerId, local(e));
-      if (pointers.size === 2) {
-        const [a, b] = [...pointers.values()];
-        pinchDist = Math.hypot(a.x - b.x, a.y - b.y);
-      }
-      dragging = true;
-      frame.classList.add("dragging");
-    });
-    frame.addEventListener("pointermove", (e) => {
-      if (!pointers.has(e.pointerId)) return;
-      const prev = pointers.get(e.pointerId);
-      const p = local(e);
-      pointers.set(e.pointerId, p);
-      if (pointers.size === 1) {
-        st = { ...st, x: st.x + p.x - prev.x, y: st.y + p.y - prev.y };
-        apply();
-      } else if (pointers.size === 2) {
-        const [a, b] = [...pointers.values()];
-        const d = Math.hypot(a.x - b.x, a.y - b.y);
-        if (pinchDist > 0) zoom(d / pinchDist, (a.x + b.x) / 2, (a.y + b.y) / 2);
-        pinchDist = d;
-      }
-    });
-    const release = (e) => {
-      pointers.delete(e.pointerId);
-      pinchDist = 0;
-      if (!pointers.size) { dragging = false; frame.classList.remove("dragging"); }
-    };
-    frame.addEventListener("pointerup", release);
-    frame.addEventListener("pointercancel", release);
-
-    frame.addEventListener("wheel", (e) => {
-      if (!loaded) return;
-      e.preventDefault();
-      const p = local(e);
-      zoom(Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.002)), p.x, p.y);
-    }, { passive: false });
-    frame.addEventListener("dblclick", (e) => { const p = local(e); zoom(2, p.x, p.y); });
-    frame.addEventListener("keydown", (e) => {
-      const step = 40;
-      const moves = { ArrowLeft: [step, 0], ArrowRight: [-step, 0], ArrowUp: [0, step], ArrowDown: [0, -step] };
-      if (e.key === "+" || e.key === "=") zoom(1.5);
-      else if (e.key === "-") zoom(1 / 1.5);
-      else if (e.key === "0") fit();
-      else if (moves[e.key]) { st = { ...st, x: st.x + moves[e.key][0], y: st.y + moves[e.key][1] }; apply(); }
-      else return;
-      e.preventDefault();
-    });
-
-    img.addEventListener("load", () => {
-      loaded = true;
-      msg.textContent = "";
-      frame.classList.remove("empty");
-      fit();
-    });
-    img.addEventListener("error", () => {
-      loaded = false;
-      img.style.transform = "";
-      frame.classList.add("empty");
-      msg.textContent = `Could not load image ${img.src}`;
-    });
-
-    function load(url, alt) {
-      loaded = false;
-      frame.classList.add("empty");
-      msg.textContent = "Loading image…";
-      img.alt = alt || "";
-      img.src = url;
-    }
-
-    return {
-      load, fit, zoom, setRegions, highlight,
-      onRegionHover: (fn) => { hoverFn = fn; },
-      state: () => ({ ...st }),
-      element: frame,
-    };
-  }
-
-  return { createViewer, fitState, zoomAt, regionBox, MAX_SCALE };
 });
 
 </script>
@@ -1156,6 +915,541 @@ summary { cursor: pointer; font-weight: 600; }
 </script>
 <script>
 /*
+ * viewer.js — a small pan/zoom image viewer with no dependencies.
+ *
+ * Classic UMD script: global `AgmViewer` in the browser, CommonJS in Node (where only the
+ * pure geometry helpers are useful).
+ *
+ * View state is { scale, x, y }: the image is drawn at its natural size times `scale`, with its
+ * top-left corner at (x, y) in frame pixels.
+ *
+ * Regions of interest (fractions 0..1 of the image's width/height: left, top, width, height)
+ * are drawn as outlined boxes in an overlay; their screen positions are recomputed on every
+ * pan/zoom, so outlines stay a constant width at any zoom.
+ *
+ * Controls: drag to pan; mouse wheel / trackpad / pinch to zoom about the pointer;
+ * double-click to zoom in; buttons for zoom in, zoom out and fit.
+ */
+(function (root, factory) {
+  if (typeof module === "object" && module.exports) {
+    module.exports = factory();
+  } else {
+    root.AgmViewer = factory();
+  }
+})(typeof self !== "undefined" ? self : this, function () {
+  "use strict";
+
+  const MAX_SCALE = 8; // at most 8× the image's natural size
+
+  /** State that fits an imgW×imgH image entirely in a frameW×frameH frame, centred. */
+  function fitState(imgW, imgH, frameW, frameH) {
+    if (!(imgW > 0 && imgH > 0 && frameW > 0 && frameH > 0)) return { scale: 1, x: 0, y: 0 };
+    const scale = Math.min(frameW / imgW, frameH / imgH);
+    return { scale, x: (frameW - imgW * scale) / 2, y: (frameH - imgH * scale) / 2 };
+  }
+
+  /**
+   * Zoom by `factor` keeping frame point (px, py) fixed on the same image point.
+   * The scale is clamped to [minScale, MAX_SCALE].
+   */
+  function zoomAt(state, factor, px, py, minScale) {
+    const lo = Math.min(minScale || state.scale, 1);
+    const scale = Math.max(lo, Math.min(MAX_SCALE, state.scale * factor));
+    const k = scale / state.scale;
+    return { scale, x: px - (px - state.x) * k, y: py - (py - state.y) * k };
+  }
+
+  /** Screen-pixel box of a region `roi` {left, top, width, height} (fractions of the image). */
+  function regionBox(state, imgW, imgH, roi) {
+    return {
+      left: state.x + roi.left * imgW * state.scale,
+      top: state.y + roi.top * imgH * state.scale,
+      width: roi.width * imgW * state.scale,
+      height: roi.height * imgH * state.scale,
+    };
+  }
+
+  /**
+   * State that shows region `roi` (fractions of an imgW×imgH image) centred in the frame, with
+   * `margin` (a fraction of the region's size) of context on each side, never zoomed in past
+   * `maxScale` nor out past the whole-image fit.
+   */
+  function regionFitState(imgW, imgH, frameW, frameH, roi, margin = 0.6, maxScale = MAX_SCALE) {
+    const fit = fitState(imgW, imgH, frameW, frameH);
+    if (!roi || !(roi.width > 0 && roi.height > 0)) return fit;
+    const w = roi.width * imgW * (1 + 2 * margin);
+    const h = roi.height * imgH * (1 + 2 * margin);
+    const scale = Math.max(fit.scale, Math.min(maxScale, frameW / w, frameH / h));
+    const cx = (roi.left + roi.width / 2) * imgW;
+    const cy = (roi.top + roi.height / 2) * imgH;
+    return { scale, x: frameW / 2 - cx * scale, y: frameH / 2 - cy * scale };
+  }
+
+  /**
+   * Build a viewer inside `container` (emptied first).
+   * Returns { load(url, alt), fit(), zoom(factor), focusRegion(roi), state(), element,
+   *   setRegions([{ id, roi, kind, title }]), highlight(id | [ids] | null), onRegionHover(fn) }.
+   * Several regions may share an id; highlight(id) marks all of them.
+   * onRegionHover(fn) calls fn(id) when the pointer enters a region and fn(null) when it leaves.
+   */
+  function createViewer(container) {
+    const doc = container.ownerDocument;
+    const mk = (tag, cls, attrs) => Object.assign(doc.createElement(tag), { className: cls }, attrs || {});
+
+    const frame = mk("div", "viewer-frame", { tabIndex: 0 });
+    const img = mk("img", "viewer-img", { draggable: false, alt: "" });
+    const msg = mk("div", "viewer-msg");
+    const overlay = mk("div", "viewer-regions");
+    frame.append(img, overlay, msg);
+
+    const bar = mk("div", "viewer-bar");
+    const btn = (label, title, fn) => {
+      const b = mk("button", "viewer-btn", { type: "button", textContent: label, title });
+      b.setAttribute("aria-label", title);
+      b.addEventListener("click", fn);
+      bar.append(b);
+    };
+    btn("+", "Zoom in", () => zoom(1.5));
+    btn("−", "Zoom out", () => zoom(1 / 1.5));
+    btn("Fit", "Fit image to frame", () => fit());
+    container.replaceChildren(frame, bar);
+
+    let st = { scale: 1, x: 0, y: 0 };
+    let fitScale = 1;
+    let loaded = false;
+    let regions = []; // [{ id, roi, el }]
+    let hoverFn = null;
+    let highlighted = null;
+    let dragging = false;
+
+    function apply() {
+      img.style.transform = `translate(${st.x}px, ${st.y}px) scale(${st.scale})`;
+      if (!loaded) return;
+      for (const r of regions) {
+        const b = regionBox(st, img.naturalWidth, img.naturalHeight, r.roi);
+        Object.assign(r.el.style, {
+          left: `${b.left}px`, top: `${b.top}px`, width: `${b.width}px`, height: `${b.height}px`,
+        });
+      }
+    }
+
+    function setRegions(list) {
+      regions = (list || []).filter((r) => r && r.roi).map((r) => {
+        const e = mk("div", `viewer-region${r.kind ? " kind-" + r.kind : ""}`, { title: r.title || r.id });
+        e.dataset.id = r.id;
+        e.addEventListener("pointerenter", () => { if (!dragging && hoverFn) hoverFn(r.id); });
+        e.addEventListener("pointerleave", () => { if (!dragging && hoverFn) hoverFn(null); });
+        return { id: r.id, roi: r.roi, el: e };
+      });
+      overlay.replaceChildren(...regions.map((r) => r.el));
+      highlight(highlighted);
+      apply();
+    }
+
+    /** Highlight the region(s) with id `ids` (one id, or an array of ids); null clears. */
+    function highlight(ids) {
+      highlighted = ids || null;
+      const set = new Set(Array.isArray(ids) ? ids : ids ? [ids] : []);
+      for (const r of regions) r.el.classList.toggle("active", set.has(r.id));
+    }
+    function center() {
+      return { x: frame.clientWidth / 2, y: frame.clientHeight / 2 };
+    }
+    function fit() {
+      if (!loaded) return;
+      st = fitState(img.naturalWidth, img.naturalHeight, frame.clientWidth, frame.clientHeight);
+      fitScale = st.scale;
+      apply();
+    }
+    /** Zoom to region `roi` with some context around it (no-op until the image has loaded). */
+    function focusRegion(roi, margin) {
+      if (!loaded || !roi) return;
+      st = regionFitState(img.naturalWidth, img.naturalHeight, frame.clientWidth, frame.clientHeight, roi, margin);
+      apply();
+    }
+    function zoom(factor, px, py) {
+      if (!loaded) return;
+      const c = center();
+      st = zoomAt(st, factor, px ?? c.x, py ?? c.y, fitScale);
+      apply();
+    }
+    function local(e) {
+      const r = frame.getBoundingClientRect();
+      return { x: e.clientX - r.left, y: e.clientY - r.top };
+    }
+
+    // Pointer handling: one pointer pans, two pointers pinch-zoom.
+    const pointers = new Map();
+    let pinchDist = 0;
+    frame.addEventListener("pointerdown", (e) => {
+      if (!loaded) return;
+      frame.setPointerCapture(e.pointerId);
+      pointers.set(e.pointerId, local(e));
+      if (pointers.size === 2) {
+        const [a, b] = [...pointers.values()];
+        pinchDist = Math.hypot(a.x - b.x, a.y - b.y);
+      }
+      dragging = true;
+      frame.classList.add("dragging");
+    });
+    frame.addEventListener("pointermove", (e) => {
+      if (!pointers.has(e.pointerId)) return;
+      const prev = pointers.get(e.pointerId);
+      const p = local(e);
+      pointers.set(e.pointerId, p);
+      if (pointers.size === 1) {
+        st = { ...st, x: st.x + p.x - prev.x, y: st.y + p.y - prev.y };
+        apply();
+      } else if (pointers.size === 2) {
+        const [a, b] = [...pointers.values()];
+        const d = Math.hypot(a.x - b.x, a.y - b.y);
+        if (pinchDist > 0) zoom(d / pinchDist, (a.x + b.x) / 2, (a.y + b.y) / 2);
+        pinchDist = d;
+      }
+    });
+    const release = (e) => {
+      pointers.delete(e.pointerId);
+      pinchDist = 0;
+      if (!pointers.size) { dragging = false; frame.classList.remove("dragging"); }
+    };
+    frame.addEventListener("pointerup", release);
+    frame.addEventListener("pointercancel", release);
+
+    frame.addEventListener("wheel", (e) => {
+      if (!loaded) return;
+      e.preventDefault();
+      const p = local(e);
+      zoom(Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.002)), p.x, p.y);
+    }, { passive: false });
+    frame.addEventListener("dblclick", (e) => { const p = local(e); zoom(2, p.x, p.y); });
+    frame.addEventListener("keydown", (e) => {
+      const step = 40;
+      const moves = { ArrowLeft: [step, 0], ArrowRight: [-step, 0], ArrowUp: [0, step], ArrowDown: [0, -step] };
+      if (e.key === "+" || e.key === "=") zoom(1.5);
+      else if (e.key === "-") zoom(1 / 1.5);
+      else if (e.key === "0") fit();
+      else if (moves[e.key]) { st = { ...st, x: st.x + moves[e.key][0], y: st.y + moves[e.key][1] }; apply(); }
+      else return;
+      e.preventDefault();
+    });
+
+    img.addEventListener("load", () => {
+      loaded = true;
+      msg.textContent = "";
+      frame.classList.remove("empty");
+      fit();
+    });
+    img.addEventListener("error", () => {
+      loaded = false;
+      img.style.transform = "";
+      frame.classList.add("empty");
+      msg.textContent = `Could not load image ${img.src}`;
+    });
+
+    function load(url, alt) {
+      loaded = false;
+      frame.classList.add("empty");
+      msg.textContent = "Loading image…";
+      img.alt = alt || "";
+      img.src = url;
+    }
+
+    return {
+      load, fit, zoom, focusRegion, setRegions, highlight,
+      onRegionHover: (fn) => { hoverFn = fn; },
+      state: () => ({ ...st }),
+      element: frame,
+    };
+  }
+
+  return { createViewer, fitState, zoomAt, regionBox, regionFitState, MAX_SCALE };
+});
+
+</script>
+<script>
+/*
+ * edition.js — queries over parsed mousike data (output of AgmCex.parseCex).
+ *
+ * Classic UMD script: global `AgmEdition` in the browser, CommonJS in Node.
+ */
+(function (root, factory) {
+  if (typeof module === "object" && module.exports) {
+    module.exports = factory();
+  } else {
+    root.AgmEdition = factory();
+  }
+})(typeof self !== "undefined" ? self : this, function () {
+  "use strict";
+
+  /**
+   * Surfaces for a menu: [{ urn, label }] in source order. Only surfaces with at least one DSE
+   * record are listed (DSE records citing uncataloged texts are already dropped by parseCex).
+   */
+  function surfaceMenu(data) {
+    const withDse = new Set(data.dse.map((r) => r.surface));
+    return data.surfaces.filter((s) => withDse.has(s.urn)).map((s) => ({ urn: s.urn, label: s.label }));
+  }
+
+  /** All DSE records whose surface column equals `surfaceUrn`, in source order. */
+  function dseForSurface(data, surfaceUrn) {
+    return data.dse.filter((r) => r.surface === surfaceUrn);
+  }
+
+  /**
+   * Look up the passage a DSE text URN cites, in the `texts`, `notes` or `syllables` block.
+   *
+   * Notes are citable by line (`notes:1`) or by note group within a line (`notes:1.2`,
+   * the 2nd whitespace-separated group); a group record also has `notes` (array) and `line`.
+   *
+   * Returns { urn, block, unit, match, record }:
+   *   block  "texts" | "notes" | "syllables" | null
+   *   unit   "line" | "group" | "syllable" | null
+   *   match  "exact"     — the URN is in that block
+   *          "container" — not found, but a containing passage is (e.g. text:1 for text:1.1);
+   *                        `record` is the containing passage, for context only
+   *          null        — nothing found; `record` is null
+   */
+  function resolvePassage(data, urn) {
+    const blocks = [
+      ["texts", "line", data.index.texts],
+      ["notes", "line", data.index.notes],
+      ["notes", "group", data.index.noteGroups],
+      ["syllables", "syllable", data.index.syllables],
+    ];
+    for (const [block, unit, m] of blocks) {
+      if (m.has(urn)) return { urn, block, unit, match: "exact", record: m.get(urn) };
+    }
+    // Walk up the citation hierarchy: a:1.2.3 -> a:1.2 -> a:1
+    const colon = urn.lastIndexOf(":");
+    if (colon > 0) {
+      const work = urn.slice(0, colon);
+      const ref = urn.slice(colon + 1).split(".");
+      for (let n = ref.length - 1; n >= 1; n--) {
+        const parent = `${work}:${ref.slice(0, n).join(".")}`;
+        for (const [block, unit, m] of blocks) {
+          if (m.has(parent)) return { urn, block, unit, match: "container", record: m.get(parent) };
+        }
+      }
+    }
+    return { urn, block: null, unit: null, match: null, record: null };
+  }
+
+  /**
+   * Everything indexed to one surface: for each DSE record, the cited passage.
+   * Returns { surface, entries: [{ dse, passage }], counts }
+   */
+  function surfaceContents(data, surfaceUrn) {
+    const surface = data.index.surfaces.get(surfaceUrn) || null;
+    const entries = dseForSurface(data, surfaceUrn).map((dse) => ({
+      dse,
+      passage: resolvePassage(data, dse.text),
+    }));
+    const counts = { total: entries.length, exact: 0, container: 0, missing: 0 };
+    for (const e of entries) counts[e.passage.match || "missing"]++;
+    return { surface, entries, counts };
+  }
+
+  /* ---------- syllable ↔ note-group alignment ---------- */
+
+  /**
+   * The text a CTS work belongs to, without its last work-id component:
+   * "urn:cts:mousike:epigraphic.seikilos.notes" -> "urn:cts:mousike:epigraphic.seikilos".
+   * The notes and syllables editions of one text share this base.
+   */
+  function textBase(work) {
+    const colon = work.lastIndexOf(":");
+    const id = work.slice(colon + 1);
+    const dot = id.lastIndexOf(".");
+    return dot < 0 ? work : work.slice(0, colon + 1) + id.slice(0, dot);
+  }
+
+  /** Split a 2-tier passage "L.N" into { line: "L", n: N }; null if not 2-tier. */
+  function splitLineRef(passage) {
+    const parts = String(passage || "").split(".");
+    if (parts.length !== 2 || !parts[0] || !/^\d+$/.test(parts[1])) return null;
+    return { line: parts[0], n: Number(parts[1]) };
+  }
+
+  const byNumber = (a, b) => {
+    const na = Number(a), nb = Number(b);
+    return Number.isNaN(na) || Number.isNaN(nb) ? String(a).localeCompare(String(b)) : na - nb;
+  };
+
+  /**
+   * Pair syllables with note groups line by line for one text.
+   * `base` is a textBase() value. Line L's syllables (`…syllables:L.N`) and note groups
+   * (`…notes:L.N`) are matched by N.
+   * Returns [{ line, syllables: [rec], groups: [rec], columns: [{ n, syllable, group }],
+   *   aligned }] in line order; a missing partner is null, and `aligned` is true when the
+   *   line has the same number of syllables and note groups.
+   */
+  function alignLines(data, base) {
+    const lines = new Map();
+    const add = (rec, kind) => {
+      if (textBase(rec.work) !== base) return;
+      const ref = splitLineRef(rec.passage);
+      if (!ref) return;
+      if (!lines.has(ref.line)) lines.set(ref.line, { syllables: [], groups: [] });
+      lines.get(ref.line)[kind].push({ n: ref.n, rec });
+    };
+    for (const s of data.syllables) add(s, "syllables");
+    for (const g of data.index.noteGroups.values()) add(g, "groups");
+
+    return [...lines.keys()].sort(byNumber).map((line) => {
+      const { syllables, groups } = lines.get(line);
+      const sylByN = new Map(syllables.map((x) => [x.n, x.rec]));
+      const grpByN = new Map(groups.map((x) => [x.n, x.rec]));
+      const ns = [...new Set([...sylByN.keys(), ...grpByN.keys()])].sort((a, b) => a - b);
+      return {
+        line,
+        syllables: syllables.sort((a, b) => a.n - b.n).map((x) => x.rec),
+        groups: groups.sort((a, b) => a.n - b.n).map((x) => x.rec),
+        columns: ns.map((n) => ({ n, syllable: sylByN.get(n) || null, group: grpByN.get(n) || null })),
+        aligned: syllables.length === groups.length,
+      };
+    });
+  }
+
+  /**
+   * Texts a surface's DSE records cite, each with its aligned lines.
+   * Returns [{ base, lines }] in order of first citation; texts with no syllables or
+   * note groups are left out.
+   */
+  function surfaceLines(data, surfaceUrn) {
+    const bases = [];
+    for (const r of dseForSurface(data, surfaceUrn)) {
+      const { work } = ctsWork(r.text);
+      if (!work) continue;
+      const b = textBase(work);
+      if (!bases.includes(b)) bases.push(b);
+    }
+    return bases
+      .map((base) => ({ base, lines: alignLines(data, base) }))
+      .filter((t) => t.lines.length > 0);
+  }
+
+  /** "urn:cts:ns:work:passage" -> { work: "urn:cts:ns:work" } (work null if not CTS). */
+  function ctsWork(urn) {
+    const parts = String(urn || "").split(":");
+    if (parts.length < 4 || parts[0] !== "urn" || parts[1] !== "cts") return { work: null };
+    return { work: parts.slice(0, 4).join(":") };
+  }
+
+  /**
+   * Distinct images a surface's DSE records cite, with any `@` region of interest removed,
+   * in order of first citation. Each is labelled with the `description` of the `#!images`
+   * row whose `urn` is exactly equal; if there is none, the label is the URN and `image` is null.
+   * Returns [{ urn, label, image }].
+   */
+  function surfaceImages(data, surfaceUrn) {
+    const byUrn = new Map(data.images.map((img) => [img.urn, img]));
+    const out = [];
+    const seen = new Set();
+    for (const r of dseForSurface(data, surfaceUrn)) {
+      const urn = String(r.image || "").split("@")[0].trim();
+      if (!urn || seen.has(urn)) continue;
+      seen.add(urn);
+      const image = byUrn.get(urn) || null;
+      out.push({ urn, label: image && image.description ? image.description : urn, image });
+    }
+    return out;
+  }
+
+  /**
+   * Regions of interest on one image (URN without `@`) from a surface's DSE records.
+   * Returns [{ id, roi, kind, dse }] in DSE order, where `id` is the DSE text URN and `kind` is
+   * "notes" (a note group or notes line), "syllables", "texts" or "other" (passage not found).
+   * Records without a parseable region are left out.
+   */
+  function imageRegions(data, surfaceUrn, imageUrn) {
+    const out = [];
+    for (const r of dseForSurface(data, surfaceUrn)) {
+      if (!r.roi || String(r.image || "").split("@")[0].trim() !== imageUrn) continue;
+      const i = data.index;
+      const kind = i.noteGroups.has(r.text) || i.notes.has(r.text) ? "notes"
+        : i.syllables.has(r.text) ? "syllables"
+        : i.texts.has(r.text) ? "texts"
+        : "other";
+      out.push({ id: r.text, roi: r.roi, kind, dse: r });
+    }
+    return out;
+  }
+
+  /* ---------- audio ---------- */
+
+  /** Where audio files are served (the mousike repo's `audio` directory). */
+  const AUDIO_BASE_URL = "https://raw.githubusercontent.com/neelsmith/mousike/refs/heads/main/audio";
+
+  /** URL of an `#!audio` row's file, or null if it has none. */
+  function audioUrl(track) {
+    if (!track || !track.file) return null;
+    return `${AUDIO_BASE_URL}/${String(track.file).trim().replace(/^\/+/, "")}`;
+  }
+
+  /** Line-level part of a passage reference: "3.2" -> "3". */
+  const lineOf = (ref) => String(ref).split(".")[0];
+
+  /**
+   * Does line `line` fall within passage reference `passage`?
+   * `passage` may be null (the whole work), a single reference ("2", "2.3") or a range
+   * ("1-6", "1.2-3.4"); only the line-level part of each end is compared, numerically when
+   * both are numbers.
+   */
+  function lineInPassage(line, passage) {
+    if (passage === null || passage === undefined || passage === "") return true;
+    const [from, to = from] = String(passage).split("-").map((p) => lineOf(p.trim()));
+    const l = String(line);
+    const nums = [l, from, to].map(Number);
+    if (nums.every((n) => Number.isFinite(n))) return nums[1] <= nums[0] && nums[0] <= nums[2];
+    return l === from || l === to;
+  }
+
+  /**
+   * Audio tracks for the notation shown for a surface: every `#!audio` row whose `notation`
+   * URN is in the same notes work as a displayed line, with a passage (or range) that
+   * includes at least one displayed line. Returns [{ label, file, notation, url, lines }] in
+   * `#!audio` order, where `lines` are the matching displayed line numbers.
+   */
+  function surfaceAudio(data, surfaceUrn) {
+    const shown = []; // [{ work, line }] notes lines in the line view
+    for (const t of surfaceLines(data, surfaceUrn)) {
+      for (const ln of t.lines) {
+        if (ln.groups.length) shown.push({ work: ln.groups[0].work, line: ln.line });
+      }
+    }
+    const out = [];
+    for (const a of data.audio || []) {
+      const urn = String(a.notation || "").trim();
+      const parts = urn.split(":");
+      if (parts.length < 4 || parts[0] !== "urn" || parts[1] !== "cts") continue;
+      const work = parts.slice(0, 4).join(":");
+      const passage = parts.length > 4 ? parts.slice(4).join(":") : null;
+      const lines = shown.filter((s) => s.work === work && lineInPassage(s.line, passage)).map((s) => s.line);
+      if (lines.length) out.push({ label: a.label, file: a.file, notation: urn, url: audioUrl(a), lines });
+    }
+    return out;
+  }
+
+  /** Where catalogued image files are served: an image's URL is this + "/" + its `path`. */
+  const IMAGE_BASE_URL = "https://shot.holycross.edu/images/mousike";
+
+  /** URL of an `#!images` row's file, or null if the row (or its path) is missing. */
+  function imageUrl(image) {
+    if (!image || !image.path) return null;
+    return `${IMAGE_BASE_URL}/${String(image.path).trim().replace(/^\/+/, "")}`;
+  }
+
+  return {
+    surfaceMenu, dseForSurface, resolvePassage, surfaceContents,
+    textBase, alignLines, surfaceLines, surfaceImages,
+    imageRegions, IMAGE_BASE_URL, imageUrl,
+    AUDIO_BASE_URL, audioUrl, lineInPassage, surfaceAudio,
+  };
+});
+
+</script>
+<script>
+/*
  * mss.js — manuscripts: the `#!mss` / `#!mspages` blocks of a mousike release, IIIF manifests,
  * and the delimited-text "urnmap" files that pair IIIF images with CITE2 URNs and labels.
  *
@@ -1330,8 +1624,8 @@ summary { cursor: pointer; font-weight: 600; }
   }
 
   /**
-   * The DSE records mss.html uses: those citing texts cataloged in `#!catalog_embedded`
-   * (as agm.html uses `#!catalog_annotated`). A release without that block uses all DSE records.
+   * The DSE records agm-mss.html uses: those citing texts cataloged in `#!catalog_embedded`
+   * (as agm-artifacts.html uses `#!catalog_annotated`). A release without that block uses all DSE records.
    */
   function embeddedDse(data) {
     const all = data.dseAll || data.dse || [];
@@ -1405,7 +1699,275 @@ summary { cursor: pointer; font-weight: 600; }
 
 </script>
 <script>
-/* mss-app.js — UI for mss.html. Depends on globals AgmCex, AgmViewer, AgmMss and AgmNotation. */
+/*
+ * texts.js — queries for agm-texts.html over a parsed mousike release (output of AgmCex.parseCex).
+ *
+ * The app works from both catalogs of texts:
+ *   #!catalog_annotated  texts with musical annotation (e.g. Seikilos: notes, syllables, text)
+ *   #!catalog_embedded   theoretical texts with notation embedded in them (e.g. Alypius)
+ *
+ * Classic UMD script: global `AgmTexts` in the browser (needs `AgmMss` and `AgmEdition` loaded
+ * first), CommonJS in Node. Pure functions, apart from `resolveImage`, which fetches urnmaps.
+ */
+(function (root, factory) {
+  if (typeof module === "object" && module.exports) {
+    module.exports = factory(require("./mss.js"), require("./edition.js"));
+  } else {
+    root.AgmTexts = factory(root.AgmMss, root.AgmEdition);
+  }
+})(typeof self !== "undefined" ? self : this, function (Mss, Edition) {
+  "use strict";
+
+  /** The two catalogs, in menu order, with a heading for each. */
+  const CATALOGS = [
+    { kind: "embedded", block: "catalog_embedded", heading: "Texts with embedded notation" },
+    { kind: "annotated", block: "catalog_annotated", heading: "Texts with musical annotation" },
+  ];
+
+  /**
+   * True for an edition of musical notation by itself: by convention, the version part of the
+   * CTS work component is `notes` (e.g. "urn:cts:mousike:epigraphic.seikilos.notes").
+   */
+  function isNotation(work) {
+    const parts = String(work || "").replace(/:$/, "").split(":");
+    const id = parts.length >= 4 ? parts[3] : "";
+    return id.split(".").pop() === "notes";
+  }
+
+  /** The version part of a CTS work component ("…seikilos.syllables" -> "syllables"). */
+  function versionOf(work) {
+    const parts = String(work || "").replace(/:$/, "").split(":");
+    return parts.length >= 4 ? parts[3].split(".").pop() : "";
+  }
+
+  /** True for an edition cited by syllable: the version part of the work component is `syllables`. */
+  function isSyllables(work) {
+    return versionOf(work) === "syllables";
+  }
+
+  /** The reference of the unit containing passage `ref` ("1.4" -> "1"; "1" -> ""). */
+  function containerOf(ref) {
+    const parts = String(ref).split(".");
+    return parts.length > 1 ? parts.slice(0, -1).join(".") : "";
+  }
+
+  /**
+   * Group consecutive passages by their containing unit, keeping text order:
+   * [{ container, passages }] (e.g. syllables 1.1–1.5 under "1", then 2.1 under "2").
+   */
+  function groupByContainer(passages) {
+    const out = [];
+    for (const p of passages) {
+      const c = containerOf(p.passage);
+      const last = out[out.length - 1];
+      if (last && last.container === c) last.passages.push(p);
+      else out.push({ container: c, passages: [p] });
+    }
+    return out;
+  }
+
+  /** Menu label for a catalog row: "Group, Title (version)", leaving out empty parts. */
+  function catalogLabel(c) {
+    const head = [c.groupName, c.workTitle].filter(Boolean).join(", ") || c.work || c.urn;
+    return c.versionLabel ? `${head} (${c.versionLabel})` : head;
+  }
+
+  /**
+   * One menu of texts from both catalogs: [{ urn, work, kind, heading, label, catalog }],
+   * embedded texts first, then annotated, each in catalog order. `urn` is the catalog's
+   * work-level URN (with its trailing colon); `work` is the same without it.
+   * A work listed in both catalogs appears once, under the first. Editions of musical notation
+   * by itself (see isNotation) are left out.
+   */
+  function textMenu(data) {
+    const out = [];
+    const seen = new Set();
+    for (const cat of CATALOGS) {
+      for (const c of data[cat.block] || []) {
+        if (seen.has(c.work) || isNotation(c.work)) continue;
+        seen.add(c.work);
+        out.push({ urn: c.urn, work: c.work, kind: cat.kind, heading: cat.heading, label: catalogLabel(c), catalog: c });
+      }
+    }
+    return out;
+  }
+
+  /**
+   * The passages of one cataloged work, in source order, from whichever blocks cite it:
+   * `#!texts_cols` for embedded texts; `#!texts`, `#!notes` and `#!syllables` for annotated ones.
+   * Returns [{ urn, passage, block, row }].
+   */
+  function passagesFor(data, work) {
+    const out = [];
+    for (const block of ["texts_cols", "texts", "notes", "syllables"]) {
+      for (const row of data[block] || []) {
+        if (row.work === work) out.push({ urn: row.urn, passage: row.passage, block, row });
+      }
+    }
+    return out;
+  }
+
+  /** "urn:cts:ns:work:passage" -> "urn:cts:ns:work" (null if not a CTS URN). */
+  function ctsWork(urn) {
+    const parts = String(urn || "").split(":");
+    return parts.length >= 5 && parts[0] === "urn" && parts[1] === "cts" ? parts.slice(0, 4).join(":") : null;
+  }
+
+  /**
+   * The passages of `work` for a menu, built from its text edition (see passagesFor), in text order,
+   * each with the DSE records (from `data.dseAll`, every DSE record) that cite it, possibly none.
+   * Returns [{ urn, passage, block, row, records: [dse rows] }].
+   */
+  function textPassages(data, work) {
+    const byUrn = new Map();
+    for (const r of data.dseAll || data.dse || []) {
+      if (ctsWork(r.text) !== work) continue;
+      if (!byUrn.has(r.text)) byUrn.set(r.text, []);
+      byUrn.get(r.text).push(r);
+    }
+    return passagesFor(data, work).map((p) => ({ ...p, records: byUrn.get(p.urn) || [] }));
+  }
+
+  /* ---------- selecting passages by reference ---------- */
+
+  /** Does passage reference `passage` fall under reference `ref` ("1" covers 1, 1.1, 1.1.2, …)? */
+  function refMatches(passage, ref) {
+    return passage === ref || String(passage).startsWith(ref + ".");
+  }
+
+  /**
+   * Select passages by a citation reference, in text order: a single reference ("1.1"), a level of
+   * the hierarchy ("1" = every passage under 1), or a range of either ("1.1-1.4", "1-2.1"): from the
+   * first passage under the start through the last passage under the end.
+   * `passages` are in text order (each with a `passage` reference); `work` (optional) lets a
+   * reference be given as a full URN ("<work>:1.1"). Returns { passages, error }.
+   */
+  function selectByReference(passages, input, work) {
+    let text = String(input || "").trim();
+    if (work && text.startsWith(work + ":")) text = text.slice(work.length + 1);
+    if (!text) return { passages: [], error: "Enter a reference, e.g. 1.1, 1, or 1.1-1.4" };
+    const bounds = text.split("-").map((x) => x.trim());
+    if (bounds.length > 2 || bounds.some((b) => !b)) {
+      return { passages: [], error: `"${text}" is not a reference or a range of two references` };
+    }
+    const [from, to = from] = bounds;
+    const start = passages.findIndex((p) => refMatches(p.passage, from));
+    if (start < 0) return { passages: [], error: `No passage ${from} in this text` };
+    let end = -1;
+    for (let i = passages.length - 1; i >= 0; i--) if (refMatches(passages[i].passage, to)) { end = i; break; }
+    if (end < 0) return { passages: [], error: `No passage ${to} in this text` };
+    if (end < start) return { passages: [], error: `${to} comes before ${from} in this text` };
+    return { passages: passages.slice(start, end + 1), error: null };
+  }
+
+  /* ---------- images for DSE records ---------- */
+
+  /** The `#!mss` row whose collection URN begins `urn` (a page or surface URN), or null. */
+  function manuscriptOf(data, urn) {
+    const u = String(urn || "");
+    return (data.mss || []).find((m) => {
+      const prefix = String(m.urn || "").replace(/:?$/, ":");
+      return prefix.length > 1 && u.startsWith(prefix);
+    }) || null;
+  }
+
+  /**
+   * Where the image cited by DSE record `dse` comes from, without fetching anything:
+   *   { kind: "catalog", imageUrn, url, label, credits }  an `#!images` row with a `path`
+   *   { kind: "iiif", imageUrn, ms, page, label }          a manuscript page: its `#!mss` row
+   *        (found from the `#!mspages` row for the image, else from the DSE surface) gives the
+   *        urnmap that maps the image URN to an IIIF Image service
+   *   { kind: "unknown", imageUrn, label }                  neither
+   */
+  function imageSource(data, dse) {
+    const imageUrn = Mss.imageBase(dse.image);
+    const img = (data.images || []).find((r) => r.urn === imageUrn && r.path);
+    if (img) {
+      return { kind: "catalog", imageUrn, url: Edition.imageUrl(img), label: img.description || imageUrn, credits: img.credits || "" };
+    }
+    const page = (data.mspages || []).find((p) => p.image === imageUrn) || null;
+    const ms = manuscriptOf(data, page ? page.urn : dse.surface);
+    if (ms) return { kind: "iiif", imageUrn, ms, page, label: page ? page.label : ms.manuscript };
+    return { kind: "unknown", imageUrn, label: imageUrn };
+  }
+
+  /**
+   * Resolve DSE record `dse` to an image URL: { url, label, credits, source } or { error, source }.
+   * IIIF images need the manuscript's urnmap; fetched urnmaps are kept in `cache` (a Map by URL).
+   */
+  async function resolveImage(data, dse, fetchImpl, cache) {
+    const source = imageSource(data, dse);
+    if (source.kind === "catalog") return { url: source.url, label: source.label, credits: source.credits, source };
+    if (source.kind === "unknown") return { error: `no image source for ${source.imageUrn}`, source };
+    const { ms } = source;
+    if (!ms.urnmap) return { error: `#!mss has no urnmap for ${ms.manuscript}`, source };
+    const f = fetchImpl || (typeof fetch !== "undefined" ? fetch : null);
+    try {
+      let rows = cache && cache.get(ms.urnmap);
+      if (!rows) {
+        const res = await f(ms.urnmap);
+        if (!res.ok) throw new Error(`HTTP ${res.status} loading ${ms.urnmap}`);
+        rows = Mss.parseUrnMap(await res.text()).rows;
+        if (cache) cache.set(ms.urnmap, rows);
+      }
+      const row = rows.find((r) => r.urn === source.imageUrn);
+      if (!row) return { error: `${source.imageUrn} is not in the urnmap for ${ms.manuscript}`, source };
+      return { url: Mss.iiifImageUrl(row.image, Mss.VIEW_SIZE), label: source.label, credits: "", source };
+    } catch (e) {
+      return { error: e.message, source };
+    }
+  }
+
+  /**
+   * The images that selected passages (each with `records`, as from textPassages) are indexed to,
+   * in order of first appearance: [{ imageUrn, records: [dse rows on that image] }].
+   */
+  function imagesForPassages(passages) {
+    const out = new Map();
+    for (const p of passages) {
+      for (const r of p.records || []) {
+        const k = Mss.imageBase(r.image);
+        if (!out.has(k)) out.set(k, { imageUrn: k, records: [] });
+        out.get(k).records.push(r);
+      }
+    }
+    return [...out.values()];
+  }
+
+  /** Smallest region containing all the given regions of interest (null if none). */
+  function unionRoi(rois) {
+    const rs = (rois || []).filter(Boolean);
+    if (!rs.length) return null;
+    const left = Math.min(...rs.map((r) => r.left)), top = Math.min(...rs.map((r) => r.top));
+    const right = Math.max(...rs.map((r) => r.left + r.width)), bottom = Math.max(...rs.map((r) => r.top + r.height));
+    return { left, top, width: right - left, height: bottom - top };
+  }
+
+  /**
+   * Regions to draw on an image (URN without `@`): every DSE record on it with a region of
+   * interest, as viewer regions { id: passage URN, roi, kind, title }. `kind` is "passage" for
+   * passages of `work` and "other" for the rest.
+   */
+  function imageRegions(data, imageUrn, work) {
+    return (data.dseAll || data.dse || [])
+      .filter((r) => r.roi && Mss.imageBase(r.image) === imageUrn)
+      .map((r) => {
+        const w = ctsWork(r.text);
+        return { id: r.text, roi: r.roi, kind: w === work ? "passage" : "other", title: w === work ? r.text.slice(w.length + 1) : r.text };
+      });
+  }
+
+  return {
+    CATALOGS, isNotation, catalogLabel, textMenu, passagesFor, ctsWork, textPassages,
+    manuscriptOf, imageSource, resolveImage, imageRegions,
+    refMatches, selectByReference, imagesForPassages, unionRoi,
+    versionOf, isSyllables, containerOf, groupByContainer,
+  };
+});
+
+</script>
+<script>
+/* texts-app.js — UI for agm-texts.html. Depends on globals AgmCex, AgmNotation, AgmViewer and AgmTexts. */
 (function () {
   "use strict";
   const $ = (id) => document.getElementById(id);
@@ -1414,11 +1976,14 @@ summary { cursor: pointer; font-weight: 600; }
   const loadButton = $("load");
   const fileInput = $("file");
   const statusEl = $("status");
-  const msSelect = $("ms");
-  const msOut = $("ms-out");
+  const textSelect = $("text");
+  const textOut = $("text-out");
 
   /** App state, exposed for console inspection. */
-  window.mss = { data: null, ms: null, entries: [], selected: null, viewer: null, selectManuscript, selectImage, closeImage };
+  window.texts = { data: null, menu: [], text: null, passages: [], passage: null, selection: [], images: [],
+    viewer: null, selectText, selectPassage, selectReference, showImage };
+
+  const urnmapCache = new Map(); // urnmap URL -> parsed rows, shared across passages
 
   if (urlInput) urlInput.value = AgmCex.DEFAULT_URL;
 
@@ -1428,6 +1993,9 @@ summary { cursor: pointer; font-weight: 600; }
     statusEl.className = isError ? "error" : "";
   }
 
+  /** Drop null/empty items, for replaceChildren (which would turn `null` into text). */
+  const present = (...nodes) => nodes.filter((n) => n !== null && n !== undefined && n !== "");
+
   function el(tag, attrs, ...kids) {
     const e = document.createElement(tag);
     Object.assign(e, attrs || {});
@@ -1435,270 +2003,286 @@ summary { cursor: pointer; font-weight: 600; }
     return e;
   }
 
-  /* ---------- manuscript menu ---------- */
+  /* ---------- the menu of texts, from #!catalog_embedded and #!catalog_annotated ---------- */
 
   function renderMenu(d) {
-    const menu = AgmMss.manuscriptMenu(d);
-    msSelect.replaceChildren(
-      el("option", { value: "", textContent: menu.length ? "Choose a manuscript…" : "No manuscripts in this release" }),
-      ...menu.map((m) => el("option", { value: m.urn, textContent: m.label })));
-    msSelect.disabled = menu.length === 0;
-    msOut.replaceChildren();
-  }
-
-  let loadToken = 0; // ignore results for a manuscript the user has since moved away from
-
-  async function selectManuscript(urn) {
-    msSelect.value = urn || "";
-    const token = ++loadToken;
-    Object.assign(window.mss, { ms: null, entries: [], selected: null, viewer: null });
-    grid = pageSection = pageHead = viewerHolder = textSection = null;
-    const ms = AgmMss.manuscriptMenu(window.mss.data || {}).find((m) => m.urn === urn);
-    if (!ms) { msOut.replaceChildren(); return null; }
-    window.mss.ms = ms;
-
-    const status = el("p", { className: "counts", textContent: "Loading manifest and URN map…" });
-    msOut.replaceChildren(
-      el("h2", { textContent: ms.label }),
-      el("p", { className: "urn-line" }, el("code", { textContent: ms.urn })),
-      status);
-
-    let result;
-    try {
-      result = await AgmMss.loadManuscript(window.mss.data, ms);
-    } catch (e) {
-      if (token === loadToken) status.replaceChildren(el("span", { className: "note", textContent: `Could not load: ${e.message}` }));
-      return null;
+    const menu = AgmTexts.textMenu(d);
+    window.texts.menu = menu;
+    const groups = [];
+    for (const cat of AgmTexts.CATALOGS) {
+      const items = menu.filter((t) => t.kind === cat.kind);
+      if (!items.length) continue;
+      groups.push(el("optgroup", { label: cat.heading },
+        ...items.map((t) => el("option", { value: t.work, textContent: t.label, title: t.urn }))));
     }
-    if (token !== loadToken) return null;
+    textSelect.replaceChildren(
+      el("option", { value: "", textContent: menu.length ? "Choose a text…" : "No cataloged texts in this release" }),
+      ...groups);
+    textSelect.disabled = menu.length === 0;
+    textOut.replaceChildren();
+  }
 
-    const { entries, counts, warnings } = result;
-    window.mss.entries = entries;
-    status.replaceChildren(`${counts.images} image(s), ${counts.found} captioned from the URN map`,
-      counts.missing ? el("span", { className: "missing", textContent: `, ${counts.missing} not found` }) : "",
-      ", ",
-      el("span", { className: "dse-count", textContent: `${counts.withDse} with DSE records` }),
-      ".");
-    if (warnings.length) {
-      msOut.append(el("details", { className: "ms-warnings" },
-        el("summary", { textContent: `${warnings.length} warning(s)` }),
-        el("ul", null, ...warnings.map((w) => el("li", { textContent: w })))));
+  /** Select a text by work URN (without trailing colon) and show its catalog record. */
+  function selectText(work) {
+    textSelect.value = work || "";
+    const t = window.texts.menu.find((x) => x.work === work) || null;
+    window.texts.text = t;
+    if (!t) { textOut.replaceChildren(); return null; }
+
+    const c = t.catalog;
+    const n = AgmTexts.passagesFor(window.texts.data, t.work).length;
+    const passages = AgmTexts.textPassages(window.texts.data, t.work);
+    const indexed = passages.filter((p) => p.records.length).length;
+    window.texts.passages = passages;
+    window.texts.passage = null;
+    const fields = [
+      ["Group", c.groupName], ["Work", c.workTitle], ["Version", c.versionLabel],
+      ["Exemplar", c.exemplarLabel], ["Citation", c.citationScheme], ["Language", c.language],
+      ["Online", c.online], ["Passages", String(n)], ["With images (DSE)", String(indexed)],
+    ].filter(([, v]) => v !== undefined && v !== null && v !== "");
+    textOut.replaceChildren(
+      el("h2", { textContent: t.label }),
+      el("p", { className: "urn-line" }, el("code", { textContent: t.urn }), " ",
+        el("span", { className: "kind", textContent: t.heading })),
+      el("dl", { className: "catalog-record" },
+        ...fields.flatMap(([k, v]) => [el("dt", { textContent: k }), el("dd", { textContent: v })])),
+      passagePicker(passages),
+      el("section", { id: "passage-out" }));
+    return t;
+  }
+
+  /* ---------- choosing passages: menu or reference ---------- */
+
+  /**
+   * Two ways to choose passages: a menu of all the text's passages (those indexed to an image are
+   * marked ◆), or a reference typed in the box: "1.1", a level such as "1", or a range "1.1-1.4",
+   * "1-2.1".
+   */
+  function passagePicker(passages) {
+    if (!passages.length) {
+      return el("p", { className: "note muted", textContent: "This release has no passages of this text." });
     }
-    grid = lightTableEl(entries);
-    textSection = el("section", { className: "page-text", id: "page-text" });
-    textSection.hidden = true;
-    msOut.append(dseFilter(counts.withDse), el("div", { className: "stage" }, pageView(), grid), textSection);
-    return result;
-  }
-
-  /* ---------- light table ---------- */
-
-  function lightTableEl(entries) {
-    const grid = el("div", { className: "light-table", id: "light-table" });
-    entries.forEach((e, i) => {
-      const img = el("img", { src: e.thumb, alt: e.label, loading: "lazy", decoding: "async" });
-      img.addEventListener("error", () => img.classList.add("broken"));
-      const badge = e.dse
-        ? el("span", { className: "dse-badge", textContent: String(e.dse), title: `${e.dse} DSE record(s)` })
-        : null;
-      const btn = el("button", {
-        type: "button",
-        className: "thumb" + (e.found ? "" : " not-found") + (e.dse ? " has-dse" : ""),
-        title: (e.urn || e.service) + (e.dse ? `\n${e.dse} DSE record(s)` : ""),
-      }, el("figure", { style: "margin:0" }, img, badge, el("figcaption", { textContent: e.label })));
-      btn.dataset.index = String(i);
-      btn.addEventListener("click", () => selectImage(i));
-      grid.append(btn);
+    const indexed = passages.filter((p) => p.records.length).length;
+    const select = el("select", { id: "passage" },
+      el("option", { value: "", textContent: `Choose a passage… (${passages.length}; ◆ ${indexed} with images)` }),
+      ...passages.map((p) => el("option", { value: p.urn, textContent: optionLabel(p), title: p.urn })));
+    select.addEventListener("change", () => {
+      const ref = $("ref");
+      if (ref) ref.value = "";
+      setRefError("");
+      selectPassage(select.value);
     });
-    return grid;
+
+    const example = refExample(passages);
+    const ref = el("input", { type: "text", id: "ref", placeholder: example, spellcheck: false, autocomplete: "off",
+      title: `A passage (${passages[0].passage}), a level, or a range such as ${example}` });
+    const go = el("button", { type: "button", textContent: "Show" });
+    const run = () => selectReference(ref.value);
+    go.addEventListener("click", run);
+    ref.addEventListener("keydown", (e) => { if (e.key === "Enter") { run(); e.preventDefault(); } });
+    return el("section", { className: "passage-picker" },
+      el("label", { htmlFor: "passage", textContent: "Passage" }), select,
+      el("span", { className: "or", textContent: "or" }),
+      el("label", { htmlFor: "ref", className: "sr-only", textContent: "Reference" }), ref, go,
+      el("span", { id: "ref-error", className: "note", role: "status" }));
   }
 
-  /** "Only images with DSE records" toggle for the light table (hides the others). */
-  function dseFilter(n) {
-    const box = el("input", { type: "checkbox", id: "dse-only", disabled: n === 0 });
-    box.addEventListener("change", () => {
-      if (grid) grid.classList.toggle("dse-only", box.checked);
-    });
-    return el("label", { className: "dse-filter", htmlFor: "dse-only" }, box,
-      el("span", { className: "dse-swatch" }), ` Only images with DSE records (${n})`);
+  /** A sample range for the box's placeholder, from the text's own first passages. */
+  function refExample(passages) {
+    const first = passages[0].passage;
+    const later = passages[Math.min(3, passages.length - 1)].passage;
+    return first === later ? first : `${first}-${later}`;
   }
 
-  /* ---------- selected image: pan/zoom view ---------- */
+  function setRefError(msg) {
+    const e = $("ref-error");
+    if (e) e.textContent = msg;
+  }
 
-  let grid = null;         // the light table
-  let pageHead = null;
-  let viewerHolder = null;
-  let pageSection = null;  // the full-image view; replaces the light table while open
-  let gridScroll = 0;      // light-table scroll position, restored on close
-  let textSection = null;  // passages indexed to the open image, shown below it
+  /** "◆ 1.2 — Προσλαμβανόμενος. ζῆτα ἐλλϊπὲς…" (notation shown as ♪; options can't use the notation font). */
+  function optionLabel(p) {
+    const mark = p.records.length ? "◆ " : "";
+    const text = (p.row.cells || [p.row.text]).join(" ");
+    const plain = AgmNotation.splitEmbeddedNotation(text).map((s) => (s.urn ? "♪" : s.text)).join("")
+      .replace(/\s+/g, " ").trim();
+    const preview = plain.length > 48 ? plain.slice(0, 47).trimEnd() + "…" : plain;
+    return mark + (preview ? `${p.passage} — ${preview}` : p.passage);
+  }
 
-  function pageView() {
-    pageHead = el("div", { className: "page-head" });
-    viewerHolder = el("div", { className: "viewer" });
-    pageSection = el("section", { className: "page-view", id: "page-view" }, pageHead, viewerHolder);
-    pageSection.hidden = true;
-    return pageSection;
+  /** Select one passage (by URN) of the current text, as from the menu. */
+  function selectPassage(urn) {
+    const select = $("passage");
+    if (select) select.value = urn || "";
+    const p = window.texts.passages.find((x) => x.urn === urn) || null;
+    return showSelection(p ? [p] : [], p ? p.passage : "");
+  }
+
+  /** Select passages by a reference typed in the box ("1.1", "1", "1.1-1.4", "1-2.1"). */
+  function selectReference(input) {
+    const t = window.texts.text;
+    const { passages, error } = AgmTexts.selectByReference(window.texts.passages, input, t && t.work);
+    setRefError(error || "");
+    if (error) return null;
+    const select = $("passage");
+    if (select) select.value = passages.length === 1 ? passages[0].urn : "";
+    return showSelection(passages, String(input).trim());
+  }
+
+  /* ---------- the selected passages: their text, then their images ---------- */
+
+  let imagePanel = null;
+  let showToken = 0;   // ignore a slow image lookup once another image or selection is chosen
+  let selectedUrns = []; // URNs of the selected passages, highlighted on the image
+
+  /** Show the selected passages (`label`: how they were chosen) and the images indexed to them. */
+  function showSelection(passages, label) {
+    const out = $("passage-out");
+    window.texts.selection = passages;
+    window.texts.passage = passages.length === 1 ? passages[0] : null;
+    selectedUrns = passages.map((p) => p.urn);
+    if (!out) return passages;
+    if (!passages.length) { out.replaceChildren(); imagePanel = null; return passages; }
+
+    const head = passages.length === 1
+      ? [el("h3", { textContent: passages[0].passage }),
+         el("p", { className: "urn-line" }, el("code", { textContent: passages[0].urn }))]
+      : [el("h3", { textContent: `${label} ` },
+          el("span", { className: "count", textContent: `(${passages.length} passages: ${passages[0].passage} – ${passages[passages.length - 1].passage})` }))];
+    const work = window.texts.text && window.texts.text.work;
+    const body = passages.length === 1 ? cellsEl(passages[0].row)
+      : AgmTexts.isSyllables(work) ? syllableLines(passages)
+      : el("ol", { className: "selection" }, ...passages.map((p) => linked(el("li", { className: "sel-passage" + (p.records.length ? " has-roi" : "") },
+          el("span", { className: "ref", textContent: p.passage, title: p.urn }), cellsEl(p.row)), p.urn)));
+
+    const images = AgmTexts.imagesForPassages(passages);
+    imagePanel = el("section", { className: "image-panel", id: "image-panel" });
+    out.replaceChildren(...present(...head, body, imageChooser(images), imagePanel));
+    window.texts.images = images;
+    if (images.length) showImage(0);
+    else imagePanel.replaceChildren(el("p", { className: "note muted",
+      textContent: passages.length === 1 ? "No images are indexed to this passage." : "No images are indexed to these passages." }));
+    return passages;
   }
 
   /**
-   * Show light-table entry `i` in the pan/zoom viewer, in place of the light table
-   * (Close or Escape returns to the light table).
+   * Syllables shown as running text, one line per containing unit (1.1–1.5 on line "1", 2.1 on
+   * line "2"). A syllable ending in "-" runs on into the next; others are followed by a space.
+   * Each syllable is its own hover target, linked to its region.
    */
-  function selectImage(i) {
-    const entries = window.mss.entries;
-    const e = entries[i];
-    if (!e || !pageSection) return null;
-    window.mss.selected = i;
-    for (const t of document.querySelectorAll(".thumb.selected")) t.classList.remove("selected");
-    const thumb = document.querySelector(`.thumb[data-index="${i}"]`);
-    if (thumb) thumb.classList.add("selected");
-
-    const prev = el("button", { type: "button", textContent: "‹ Previous", disabled: i === 0 });
-    const next = el("button", { type: "button", textContent: "Next ›", disabled: i === entries.length - 1 });
-    const close = el("button", { type: "button", className: "close", textContent: "✕ Close", title: "Back to the light table (Esc)" });
-    prev.addEventListener("click", () => selectImage(i - 1));
-    next.addEventListener("click", () => selectImage(i + 1));
-    close.addEventListener("click", closeImage);
-    const meta = [e.page ? e.page.urn : null, e.urn, e.dse ? `${e.dse} DSE record(s)` : null]
-      .filter(Boolean).join(" · ");
-    pageHead.replaceChildren(
-      el("h3", { className: e.found ? "" : "not-found", textContent: e.page ? e.page.label : e.label }),
-      meta ? el("span", { className: "meta", textContent: meta }) : el("span", { className: "meta not-found", textContent: `not in URN map: ${e.service}` }),
-      el("span", { className: "page-nav" }, prev, next, close));
-
-    if (pageSection.hidden) {
-      gridScroll = grid ? grid.scrollTop : 0; // display:none can lose it, so keep it ourselves
-      if (grid) grid.hidden = true;
-      pageSection.hidden = false;
-    }
-    if (!window.mss.viewer) window.mss.viewer = AgmViewer.createViewer(viewerHolder);
-    window.mss.viewer.load(e.full, e.label);
-    renderPassages(e);
-    if (!isOnScreen(pageSection)) pageSection.scrollIntoView({ block: "nearest" });
-    return e;
+  function syllableLines(passages) {
+    return el("ol", { className: "selection syllable-lines" },
+      ...AgmTexts.groupByContainer(passages).map((g) => {
+        const line = el("span", { className: "line-text greek" });
+        g.passages.forEach((p, i) => {
+          const text = (p.row.cells || [p.row.text]).join(" ");
+          line.append(linked(el("span", { className: "sel-passage syl" + (p.records.length ? " has-roi" : ""),
+            textContent: text, title: p.passage }), p.urn));
+          if (i < g.passages.length - 1 && !/-$/.test(text)) line.append(" ");
+        });
+        return el("li", { className: "sel-line" },
+          el("span", { className: "ref", textContent: g.container || "", title: g.passages.map((p) => p.passage).join(", ") }), line);
+      }));
   }
 
-  /** Close the full-image view and return to the light table where it was. */
-  function closeImage() {
-    if (!pageSection || pageSection.hidden) return;
-    pageSection.hidden = true;
-    if (textSection) textSection.hidden = true;
-    if (!grid) return;
-    grid.hidden = false;
-    grid.scrollTop = gridScroll;
-    // Keep the last-viewed thumbnail (Previous/Next may have moved on) visible and focused.
-    const thumb = grid.querySelector(".thumb.selected");
-    if (thumb) {
-      const g = grid.getBoundingClientRect(), t = thumb.getBoundingClientRect();
-      if (t.top < g.top) grid.scrollTop -= g.top - t.top + 12;
-      else if (t.bottom > g.bottom) grid.scrollTop += t.bottom - g.bottom + 12;
-      thumb.focus({ preventScroll: true });
-    }
-  }
-
-  document.addEventListener("keydown", (e) => {
-    if (!pageSection || pageSection.hidden) return;
-    if (e.key === "Escape") { closeImage(); e.preventDefault(); }
-  });
-
-  /* ---------- text indexed to the open image ---------- */
-
-  /** Show the `#!texts_cols` passages that DSE records index to entry `e`'s image. */
-  function renderPassages(e) {
-    if (!textSection) return;
-    const passages = e.urn ? AgmMss.imagePassages(window.mss.data, e.urn) : [];
-    showRegions(passages); // always: clears the previous image's regions when there are none
-    textSection.hidden = passages.length === 0;
-    if (!passages.length) { textSection.replaceChildren(); return; }
-
-    const works = [...new Set(passages.map((p) => p.catalog)
-      .filter(Boolean).map((c) => [c.groupName, c.workTitle].filter(Boolean).join(", ")))];
-    const list = el("ol", { className: "passages" });
-    for (const p of passages) {
-      list.append(linked(el("li", { className: "passage" + (p.row ? "" : " missing") + (p.roi ? " has-roi" : "") },
-        el("span", { className: "ref", textContent: p.passage, title: p.urn }),
-        p.row ? passageBody(p.row)
-          : el("span", { className: "note", textContent: "not found in #!texts_cols" })), p.urn));
-    }
-    textSection.replaceChildren(
-      el("h3", { textContent: `Text on this image (${passages.length} passage${passages.length === 1 ? "" : "s"})` },
-        works.length ? el("span", { className: "work", textContent: ` · ${works.join("; ")}` }) : null),
-      list);
-  }
-
-  /* ---------- linked highlighting: image regions ↔ text passages ---------- */
-
-  let highlighted = null;
-
-  /** Draw the passages' regions of interest on the image, keyed by passage URN. */
-  function showRegions(passages) {
-    const viewer = window.mss.viewer;
-    highlighted = null;
-    if (!viewer) return;
-    viewer.setRegions(passages.filter((p) => p.roi)
-      .map((p) => ({ id: p.urn, roi: p.roi, kind: "text", title: p.passage })));
-    viewer.onRegionHover((id) => highlight(id));
-    viewer.highlight(null);
-  }
-
-  /** Highlight passage `urn` in the text panel and its region(s) on the image; null clears. */
-  function highlight(urn) {
-    highlighted = urn || null;
-    if (textSection) {
-      for (const li of textSection.querySelectorAll(".passage")) {
-        li.classList.toggle("hl", highlighted !== null && li.dataset.urn === highlighted);
-      }
-    }
-    if (window.mss.viewer) window.mss.viewer.highlight(highlighted);
-  }
-  window.mss.highlight = highlight;
-
-  /** Tag a passage element with its URN so hovering it highlights its region. */
-  function linked(node, urn) {
-    node.dataset.urn = urn;
-    node.addEventListener("pointerenter", () => highlight(urn));
-    node.addEventListener("pointerleave", () => { if (highlighted === urn) highlight(null); });
-    return node;
-  }
-
-  /** A `#!texts_cols` row: its cells side by side, with Sowerby note URNs shown as Unicode signs. */
-  function passageBody(row) {
-    const body = el("div", { className: "cells" });
-    body.style.gridTemplateColumns = `repeat(${Math.max(row.cells.length, 1)}, minmax(0, auto))`;
-    for (const cell of row.cells) body.append(cellEl(cell));
+  /** A row's cells side by side, with notation converted. */
+  function cellsEl(row) {
+    const body = el("div", { className: "cells" }, ...(row.cells || [row.text]).map(cellEl));
+    if (row.cells) body.style.gridTemplateColumns = `repeat(${row.cells.length}, minmax(0, auto))`;
     return body;
   }
 
+  /** When the selection is indexed on several images, buttons to choose one (else nothing). */
+  function imageChooser(images) {
+    if (images.length < 2) return null;
+    return el("div", { className: "record-chooser" },
+      el("span", { textContent: `On ${images.length} images: ` }),
+      ...images.map((im, i) => {
+        const src = AgmTexts.imageSource(window.texts.data, im.records[0]);
+        const b = el("button", { type: "button", className: "record", textContent: src.label,
+          title: `${im.imageUrn} (${im.records.length} passage${im.records.length === 1 ? "" : "s"})` });
+        b.dataset.index = String(i);
+        b.addEventListener("click", () => showImage(i));
+        return b;
+      }));
+  }
+
+  /** Show image `i` of the selection, with the selected passages' regions highlighted. */
+  async function showImage(i) {
+    const im = (window.texts.images || [])[i];
+    if (!im || !imagePanel) return null;
+    for (const b of document.querySelectorAll(".record-chooser .record")) b.classList.toggle("selected", b.dataset.index === String(i));
+    const token = ++showToken;
+    const panel = imagePanel;
+    panel.replaceChildren(el("p", { className: "note muted", textContent: "Finding the image…" }));
+    window.texts.viewer = null;
+
+    const first = im.records[0];
+    const img = await AgmTexts.resolveImage(window.texts.data, first, null, urnmapCache);
+    if (token !== showToken) return null;
+    if (img.error) {
+      panel.replaceChildren(el("p", { className: "note", textContent: `Can't show the image: ${img.error}.` }));
+      return img;
+    }
+    const focus = AgmTexts.unionRoi(im.records.map((r) => r.roi));
+    const zoomBtn = el("button", { type: "button", textContent: im.records.length > 1 ? "Zoom to passages" : "Zoom to passage", disabled: !focus });
+    const holder = el("div", { className: "viewer" });
+    panel.replaceChildren(...present(
+      el("div", { className: "image-head" },
+        el("strong", { textContent: img.label }),
+        el("code", { className: "meta", textContent: im.imageUrn }),
+        el("span", { className: "image-actions" }, zoomBtn)),
+      holder,
+      img.credits ? el("p", { className: "credits", textContent: img.credits }) : null));
+
+    const viewer = AgmViewer.createViewer(holder);
+    window.texts.viewer = viewer;
+    const work = window.texts.text && window.texts.text.work;
+    viewer.setRegions(AgmTexts.imageRegions(window.texts.data, im.imageUrn, work));
+    viewer.highlight(selectedUrns);
+    // Hovering a region highlights it (and its passage in the list) while the pointer is there.
+    viewer.onRegionHover((id) => hover(id));
+    zoomBtn.addEventListener("click", () => viewer.focusRegion(focus, im.records.length > 1 ? 0.15 : 0.6));
+    viewer.load(img.url, img.label);
+    return img;
+  }
+
+  /** Temporarily highlight passage `urn` (region and list row); null returns to the selection. */
+  function hover(urn) {
+    if (window.texts.viewer) window.texts.viewer.highlight(urn || selectedUrns);
+    for (const li of document.querySelectorAll("#passage-out .sel-passage")) {
+      li.classList.toggle("hl", !!urn && li.dataset.urn === urn);
+    }
+  }
+
+  /** Tag a list row with its passage URN so hovering it highlights its region. */
+  function linked(node, urn) {
+    node.dataset.urn = urn;
+    node.addEventListener("pointerenter", () => hover(urn));
+    node.addEventListener("pointerleave", () => hover(null));
+    return node;
+  }
+
+  /** Text with Sowerby note URNs shown as Unicode signs in the notation font. */
   function cellEl(text) {
     const cell = el("span", { className: "cell greek" });
     for (const seg of AgmNotation.splitEmbeddedNotation(text)) {
       cell.append(seg.urn
-        ? el("span", {
-            className: "mousike-notation note-sign" + (seg.ok ? "" : " unknown"),
-            textContent: seg.unicode,
-            title: seg.urn,
-          })
+        ? el("span", { className: "mousike-notation note-sign" + (seg.ok ? "" : " unknown"), textContent: seg.unicode, title: seg.urn })
         : seg.text);
     }
     return cell;
   }
 
-  /** True when all of `node` is within the window. */
-  function isOnScreen(node) {
-    const r = node.getBoundingClientRect();
-    return r.top >= 0 && r.bottom <= window.innerHeight;
-  }
-
-  msSelect.addEventListener("change", () => selectManuscript(msSelect.value));
+  textSelect.addEventListener("change", () => selectText(textSelect.value));
 
   /* ---------- loading the release ---------- */
 
   function accept(d, source) {
-    window.mss.data = d;
+    window.texts.data = d;
     setStatus(`Loaded mousike release ${d.version}`, false, `Source: ${source}`);
     renderMenu(d);
   }
-  window.mss.accept = accept;
+  window.texts.accept = accept;
 
   async function loadUrl() {
     const url = (urlInput && urlInput.value.trim()) || AgmCex.DEFAULT_URL;

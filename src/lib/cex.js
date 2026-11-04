@@ -354,7 +354,7 @@
     );
     const syllables = onlyCataloged("syllables", table("syllables"), (r) => r.urn)
       .map((r) => Object.assign(r, ctsParts(r.urn)));
-    // All DSE records (kept as `dseAll`, e.g. for images in mss.html), and those for cataloged texts.
+    // All DSE records (kept as `dseAll`, e.g. for images in agm-mss.html), and those for cataloged texts.
     const dseAll = table("dse").map((r) => {
       const cite2 = parseCite2(r.image);
       if (!cite2 || !cite2.object) {

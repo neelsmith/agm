@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>mss: Ancient Greek Music manuscripts</title>
+<title>agm-mss: Ancient Greek Music manuscripts</title>
 <style>
 /* Mousike Notation font: SIL Open Font License 1.1, derived from Noto Serif and Noto Music. */
 @font-face {
@@ -132,7 +132,7 @@ summary { cursor: pointer; font-weight: 600; }
 </head>
 <body>
 <header>
-  <h1>mss · Ancient Greek Music manuscripts</h1>
+  <h1>agm · Manuscripts</h1>
   <div class="controls">
     <input id="url" type="url" aria-label="CEX URL">
     <button id="load">Load</button>
@@ -147,7 +147,7 @@ summary { cursor: pointer; font-weight: 600; }
   </section>
   <section id="ms-out"></section>
 </main>
-<footer class="app-footer">mss <span id="app-version">1.1.0</span></footer>
+<footer class="app-footer">agm-mss <span id="app-version">1.1.0</span></footer>
 
 <script>
 /*
@@ -506,7 +506,7 @@ summary { cursor: pointer; font-weight: 600; }
     );
     const syllables = onlyCataloged("syllables", table("syllables"), (r) => r.urn)
       .map((r) => Object.assign(r, ctsParts(r.urn)));
-    // All DSE records (kept as `dseAll`, e.g. for images in mss.html), and those for cataloged texts.
+    // All DSE records (kept as `dseAll`, e.g. for images in agm-mss.html), and those for cataloged texts.
     const dseAll = table("dse").map((r) => {
       const cite2 = parseCite2(r.image);
       if (!cite2 || !cite2.object) {
@@ -635,9 +635,25 @@ summary { cursor: pointer; font-weight: 600; }
   }
 
   /**
+   * State that shows region `roi` (fractions of an imgW×imgH image) centred in the frame, with
+   * `margin` (a fraction of the region's size) of context on each side, never zoomed in past
+   * `maxScale` nor out past the whole-image fit.
+   */
+  function regionFitState(imgW, imgH, frameW, frameH, roi, margin = 0.6, maxScale = MAX_SCALE) {
+    const fit = fitState(imgW, imgH, frameW, frameH);
+    if (!roi || !(roi.width > 0 && roi.height > 0)) return fit;
+    const w = roi.width * imgW * (1 + 2 * margin);
+    const h = roi.height * imgH * (1 + 2 * margin);
+    const scale = Math.max(fit.scale, Math.min(maxScale, frameW / w, frameH / h));
+    const cx = (roi.left + roi.width / 2) * imgW;
+    const cy = (roi.top + roi.height / 2) * imgH;
+    return { scale, x: frameW / 2 - cx * scale, y: frameH / 2 - cy * scale };
+  }
+
+  /**
    * Build a viewer inside `container` (emptied first).
-   * Returns { load(url, alt), fit(), zoom(factor), state(), element,
-   *   setRegions([{ id, roi, kind, title }]), highlight(id | null), onRegionHover(fn) }.
+   * Returns { load(url, alt), fit(), zoom(factor), focusRegion(roi), state(), element,
+   *   setRegions([{ id, roi, kind, title }]), highlight(id | [ids] | null), onRegionHover(fn) }.
    * Several regions may share an id; highlight(id) marks all of them.
    * onRegionHover(fn) calls fn(id) when the pointer enters a region and fn(null) when it leaves.
    */
@@ -695,9 +711,11 @@ summary { cursor: pointer; font-weight: 600; }
       apply();
     }
 
-    function highlight(id) {
-      highlighted = id || null;
-      for (const r of regions) r.el.classList.toggle("active", highlighted !== null && r.id === highlighted);
+    /** Highlight the region(s) with id `ids` (one id, or an array of ids); null clears. */
+    function highlight(ids) {
+      highlighted = ids || null;
+      const set = new Set(Array.isArray(ids) ? ids : ids ? [ids] : []);
+      for (const r of regions) r.el.classList.toggle("active", set.has(r.id));
     }
     function center() {
       return { x: frame.clientWidth / 2, y: frame.clientHeight / 2 };
@@ -706,6 +724,12 @@ summary { cursor: pointer; font-weight: 600; }
       if (!loaded) return;
       st = fitState(img.naturalWidth, img.naturalHeight, frame.clientWidth, frame.clientHeight);
       fitScale = st.scale;
+      apply();
+    }
+    /** Zoom to region `roi` with some context around it (no-op until the image has loaded). */
+    function focusRegion(roi, margin) {
+      if (!loaded || !roi) return;
+      st = regionFitState(img.naturalWidth, img.naturalHeight, frame.clientWidth, frame.clientHeight, roi, margin);
       apply();
     }
     function zoom(factor, px, py) {
@@ -796,14 +820,14 @@ summary { cursor: pointer; font-weight: 600; }
     }
 
     return {
-      load, fit, zoom, setRegions, highlight,
+      load, fit, zoom, focusRegion, setRegions, highlight,
       onRegionHover: (fn) => { hoverFn = fn; },
       state: () => ({ ...st }),
       element: frame,
     };
   }
 
-  return { createViewer, fitState, zoomAt, regionBox, MAX_SCALE };
+  return { createViewer, fitState, zoomAt, regionBox, regionFitState, MAX_SCALE };
 });
 
 </script>
@@ -1334,8 +1358,8 @@ summary { cursor: pointer; font-weight: 600; }
   }
 
   /**
-   * The DSE records mss.html uses: those citing texts cataloged in `#!catalog_embedded`
-   * (as agm.html uses `#!catalog_annotated`). A release without that block uses all DSE records.
+   * The DSE records agm-mss.html uses: those citing texts cataloged in `#!catalog_embedded`
+   * (as agm-artifacts.html uses `#!catalog_annotated`). A release without that block uses all DSE records.
    */
   function embeddedDse(data) {
     const all = data.dseAll || data.dse || [];
@@ -1409,7 +1433,7 @@ summary { cursor: pointer; font-weight: 600; }
 
 </script>
 <script>
-/* mss-app.js — UI for mss.html. Depends on globals AgmCex, AgmViewer, AgmMss and AgmNotation. */
+/* mss-app.js — UI for agm-mss.html. Depends on globals AgmCex, AgmViewer, AgmMss and AgmNotation. */
 (function () {
   "use strict";
   const $ = (id) => document.getElementById(id);

@@ -173,8 +173,8 @@
   }
 
   /**
-   * The DSE records mss.html uses: those citing texts cataloged in `#!catalog_embedded`
-   * (as agm.html uses `#!catalog_annotated`). A release without that block uses all DSE records.
+   * The DSE records agm-mss.html uses: those citing texts cataloged in `#!catalog_embedded`
+   * (as agm-artifacts.html uses `#!catalog_annotated`). A release without that block uses all DSE records.
    */
   function embeddedDse(data) {
     const all = data.dseAll || data.dse || [];

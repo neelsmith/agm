@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>agm: Ancient Greek Music</title>
+<title>agm-mss: Ancient Greek Music manuscripts</title>
 <style>
 /* Mousike Notation font: SIL Open Font License 1.1, derived from Noto Serif and Noto Music. */
 @font-face {
@@ -56,82 +56,94 @@ summary { cursor: pointer; font-weight: 600; }
 .viewer-btn { min-width: 40px; padding: 4px 10px; }
 .credits { color: var(--muted); font-size: .8rem; margin: 6px 0 0; overflow-wrap: anywhere; }
 
-  .summary { display:grid; grid-template-columns: repeat(auto-fill, minmax(120px,1fr)); gap:8px; margin: 18px 0; }
-  .summary div { border:1px solid var(--line); border-radius:6px; padding:8px 10px; }
-  .summary b { display:block; font-size: 1.3rem; }
-  .summary span { color: var(--muted); font-size: .85rem; }
-  .warnings { color: var(--warn); }
-  .scroll { overflow-x: auto; }
-  table { border-collapse: collapse; margin-top: 8px; font-size: .9rem; }
-  th, td { text-align: left; vertical-align: top; padding: 4px 10px 4px 0; border-bottom: 1px solid var(--line); }
-  th { color: var(--muted); font-weight: 500; }
-  td.urn { font-family: ui-monospace, Menlo, monospace; font-size: .8rem; white-space: nowrap; }
-  .surface-picker, .image-picker, .audio-picker { display:flex; flex-wrap: wrap; gap:10px; align-items:center; margin: 14px 0; }
-  .surface-picker label, .image-picker label, .audio-picker label { font-weight: 600; }
-  .surface-picker select, .image-picker select, .audio-picker select { font: inherit; padding: 6px 8px; max-width: 100%; min-width: 0;
+  .ms-picker { display:flex; flex-wrap: wrap; gap:10px; align-items:center; margin: 14px 0; }
+  .ms-picker label { font-weight: 600; }
+  .ms-picker select { font: inherit; padding: 6px 8px; max-width: 100%; min-width: 0;
     background: var(--bg); color: inherit; border: 1px solid var(--line); border-radius: 4px; }
-  #surface-out h2 { margin: 18px 0 2px; font-size: 1.15rem; }
+  #ms-out h2 { margin: 18px 0 2px; font-size: 1.15rem; }
   .urn-line, .counts { color: var(--muted); margin: 2px 0 8px; }
   .urn-line code { overflow-wrap: anywhere; }
-  .entries { list-style: none; margin: 0; padding: 0; }
-  .entry { border-top: 1px solid var(--line); padding: 8px 0; }
-  .entry-head { display: flex; flex-wrap: wrap; gap: 4px 14px; align-items: baseline; }
-  .entry-head .ref { font-family: ui-monospace, Menlo, monospace; font-weight: 600; }
-  .entry-head .roi { font-family: ui-monospace, Menlo, monospace; font-size: .78rem; color: var(--muted); }
-  .entry .content { margin-top: 3px; }
-  .entry .content.greek { font-family: "Gentium Plus", "New Athena Unicode", Georgia, serif; font-size: 1.1rem; }
-  .entry .content .mousike-notation { font-size: 1.6rem; line-height: 1.7; }
-  .entry .content .notation { font-family: ui-monospace, Menlo, monospace; font-size: .75rem; color: var(--muted); overflow-wrap: anywhere; }
-  .entry.unresolved .content { opacity: .7; }
-  .entry .content .count { font-family: system-ui, sans-serif; color: var(--muted); }
-  .entry .note { color: var(--warn); font-size: .85rem; margin-top: 3px; }
-  td.notation { font-family: ui-monospace, Menlo, monospace; font-size: .8rem; }
-  .lines { margin: 10px 0 18px; }
-  .lines h3 { font-size: 1rem; margin: 14px 0 4px; font-family: ui-monospace, Menlo, monospace; }
-  .line { border-top: 1px solid var(--line); padding: 8px 0 10px; }
-  .line-head { display: flex; gap: 12px; align-items: baseline; }
-  .line-no { font-weight: 600; color: var(--muted); font-size: .85rem; }
-  .line .note { color: var(--warn); font-size: .85rem; }
-  .line-row { display: flex; flex-wrap: wrap; gap: 6px 18px; margin-top: 4px; }
-  .col { display: flex; flex-direction: column; align-items: center; }
-  .col-notes { font-size: 1.7rem; line-height: 1.6; white-space: nowrap; }
-  .col-syl { font-family: "Gentium Plus", "New Athena Unicode", Georgia, serif; font-size: 1.2rem; }
-  .col .missing { color: var(--warn); }
-  .col.unmatched { opacity: .75; }
-  .audio-picker audio { height: 36px; max-width: 100%; }
-  .audio-picker .note { color: var(--warn); font-size: .85rem; overflow-wrap: anywhere; }
-  .dse-panel > summary { font-size: .95rem; }
-  .image-section { margin: 18px 0; }
-  .col-notes.has-roi, .col-syl.has-roi { cursor: default; border-radius: 4px; }
-  .col-notes.hl, .col-syl.hl { background: rgba(255, 59, 107, .22); box-shadow: 0 0 0 2px rgba(255, 59, 107, .7); }
-  .roi-key { color: var(--muted); font-size: .8rem; margin: 6px 0 0; }
-  .roi-key .sw { display: inline-block; width: 10px; height: 10px; border: 2px solid; border-radius: 2px;
-    vertical-align: -1px; margin: 0 4px 0 10px; }
-  .roi-key .sw:first-child { margin-left: 0; }
-  .data-panel { margin-top: 28px; }
-  .data-panel > summary { font-size: 1.05rem; }
-  td.greek { font-family: "Gentium Plus", "New Athena Unicode", Georgia, serif; font-size: 1.05rem; }
+  .counts .missing { color: var(--warn); }
+  .ms-warnings { color: var(--warn); font-size: .85rem; }
+  .note { color: var(--warn); font-size: .9rem; }
 
+  /* The light table and the full-image view share one fixed-height "stage"; only one shows at a time. */
+  #ms-out { --stage-h: min(62vh, 600px); }
+  .stage { margin: 10px 0 0; }
+  .stage [hidden] { display: none !important; }
+  .page-view { height: var(--stage-h); display: flex; flex-direction: column; }
+  .page-view .viewer { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+  .page-view .viewer-frame { flex: 1 1 auto; height: auto; min-height: 0; }
+  .page-head { display: flex; flex-wrap: wrap; gap: 4px 14px; align-items: baseline; margin-bottom: 6px; }
+  .page-head h3 { margin: 0; font-size: 1.05rem; }
+  .page-head .meta { color: var(--muted); font-size: .8rem; font-family: ui-monospace, Menlo, monospace;
+    overflow-wrap: anywhere; }
+  .page-head .not-found { color: var(--warn); }
+  .page-nav { display: flex; gap: 6px; margin-left: auto; }
+  .page-nav .close { background: transparent; color: var(--accent); }
+  .page-nav button { padding: 4px 10px; }
+  .page-nav button:disabled { opacity: .4; cursor: default; }
+
+  .light-table { display: grid; grid-template-columns: repeat(auto-fill, minmax(124px, 1fr)); gap: 12px;
+    align-content: start; max-height: var(--stage-h); overflow-y: auto; overscroll-behavior: contain;
+    box-sizing: border-box; margin: 0; padding: 12px; border-radius: 8px; background: color-mix(in srgb, var(--fg) 6%, var(--bg)); }
+  .thumb { display: flex; flex-direction: column; align-items: stretch; gap: 4px; margin: 0; padding: 6px;
+    border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: inherit; cursor: pointer;
+    font: inherit; text-align: center; }
+  .thumb:hover { border-color: var(--accent); }
+  .thumb:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .thumb.selected { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
+  .thumb img { width: 100%; height: 150px; object-fit: contain; background: #111; border-radius: 3px; }
+  .thumb img.broken { visibility: hidden; }
+  /* Images cited by DSE records */
+  #ms-out { --dse: #1f7a8c; }
+  @media (prefers-color-scheme: dark) { #ms-out { --dse: #4fb3c8; } }
+  .thumb figure { position: relative; }
+  .thumb.has-dse { border-color: var(--dse); box-shadow: inset 0 0 0 2px var(--dse);
+    background: color-mix(in srgb, var(--dse) 12%, var(--bg)); }
+  .thumb.has-dse.selected { box-shadow: inset 0 0 0 2px var(--dse), 0 0 0 3px var(--accent); }
+  .dse-badge { position: absolute; top: 4px; right: 4px; min-width: 18px; padding: 1px 6px; border-radius: 10px;
+    background: var(--dse); color: #fff; font-size: .72rem; font-weight: 600; line-height: 1.5; }
+  .light-table.dse-only .thumb:not(.has-dse) { display: none; }
+  .counts .dse-count { color: var(--dse); font-weight: 600; }
+  .dse-filter { display: inline-flex; align-items: center; gap: 4px; font-size: .9rem; margin: 2px 0 4px; cursor: pointer; }
+  .dse-swatch { display: inline-block; width: 12px; height: 12px; border-radius: 3px; background: var(--dse); margin-left: 4px; }
+  /* Text indexed to the open image (texts with embedded notation) */
+  .page-text { margin: 14px 0 0; border-top: 1px solid var(--line); padding-top: 8px; }
+  .page-text h3 { margin: 0 0 6px; font-size: 1rem; }
+  .page-text h3 .work { color: var(--muted); font-weight: 400; }
+  .passages { list-style: none; margin: 0; padding: 0; }
+  .passage { display: grid; grid-template-columns: 6.5em 1fr; gap: 4px 12px; align-items: baseline;
+    padding: 5px 0; border-top: 1px solid color-mix(in srgb, var(--line) 60%, transparent); }
+  .passage .ref { font-family: ui-monospace, Menlo, monospace; font-size: .8rem; color: var(--muted);
+    overflow-wrap: anywhere; }
+  .passage .cells { display: grid; gap: 2px 22px; align-items: baseline; }
+  .greek { font-family: "Gentium Plus", "New Athena Unicode", Georgia, serif; font-size: 1.1rem; }
+  .note-sign { font-size: 1.35em; line-height: 1; }
+  /* Regions of interest on the image, linked with the passages (active style from viewer.css) */
+  .viewer-region.kind-text { --roi: color-mix(in srgb, var(--dse) 80%, white); }
+  .passage { border-radius: 4px; padding-left: 4px; padding-right: 4px; }
+  .passage.has-roi { cursor: default; }
+  .passage.hl { background: rgba(255, 59, 107, .14); box-shadow: inset 3px 0 0 rgba(255, 59, 107, .85); }
+  .note-sign.unknown { color: var(--warn); font-size: .8em; font-family: ui-monospace, Menlo, monospace; }
+  .thumb figcaption { font-size: .8rem; line-height: 1.25; overflow-wrap: anywhere; }
+  .thumb.not-found figcaption { color: var(--warn); font-style: italic; }
 </style>
 </head>
 <body>
 <header>
-  <h1>agm · Ancient Greek Music</h1>
+  <h1>agm · Manuscripts</h1>
 
 </header>
 <main>
   <p id="status">Not loaded.</p>
-  <section class="surface-picker">
-    <label for="surface">Artifact</label>
-    <select id="surface" disabled><option value="">Load data first</option></select>
+  <section class="ms-picker">
+    <label for="ms">Manuscript</label>
+    <select id="ms" disabled><option value="">Load data first</option></select>
   </section>
-  <section id="surface-out"></section>
-  <details class="data-panel">
-    <summary>Release data</summary>
-    <div id="data-out"></div>
-  </details>
+  <section id="ms-out"></section>
 </main>
-<footer class="app-footer">agm <span id="app-version">1.1.0</span></footer>
+<footer class="app-footer">agm-mss <span id="app-version">1.1.0</span></footer>
 
 <script>
 /*
@@ -490,7 +502,7 @@ summary { cursor: pointer; font-weight: 600; }
     );
     const syllables = onlyCataloged("syllables", table("syllables"), (r) => r.urn)
       .map((r) => Object.assign(r, ctsParts(r.urn)));
-    // All DSE records (kept as `dseAll`, e.g. for images in mss.html), and those for cataloged texts.
+    // All DSE records (kept as `dseAll`, e.g. for images in agm-mss.html), and those for cataloged texts.
     const dseAll = table("dse").map((r) => {
       const cite2 = parseCite2(r.image);
       if (!cite2 || !cite2.object) {
@@ -564,283 +576,254 @@ summary { cursor: pointer; font-weight: 600; }
 </script>
 <script>
 /*
- * edition.js — queries over parsed mousike data (output of AgmCex.parseCex).
+ * viewer.js — a small pan/zoom image viewer with no dependencies.
  *
- * Classic UMD script: global `AgmEdition` in the browser, CommonJS in Node.
+ * Classic UMD script: global `AgmViewer` in the browser, CommonJS in Node (where only the
+ * pure geometry helpers are useful).
+ *
+ * View state is { scale, x, y }: the image is drawn at its natural size times `scale`, with its
+ * top-left corner at (x, y) in frame pixels.
+ *
+ * Regions of interest (fractions 0..1 of the image's width/height: left, top, width, height)
+ * are drawn as outlined boxes in an overlay; their screen positions are recomputed on every
+ * pan/zoom, so outlines stay a constant width at any zoom.
+ *
+ * Controls: drag to pan; mouse wheel / trackpad / pinch to zoom about the pointer;
+ * double-click to zoom in; buttons for zoom in, zoom out and fit.
  */
 (function (root, factory) {
   if (typeof module === "object" && module.exports) {
     module.exports = factory();
   } else {
-    root.AgmEdition = factory();
+    root.AgmViewer = factory();
   }
 })(typeof self !== "undefined" ? self : this, function () {
   "use strict";
 
-  /**
-   * Surfaces for a menu: [{ urn, label }] in source order. Only surfaces with at least one DSE
-   * record are listed (DSE records citing uncataloged texts are already dropped by parseCex).
-   */
-  function surfaceMenu(data) {
-    const withDse = new Set(data.dse.map((r) => r.surface));
-    return data.surfaces.filter((s) => withDse.has(s.urn)).map((s) => ({ urn: s.urn, label: s.label }));
-  }
+  const MAX_SCALE = 8; // at most 8× the image's natural size
 
-  /** All DSE records whose surface column equals `surfaceUrn`, in source order. */
-  function dseForSurface(data, surfaceUrn) {
-    return data.dse.filter((r) => r.surface === surfaceUrn);
+  /** State that fits an imgW×imgH image entirely in a frameW×frameH frame, centred. */
+  function fitState(imgW, imgH, frameW, frameH) {
+    if (!(imgW > 0 && imgH > 0 && frameW > 0 && frameH > 0)) return { scale: 1, x: 0, y: 0 };
+    const scale = Math.min(frameW / imgW, frameH / imgH);
+    return { scale, x: (frameW - imgW * scale) / 2, y: (frameH - imgH * scale) / 2 };
   }
 
   /**
-   * Look up the passage a DSE text URN cites, in the `texts`, `notes` or `syllables` block.
-   *
-   * Notes are citable by line (`notes:1`) or by note group within a line (`notes:1.2`,
-   * the 2nd whitespace-separated group); a group record also has `notes` (array) and `line`.
-   *
-   * Returns { urn, block, unit, match, record }:
-   *   block  "texts" | "notes" | "syllables" | null
-   *   unit   "line" | "group" | "syllable" | null
-   *   match  "exact"     — the URN is in that block
-   *          "container" — not found, but a containing passage is (e.g. text:1 for text:1.1);
-   *                        `record` is the containing passage, for context only
-   *          null        — nothing found; `record` is null
+   * Zoom by `factor` keeping frame point (px, py) fixed on the same image point.
+   * The scale is clamped to [minScale, MAX_SCALE].
    */
-  function resolvePassage(data, urn) {
-    const blocks = [
-      ["texts", "line", data.index.texts],
-      ["notes", "line", data.index.notes],
-      ["notes", "group", data.index.noteGroups],
-      ["syllables", "syllable", data.index.syllables],
-    ];
-    for (const [block, unit, m] of blocks) {
-      if (m.has(urn)) return { urn, block, unit, match: "exact", record: m.get(urn) };
-    }
-    // Walk up the citation hierarchy: a:1.2.3 -> a:1.2 -> a:1
-    const colon = urn.lastIndexOf(":");
-    if (colon > 0) {
-      const work = urn.slice(0, colon);
-      const ref = urn.slice(colon + 1).split(".");
-      for (let n = ref.length - 1; n >= 1; n--) {
-        const parent = `${work}:${ref.slice(0, n).join(".")}`;
-        for (const [block, unit, m] of blocks) {
-          if (m.has(parent)) return { urn, block, unit, match: "container", record: m.get(parent) };
-        }
-      }
-    }
-    return { urn, block: null, unit: null, match: null, record: null };
+  function zoomAt(state, factor, px, py, minScale) {
+    const lo = Math.min(minScale || state.scale, 1);
+    const scale = Math.max(lo, Math.min(MAX_SCALE, state.scale * factor));
+    const k = scale / state.scale;
+    return { scale, x: px - (px - state.x) * k, y: py - (py - state.y) * k };
   }
 
-  /**
-   * Everything indexed to one surface: for each DSE record, the cited passage.
-   * Returns { surface, entries: [{ dse, passage }], counts }
-   */
-  function surfaceContents(data, surfaceUrn) {
-    const surface = data.index.surfaces.get(surfaceUrn) || null;
-    const entries = dseForSurface(data, surfaceUrn).map((dse) => ({
-      dse,
-      passage: resolvePassage(data, dse.text),
-    }));
-    const counts = { total: entries.length, exact: 0, container: 0, missing: 0 };
-    for (const e of entries) counts[e.passage.match || "missing"]++;
-    return { surface, entries, counts };
-  }
-
-  /* ---------- syllable ↔ note-group alignment ---------- */
-
-  /**
-   * The text a CTS work belongs to, without its last work-id component:
-   * "urn:cts:mousike:epigraphic.seikilos.notes" -> "urn:cts:mousike:epigraphic.seikilos".
-   * The notes and syllables editions of one text share this base.
-   */
-  function textBase(work) {
-    const colon = work.lastIndexOf(":");
-    const id = work.slice(colon + 1);
-    const dot = id.lastIndexOf(".");
-    return dot < 0 ? work : work.slice(0, colon + 1) + id.slice(0, dot);
-  }
-
-  /** Split a 2-tier passage "L.N" into { line: "L", n: N }; null if not 2-tier. */
-  function splitLineRef(passage) {
-    const parts = String(passage || "").split(".");
-    if (parts.length !== 2 || !parts[0] || !/^\d+$/.test(parts[1])) return null;
-    return { line: parts[0], n: Number(parts[1]) };
-  }
-
-  const byNumber = (a, b) => {
-    const na = Number(a), nb = Number(b);
-    return Number.isNaN(na) || Number.isNaN(nb) ? String(a).localeCompare(String(b)) : na - nb;
-  };
-
-  /**
-   * Pair syllables with note groups line by line for one text.
-   * `base` is a textBase() value. Line L's syllables (`…syllables:L.N`) and note groups
-   * (`…notes:L.N`) are matched by N.
-   * Returns [{ line, syllables: [rec], groups: [rec], columns: [{ n, syllable, group }],
-   *   aligned }] in line order; a missing partner is null, and `aligned` is true when the
-   *   line has the same number of syllables and note groups.
-   */
-  function alignLines(data, base) {
-    const lines = new Map();
-    const add = (rec, kind) => {
-      if (textBase(rec.work) !== base) return;
-      const ref = splitLineRef(rec.passage);
-      if (!ref) return;
-      if (!lines.has(ref.line)) lines.set(ref.line, { syllables: [], groups: [] });
-      lines.get(ref.line)[kind].push({ n: ref.n, rec });
+  /** Screen-pixel box of a region `roi` {left, top, width, height} (fractions of the image). */
+  function regionBox(state, imgW, imgH, roi) {
+    return {
+      left: state.x + roi.left * imgW * state.scale,
+      top: state.y + roi.top * imgH * state.scale,
+      width: roi.width * imgW * state.scale,
+      height: roi.height * imgH * state.scale,
     };
-    for (const s of data.syllables) add(s, "syllables");
-    for (const g of data.index.noteGroups.values()) add(g, "groups");
-
-    return [...lines.keys()].sort(byNumber).map((line) => {
-      const { syllables, groups } = lines.get(line);
-      const sylByN = new Map(syllables.map((x) => [x.n, x.rec]));
-      const grpByN = new Map(groups.map((x) => [x.n, x.rec]));
-      const ns = [...new Set([...sylByN.keys(), ...grpByN.keys()])].sort((a, b) => a - b);
-      return {
-        line,
-        syllables: syllables.sort((a, b) => a.n - b.n).map((x) => x.rec),
-        groups: groups.sort((a, b) => a.n - b.n).map((x) => x.rec),
-        columns: ns.map((n) => ({ n, syllable: sylByN.get(n) || null, group: grpByN.get(n) || null })),
-        aligned: syllables.length === groups.length,
-      };
-    });
   }
 
   /**
-   * Texts a surface's DSE records cite, each with its aligned lines.
-   * Returns [{ base, lines }] in order of first citation; texts with no syllables or
-   * note groups are left out.
+   * State that shows region `roi` (fractions of an imgW×imgH image) centred in the frame, with
+   * `margin` (a fraction of the region's size) of context on each side, never zoomed in past
+   * `maxScale` nor out past the whole-image fit.
    */
-  function surfaceLines(data, surfaceUrn) {
-    const bases = [];
-    for (const r of dseForSurface(data, surfaceUrn)) {
-      const { work } = ctsWork(r.text);
-      if (!work) continue;
-      const b = textBase(work);
-      if (!bases.includes(b)) bases.push(b);
-    }
-    return bases
-      .map((base) => ({ base, lines: alignLines(data, base) }))
-      .filter((t) => t.lines.length > 0);
-  }
-
-  /** "urn:cts:ns:work:passage" -> { work: "urn:cts:ns:work" } (work null if not CTS). */
-  function ctsWork(urn) {
-    const parts = String(urn || "").split(":");
-    if (parts.length < 4 || parts[0] !== "urn" || parts[1] !== "cts") return { work: null };
-    return { work: parts.slice(0, 4).join(":") };
+  function regionFitState(imgW, imgH, frameW, frameH, roi, margin = 0.6, maxScale = MAX_SCALE) {
+    const fit = fitState(imgW, imgH, frameW, frameH);
+    if (!roi || !(roi.width > 0 && roi.height > 0)) return fit;
+    const w = roi.width * imgW * (1 + 2 * margin);
+    const h = roi.height * imgH * (1 + 2 * margin);
+    const scale = Math.max(fit.scale, Math.min(maxScale, frameW / w, frameH / h));
+    const cx = (roi.left + roi.width / 2) * imgW;
+    const cy = (roi.top + roi.height / 2) * imgH;
+    return { scale, x: frameW / 2 - cx * scale, y: frameH / 2 - cy * scale };
   }
 
   /**
-   * Distinct images a surface's DSE records cite, with any `@` region of interest removed,
-   * in order of first citation. Each is labelled with the `description` of the `#!images`
-   * row whose `urn` is exactly equal; if there is none, the label is the URN and `image` is null.
-   * Returns [{ urn, label, image }].
+   * Build a viewer inside `container` (emptied first).
+   * Returns { load(url, alt), fit(), zoom(factor), focusRegion(roi), state(), element,
+   *   setRegions([{ id, roi, kind, title }]), highlight(id | [ids] | null), onRegionHover(fn) }.
+   * Several regions may share an id; highlight(id) marks all of them.
+   * onRegionHover(fn) calls fn(id) when the pointer enters a region and fn(null) when it leaves.
    */
-  function surfaceImages(data, surfaceUrn) {
-    const byUrn = new Map(data.images.map((img) => [img.urn, img]));
-    const out = [];
-    const seen = new Set();
-    for (const r of dseForSurface(data, surfaceUrn)) {
-      const urn = String(r.image || "").split("@")[0].trim();
-      if (!urn || seen.has(urn)) continue;
-      seen.add(urn);
-      const image = byUrn.get(urn) || null;
-      out.push({ urn, label: image && image.description ? image.description : urn, image });
-    }
-    return out;
-  }
+  function createViewer(container) {
+    const doc = container.ownerDocument;
+    const mk = (tag, cls, attrs) => Object.assign(doc.createElement(tag), { className: cls }, attrs || {});
 
-  /**
-   * Regions of interest on one image (URN without `@`) from a surface's DSE records.
-   * Returns [{ id, roi, kind, dse }] in DSE order, where `id` is the DSE text URN and `kind` is
-   * "notes" (a note group or notes line), "syllables", "texts" or "other" (passage not found).
-   * Records without a parseable region are left out.
-   */
-  function imageRegions(data, surfaceUrn, imageUrn) {
-    const out = [];
-    for (const r of dseForSurface(data, surfaceUrn)) {
-      if (!r.roi || String(r.image || "").split("@")[0].trim() !== imageUrn) continue;
-      const i = data.index;
-      const kind = i.noteGroups.has(r.text) || i.notes.has(r.text) ? "notes"
-        : i.syllables.has(r.text) ? "syllables"
-        : i.texts.has(r.text) ? "texts"
-        : "other";
-      out.push({ id: r.text, roi: r.roi, kind, dse: r });
-    }
-    return out;
-  }
+    const frame = mk("div", "viewer-frame", { tabIndex: 0 });
+    const img = mk("img", "viewer-img", { draggable: false, alt: "" });
+    const msg = mk("div", "viewer-msg");
+    const overlay = mk("div", "viewer-regions");
+    frame.append(img, overlay, msg);
 
-  /* ---------- audio ---------- */
+    const bar = mk("div", "viewer-bar");
+    const btn = (label, title, fn) => {
+      const b = mk("button", "viewer-btn", { type: "button", textContent: label, title });
+      b.setAttribute("aria-label", title);
+      b.addEventListener("click", fn);
+      bar.append(b);
+    };
+    btn("+", "Zoom in", () => zoom(1.5));
+    btn("−", "Zoom out", () => zoom(1 / 1.5));
+    btn("Fit", "Fit image to frame", () => fit());
+    container.replaceChildren(frame, bar);
 
-  /** Where audio files are served (the mousike repo's `audio` directory). */
-  const AUDIO_BASE_URL = "https://raw.githubusercontent.com/neelsmith/mousike/refs/heads/main/audio";
+    let st = { scale: 1, x: 0, y: 0 };
+    let fitScale = 1;
+    let loaded = false;
+    let regions = []; // [{ id, roi, el }]
+    let hoverFn = null;
+    let highlighted = null;
+    let dragging = false;
 
-  /** URL of an `#!audio` row's file, or null if it has none. */
-  function audioUrl(track) {
-    if (!track || !track.file) return null;
-    return `${AUDIO_BASE_URL}/${String(track.file).trim().replace(/^\/+/, "")}`;
-  }
-
-  /** Line-level part of a passage reference: "3.2" -> "3". */
-  const lineOf = (ref) => String(ref).split(".")[0];
-
-  /**
-   * Does line `line` fall within passage reference `passage`?
-   * `passage` may be null (the whole work), a single reference ("2", "2.3") or a range
-   * ("1-6", "1.2-3.4"); only the line-level part of each end is compared, numerically when
-   * both are numbers.
-   */
-  function lineInPassage(line, passage) {
-    if (passage === null || passage === undefined || passage === "") return true;
-    const [from, to = from] = String(passage).split("-").map((p) => lineOf(p.trim()));
-    const l = String(line);
-    const nums = [l, from, to].map(Number);
-    if (nums.every((n) => Number.isFinite(n))) return nums[1] <= nums[0] && nums[0] <= nums[2];
-    return l === from || l === to;
-  }
-
-  /**
-   * Audio tracks for the notation shown for a surface: every `#!audio` row whose `notation`
-   * URN is in the same notes work as a displayed line, with a passage (or range) that
-   * includes at least one displayed line. Returns [{ label, file, notation, url, lines }] in
-   * `#!audio` order, where `lines` are the matching displayed line numbers.
-   */
-  function surfaceAudio(data, surfaceUrn) {
-    const shown = []; // [{ work, line }] notes lines in the line view
-    for (const t of surfaceLines(data, surfaceUrn)) {
-      for (const ln of t.lines) {
-        if (ln.groups.length) shown.push({ work: ln.groups[0].work, line: ln.line });
+    function apply() {
+      img.style.transform = `translate(${st.x}px, ${st.y}px) scale(${st.scale})`;
+      if (!loaded) return;
+      for (const r of regions) {
+        const b = regionBox(st, img.naturalWidth, img.naturalHeight, r.roi);
+        Object.assign(r.el.style, {
+          left: `${b.left}px`, top: `${b.top}px`, width: `${b.width}px`, height: `${b.height}px`,
+        });
       }
     }
-    const out = [];
-    for (const a of data.audio || []) {
-      const urn = String(a.notation || "").trim();
-      const parts = urn.split(":");
-      if (parts.length < 4 || parts[0] !== "urn" || parts[1] !== "cts") continue;
-      const work = parts.slice(0, 4).join(":");
-      const passage = parts.length > 4 ? parts.slice(4).join(":") : null;
-      const lines = shown.filter((s) => s.work === work && lineInPassage(s.line, passage)).map((s) => s.line);
-      if (lines.length) out.push({ label: a.label, file: a.file, notation: urn, url: audioUrl(a), lines });
+
+    function setRegions(list) {
+      regions = (list || []).filter((r) => r && r.roi).map((r) => {
+        const e = mk("div", `viewer-region${r.kind ? " kind-" + r.kind : ""}`, { title: r.title || r.id });
+        e.dataset.id = r.id;
+        e.addEventListener("pointerenter", () => { if (!dragging && hoverFn) hoverFn(r.id); });
+        e.addEventListener("pointerleave", () => { if (!dragging && hoverFn) hoverFn(null); });
+        return { id: r.id, roi: r.roi, el: e };
+      });
+      overlay.replaceChildren(...regions.map((r) => r.el));
+      highlight(highlighted);
+      apply();
     }
-    return out;
+
+    /** Highlight the region(s) with id `ids` (one id, or an array of ids); null clears. */
+    function highlight(ids) {
+      highlighted = ids || null;
+      const set = new Set(Array.isArray(ids) ? ids : ids ? [ids] : []);
+      for (const r of regions) r.el.classList.toggle("active", set.has(r.id));
+    }
+    function center() {
+      return { x: frame.clientWidth / 2, y: frame.clientHeight / 2 };
+    }
+    function fit() {
+      if (!loaded) return;
+      st = fitState(img.naturalWidth, img.naturalHeight, frame.clientWidth, frame.clientHeight);
+      fitScale = st.scale;
+      apply();
+    }
+    /** Zoom to region `roi` with some context around it (no-op until the image has loaded). */
+    function focusRegion(roi, margin) {
+      if (!loaded || !roi) return;
+      st = regionFitState(img.naturalWidth, img.naturalHeight, frame.clientWidth, frame.clientHeight, roi, margin);
+      apply();
+    }
+    function zoom(factor, px, py) {
+      if (!loaded) return;
+      const c = center();
+      st = zoomAt(st, factor, px ?? c.x, py ?? c.y, fitScale);
+      apply();
+    }
+    function local(e) {
+      const r = frame.getBoundingClientRect();
+      return { x: e.clientX - r.left, y: e.clientY - r.top };
+    }
+
+    // Pointer handling: one pointer pans, two pointers pinch-zoom.
+    const pointers = new Map();
+    let pinchDist = 0;
+    frame.addEventListener("pointerdown", (e) => {
+      if (!loaded) return;
+      frame.setPointerCapture(e.pointerId);
+      pointers.set(e.pointerId, local(e));
+      if (pointers.size === 2) {
+        const [a, b] = [...pointers.values()];
+        pinchDist = Math.hypot(a.x - b.x, a.y - b.y);
+      }
+      dragging = true;
+      frame.classList.add("dragging");
+    });
+    frame.addEventListener("pointermove", (e) => {
+      if (!pointers.has(e.pointerId)) return;
+      const prev = pointers.get(e.pointerId);
+      const p = local(e);
+      pointers.set(e.pointerId, p);
+      if (pointers.size === 1) {
+        st = { ...st, x: st.x + p.x - prev.x, y: st.y + p.y - prev.y };
+        apply();
+      } else if (pointers.size === 2) {
+        const [a, b] = [...pointers.values()];
+        const d = Math.hypot(a.x - b.x, a.y - b.y);
+        if (pinchDist > 0) zoom(d / pinchDist, (a.x + b.x) / 2, (a.y + b.y) / 2);
+        pinchDist = d;
+      }
+    });
+    const release = (e) => {
+      pointers.delete(e.pointerId);
+      pinchDist = 0;
+      if (!pointers.size) { dragging = false; frame.classList.remove("dragging"); }
+    };
+    frame.addEventListener("pointerup", release);
+    frame.addEventListener("pointercancel", release);
+
+    frame.addEventListener("wheel", (e) => {
+      if (!loaded) return;
+      e.preventDefault();
+      const p = local(e);
+      zoom(Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.002)), p.x, p.y);
+    }, { passive: false });
+    frame.addEventListener("dblclick", (e) => { const p = local(e); zoom(2, p.x, p.y); });
+    frame.addEventListener("keydown", (e) => {
+      const step = 40;
+      const moves = { ArrowLeft: [step, 0], ArrowRight: [-step, 0], ArrowUp: [0, step], ArrowDown: [0, -step] };
+      if (e.key === "+" || e.key === "=") zoom(1.5);
+      else if (e.key === "-") zoom(1 / 1.5);
+      else if (e.key === "0") fit();
+      else if (moves[e.key]) { st = { ...st, x: st.x + moves[e.key][0], y: st.y + moves[e.key][1] }; apply(); }
+      else return;
+      e.preventDefault();
+    });
+
+    img.addEventListener("load", () => {
+      loaded = true;
+      msg.textContent = "";
+      frame.classList.remove("empty");
+      fit();
+    });
+    img.addEventListener("error", () => {
+      loaded = false;
+      img.style.transform = "";
+      frame.classList.add("empty");
+      msg.textContent = `Could not load image ${img.src}`;
+    });
+
+    function load(url, alt) {
+      loaded = false;
+      frame.classList.add("empty");
+      msg.textContent = "Loading image…";
+      img.alt = alt || "";
+      img.src = url;
+    }
+
+    return {
+      load, fit, zoom, focusRegion, setRegions, highlight,
+      onRegionHover: (fn) => { hoverFn = fn; },
+      state: () => ({ ...st }),
+      element: frame,
+    };
   }
 
-  /** Where catalogued image files are served: an image's URL is this + "/" + its `path`. */
-  const IMAGE_BASE_URL = "https://shot.holycross.edu/images/mousike";
-
-  /** URL of an `#!images` row's file, or null if the row (or its path) is missing. */
-  function imageUrl(image) {
-    if (!image || !image.path) return null;
-    return `${IMAGE_BASE_URL}/${String(image.path).trim().replace(/^\/+/, "")}`;
-  }
-
-  return {
-    surfaceMenu, dseForSurface, resolvePassage, surfaceContents,
-    textBase, alignLines, surfaceLines, surfaceImages,
-    imageRegions, IMAGE_BASE_URL, imageUrl,
-    AUDIO_BASE_URL, audioUrl, lineInPassage, surfaceAudio,
-  };
+  return { createViewer, fitState, zoomAt, regionBox, regionFitState, MAX_SCALE };
 });
 
 </script>
@@ -1197,249 +1180,269 @@ summary { cursor: pointer; font-weight: 600; }
 </script>
 <script>
 /*
- * viewer.js — a small pan/zoom image viewer with no dependencies.
+ * mss.js — manuscripts: the `#!mss` / `#!mspages` blocks of a mousike release, IIIF manifests,
+ * and the delimited-text "urnmap" files that pair IIIF images with CITE2 URNs and labels.
  *
- * Classic UMD script: global `AgmViewer` in the browser, CommonJS in Node (where only the
- * pure geometry helpers are useful).
- *
- * View state is { scale, x, y }: the image is drawn at its natural size times `scale`, with its
- * top-left corner at (x, y) in frame pixels.
- *
- * Regions of interest (fractions 0..1 of the image's width/height: left, top, width, height)
- * are drawn as outlined boxes in an overlay; their screen positions are recomputed on every
- * pan/zoom, so outlines stay a constant width at any zoom.
- *
- * Controls: drag to pan; mouse wheel / trackpad / pinch to zoom about the pointer;
- * double-click to zoom in; buttons for zoom in, zoom out and fit.
+ * Classic UMD script: global `AgmMss` in the browser, CommonJS in Node. Pure functions only;
+ * fetching is done by the app (or by `loadManuscript` with an injected fetch).
  */
 (function (root, factory) {
   if (typeof module === "object" && module.exports) {
     module.exports = factory();
   } else {
-    root.AgmViewer = factory();
+    root.AgmMss = factory();
   }
 })(typeof self !== "undefined" ? self : this, function () {
   "use strict";
 
-  const MAX_SCALE = 8; // at most 8× the image's natural size
+  const THUMB_WIDTH = 256;      // px width of light-table thumbnails
+  const VIEW_SIZE = 2400;       // longest side, px, of the image shown in the pan/zoom viewer
 
-  /** State that fits an imgW×imgH image entirely in a frameW×frameH frame, centred. */
-  function fitState(imgW, imgH, frameW, frameH) {
-    if (!(imgW > 0 && imgH > 0 && frameW > 0 && frameH > 0)) return { scale: 1, x: 0, y: 0 };
-    const scale = Math.min(frameW / imgW, frameH / imgH);
-    return { scale, x: (frameW - imgW * scale) / 2, y: (frameH - imgH * scale) / 2 };
+  /** Manuscripts for a menu: [{ urn, label, manifest, urnmap }] in `#!mss` order. */
+  function manuscriptMenu(data) {
+    return (data.mss || []).map((m) => ({
+      urn: m.urn, label: m.manuscript, manifest: m.manifest, urnmap: m.urnmap,
+    }));
+  }
+
+  /** Normalise an IIIF Image service / image id for matching: no `/info.json`, no trailing `/`. */
+  function serviceKey(id) {
+    return String(id || "").trim().replace(/\/info\.json$/, "").replace(/\/+$/, "");
   }
 
   /**
-   * Zoom by `factor` keeping frame point (px, py) fixed on the same image point.
-   * The scale is clamped to [minScale, MAX_SCALE].
+   * Parse a urnmap file: `//` comment lines, then a header line, then `|`-delimited rows.
+   * Returns { rows: [{ image, urn, label, … }], warnings }.
    */
-  function zoomAt(state, factor, px, py, minScale) {
-    const lo = Math.min(minScale || state.scale, 1);
-    const scale = Math.max(lo, Math.min(MAX_SCALE, state.scale * factor));
-    const k = scale / state.scale;
-    return { scale, x: px - (px - state.x) * k, y: py - (py - state.y) * k };
+  function parseUrnMap(text) {
+    const warnings = [];
+    const lines = String(text).replace(/^﻿/, "").split(/\r?\n/)
+      .map((l) => l.replace(/\s+$/, ""))
+      .filter((l) => l.trim() && !l.trim().startsWith("//"));
+    if (!lines.length) return { rows: [], warnings: ["urnmap: no header line"] };
+    const header = lines[0].split("|").map((h) => h.trim());
+    for (const col of ["image", "urn", "label"]) {
+      if (!header.includes(col)) warnings.push(`urnmap: header has no "${col}" column`);
+    }
+    const rows = [];
+    for (let i = 1; i < lines.length; i++) {
+      const cols = lines[i].split("|");
+      if (cols.length !== header.length) {
+        warnings.push(`urnmap: row ${i} has ${cols.length} columns, expected ${header.length}`);
+        continue;
+      }
+      const row = {};
+      header.forEach((h, j) => (row[h] = cols[j].trim()));
+      rows.push(row);
+    }
+    return { rows, warnings };
   }
 
-  /** Screen-pixel box of a region `roi` {left, top, width, height} (fractions of the image). */
-  function regionBox(state, imgW, imgH, roi) {
-    return {
-      left: state.x + roi.left * imgW * state.scale,
-      top: state.y + roi.top * imgH * state.scale,
-      width: roi.width * imgW * state.scale,
-      height: roi.height * imgH * state.scale,
-    };
+  /** First value of a IIIF v3 language map, or a plain string label. */
+  function labelText(label) {
+    if (label == null) return "";
+    if (typeof label === "string") return label;
+    if (Array.isArray(label)) return labelText(label[0]);
+    if (typeof label === "object") {
+      if ("@value" in label) return String(label["@value"]);
+      const vals = Object.values(label);
+      return vals.length ? labelText(vals[0]) : "";
+    }
+    return String(label);
   }
+
+  const first = (x) => (Array.isArray(x) ? x[0] : x);
 
   /**
-   * Build a viewer inside `container` (emptied first).
-   * Returns { load(url, alt), fit(), zoom(factor), state(), element,
-   *   setRegions([{ id, roi, kind, title }]), highlight(id | null), onRegionHover(fn) }.
-   * Several regions may share an id; highlight(id) marks all of them.
-   * onRegionHover(fn) calls fn(id) when the pointer enters a region and fn(null) when it leaves.
+   * The images of a IIIF Presentation manifest (v2 or v3), one per canvas, in order.
+   * Returns [{ service, canvas, label, width, height }] where `service` is the IIIF Image
+   * service id (or the image resource id if there is no service).
    */
-  function createViewer(container) {
-    const doc = container.ownerDocument;
-    const mk = (tag, cls, attrs) => Object.assign(doc.createElement(tag), { className: cls }, attrs || {});
-
-    const frame = mk("div", "viewer-frame", { tabIndex: 0 });
-    const img = mk("img", "viewer-img", { draggable: false, alt: "" });
-    const msg = mk("div", "viewer-msg");
-    const overlay = mk("div", "viewer-regions");
-    frame.append(img, overlay, msg);
-
-    const bar = mk("div", "viewer-bar");
-    const btn = (label, title, fn) => {
-      const b = mk("button", "viewer-btn", { type: "button", textContent: label, title });
-      b.setAttribute("aria-label", title);
-      b.addEventListener("click", fn);
-      bar.append(b);
-    };
-    btn("+", "Zoom in", () => zoom(1.5));
-    btn("−", "Zoom out", () => zoom(1 / 1.5));
-    btn("Fit", "Fit image to frame", () => fit());
-    container.replaceChildren(frame, bar);
-
-    let st = { scale: 1, x: 0, y: 0 };
-    let fitScale = 1;
-    let loaded = false;
-    let regions = []; // [{ id, roi, el }]
-    let hoverFn = null;
-    let highlighted = null;
-    let dragging = false;
-
-    function apply() {
-      img.style.transform = `translate(${st.x}px, ${st.y}px) scale(${st.scale})`;
-      if (!loaded) return;
-      for (const r of regions) {
-        const b = regionBox(st, img.naturalWidth, img.naturalHeight, r.roi);
-        Object.assign(r.el.style, {
-          left: `${b.left}px`, top: `${b.top}px`, width: `${b.width}px`, height: `${b.height}px`,
+  function manifestImages(manifest) {
+    const out = [];
+    if (!manifest || typeof manifest !== "object") return out;
+    // v2: sequences[0].canvases[].images[0].resource
+    const v2 = manifest.sequences && first(manifest.sequences);
+    if (v2 && Array.isArray(v2.canvases)) {
+      for (const c of v2.canvases) {
+        const res = c.images && first(c.images) && first(c.images).resource;
+        if (!res) continue;
+        const svc = first(res.service);
+        out.push({
+          service: serviceKey((svc && (svc["@id"] || svc.id)) || res["@id"] || res.id),
+          canvas: c["@id"] || c.id || null,
+          label: labelText(c.label),
+          width: c.width || res.width || null,
+          height: c.height || res.height || null,
         });
       }
+      return out;
     }
-
-    function setRegions(list) {
-      regions = (list || []).filter((r) => r && r.roi).map((r) => {
-        const e = mk("div", `viewer-region${r.kind ? " kind-" + r.kind : ""}`, { title: r.title || r.id });
-        e.dataset.id = r.id;
-        e.addEventListener("pointerenter", () => { if (!dragging && hoverFn) hoverFn(r.id); });
-        e.addEventListener("pointerleave", () => { if (!dragging && hoverFn) hoverFn(null); });
-        return { id: r.id, roi: r.roi, el: e };
+    // v3: items[] (Canvas) → items[0] (AnnotationPage) → items[0] (Annotation) → body
+    for (const c of manifest.items || []) {
+      const page = first(c.items);
+      const anno = page && first(page.items);
+      const body = anno && first(anno.body);
+      if (!body) continue;
+      const svc = first(body.service);
+      out.push({
+        service: serviceKey((svc && (svc.id || svc["@id"])) || body.id),
+        canvas: c.id || null,
+        label: labelText(c.label),
+        width: c.width || body.width || null,
+        height: c.height || body.height || null,
       });
-      overlay.replaceChildren(...regions.map((r) => r.el));
-      highlight(highlighted);
-      apply();
     }
-
-    function highlight(id) {
-      highlighted = id || null;
-      for (const r of regions) r.el.classList.toggle("active", highlighted !== null && r.id === highlighted);
-    }
-    function center() {
-      return { x: frame.clientWidth / 2, y: frame.clientHeight / 2 };
-    }
-    function fit() {
-      if (!loaded) return;
-      st = fitState(img.naturalWidth, img.naturalHeight, frame.clientWidth, frame.clientHeight);
-      fitScale = st.scale;
-      apply();
-    }
-    function zoom(factor, px, py) {
-      if (!loaded) return;
-      const c = center();
-      st = zoomAt(st, factor, px ?? c.x, py ?? c.y, fitScale);
-      apply();
-    }
-    function local(e) {
-      const r = frame.getBoundingClientRect();
-      return { x: e.clientX - r.left, y: e.clientY - r.top };
-    }
-
-    // Pointer handling: one pointer pans, two pointers pinch-zoom.
-    const pointers = new Map();
-    let pinchDist = 0;
-    frame.addEventListener("pointerdown", (e) => {
-      if (!loaded) return;
-      frame.setPointerCapture(e.pointerId);
-      pointers.set(e.pointerId, local(e));
-      if (pointers.size === 2) {
-        const [a, b] = [...pointers.values()];
-        pinchDist = Math.hypot(a.x - b.x, a.y - b.y);
-      }
-      dragging = true;
-      frame.classList.add("dragging");
-    });
-    frame.addEventListener("pointermove", (e) => {
-      if (!pointers.has(e.pointerId)) return;
-      const prev = pointers.get(e.pointerId);
-      const p = local(e);
-      pointers.set(e.pointerId, p);
-      if (pointers.size === 1) {
-        st = { ...st, x: st.x + p.x - prev.x, y: st.y + p.y - prev.y };
-        apply();
-      } else if (pointers.size === 2) {
-        const [a, b] = [...pointers.values()];
-        const d = Math.hypot(a.x - b.x, a.y - b.y);
-        if (pinchDist > 0) zoom(d / pinchDist, (a.x + b.x) / 2, (a.y + b.y) / 2);
-        pinchDist = d;
-      }
-    });
-    const release = (e) => {
-      pointers.delete(e.pointerId);
-      pinchDist = 0;
-      if (!pointers.size) { dragging = false; frame.classList.remove("dragging"); }
-    };
-    frame.addEventListener("pointerup", release);
-    frame.addEventListener("pointercancel", release);
-
-    frame.addEventListener("wheel", (e) => {
-      if (!loaded) return;
-      e.preventDefault();
-      const p = local(e);
-      zoom(Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.002)), p.x, p.y);
-    }, { passive: false });
-    frame.addEventListener("dblclick", (e) => { const p = local(e); zoom(2, p.x, p.y); });
-    frame.addEventListener("keydown", (e) => {
-      const step = 40;
-      const moves = { ArrowLeft: [step, 0], ArrowRight: [-step, 0], ArrowUp: [0, step], ArrowDown: [0, -step] };
-      if (e.key === "+" || e.key === "=") zoom(1.5);
-      else if (e.key === "-") zoom(1 / 1.5);
-      else if (e.key === "0") fit();
-      else if (moves[e.key]) { st = { ...st, x: st.x + moves[e.key][0], y: st.y + moves[e.key][1] }; apply(); }
-      else return;
-      e.preventDefault();
-    });
-
-    img.addEventListener("load", () => {
-      loaded = true;
-      msg.textContent = "";
-      frame.classList.remove("empty");
-      fit();
-    });
-    img.addEventListener("error", () => {
-      loaded = false;
-      img.style.transform = "";
-      frame.classList.add("empty");
-      msg.textContent = `Could not load image ${img.src}`;
-    });
-
-    function load(url, alt) {
-      loaded = false;
-      frame.classList.add("empty");
-      msg.textContent = "Loading image…";
-      img.alt = alt || "";
-      img.src = url;
-    }
-
-    return {
-      load, fit, zoom, setRegions, highlight,
-      onRegionHover: (fn) => { hoverFn = fn; },
-      state: () => ({ ...st }),
-      element: frame,
-    };
+    return out;
   }
 
-  return { createViewer, fitState, zoomAt, regionBox, MAX_SCALE };
+  /** IIIF Image API URL for `service`, scaled to fit within size×size (whole image, default quality). */
+  function iiifImageUrl(service, size) {
+    return `${serviceKey(service)}/full/!${size},${size}/0/default.jpg`;
+  }
+
+  /**
+   * One light-table entry per manifest image, captioned from the urnmap row whose `image`
+   * matches the image's service (caption "not found" when there is none). Pages from
+   * `#!mspages` whose `image` equals the urnmap row's `urn` are attached as `page`.
+   * `dseCounts` (from dseImageCounts) gives each entry `dse`: how many DSE records cite its URN.
+   * Returns [{ service, label, found, urn, page, dse, manifestLabel, thumb, full, width, height }].
+   */
+  function lightTable(images, urnmapRows, mspages, dseCounts) {
+    const byService = new Map();
+    for (const r of urnmapRows || []) {
+      const k = serviceKey(r.image);
+      if (k && !byService.has(k)) byService.set(k, r);
+    }
+    const pageByImage = new Map();
+    for (const p of mspages || []) if (p.image && !pageByImage.has(p.image)) pageByImage.set(p.image, p);
+    return images.map((im) => {
+      const row = byService.get(im.service) || null;
+      return {
+        service: im.service,
+        label: row && row.label ? row.label : "not found",
+        found: Boolean(row),
+        urn: row ? row.urn : null,
+        page: row ? pageByImage.get(row.urn) || null : null,
+        dse: row && dseCounts ? dseCounts.get(row.urn) || 0 : 0,
+        manifestLabel: im.label,
+        thumb: iiifImageUrl(im.service, THUMB_WIDTH),
+        full: iiifImageUrl(im.service, VIEW_SIZE),
+        width: im.width,
+        height: im.height,
+      };
+    });
+  }
+
+  /** An image URN without its `@` region of interest. */
+  const imageBase = (urn) => String(urn || "").split("@")[0].trim();
+
+  /** Number of DSE records citing each image (keyed by image URN without `@…`). */
+  function dseImageCounts(dseRows) {
+    const m = new Map();
+    for (const r of dseRows || []) {
+      const k = imageBase(r.image);
+      if (k) m.set(k, (m.get(k) || 0) + 1);
+    }
+    return m;
+  }
+
+  /** "urn:cts:ns:work:passage" -> "urn:cts:ns:work" (null if not a CTS URN). */
+  function ctsWork(urn) {
+    const parts = String(urn || "").split(":");
+    return parts.length >= 4 && parts[0] === "urn" && parts[1] === "cts" ? parts.slice(0, 4).join(":") : null;
+  }
+
+  /**
+   * The DSE records agm-mss.html uses: those citing texts cataloged in `#!catalog_embedded`
+   * (as agm-artifacts.html uses `#!catalog_annotated`). A release without that block uses all DSE records.
+   */
+  function embeddedDse(data) {
+    const all = data.dseAll || data.dse || [];
+    if (!data.catalogedEmbedded) return all;
+    const works = new Set((data.catalog_embedded || []).map((c) => c.work));
+    return all.filter((r) => works.has(ctsWork(r.text)));
+  }
+
+  /**
+   * Passages indexed to one image (URN without `@`), in DSE order:
+   * [{ urn, passage, roi, dse, row, catalog }] where `row` is the `#!texts_cols` row for the
+   * passage (or null) and `catalog` its work's `#!catalog_embedded` row (or null).
+   */
+  function imagePassages(data, imageUrn) {
+    const cols = (data.index && data.index.textsCols) || new Map();
+    const cats = (data.index && data.index.catalogEmbedded) || new Map();
+    return embeddedDse(data)
+      .filter((r) => imageBase(r.image) === imageUrn)
+      .map((r) => {
+        const work = ctsWork(r.text);
+        return {
+          urn: r.text,
+          passage: work ? r.text.slice(work.length + 1) : r.text,
+          roi: r.roi || null,
+          dse: r,
+          row: cols.get(r.text) || null,
+          catalog: (work && cats.get(work)) || null,
+        };
+      });
+  }
+
+  /** `#!mspages` rows belonging to manuscript `msUrn` (a collection URN such as "…mss.barocci41:"). */
+  function pagesFor(data, msUrn) {
+    const prefix = String(msUrn || "").replace(/:?$/, ":");
+    return (data.mspages || []).filter((p) => String(p.urn).startsWith(prefix));
+  }
+
+  /**
+   * Fetch a manuscript's manifest and urnmap and build its light table.
+   * Images are matched with the DSE records from embeddedDse(data).
+   * Returns { entries, counts: { images, found, missing, withDse }, warnings }.
+   */
+  async function loadManuscript(data, ms, fetchImpl) {
+    const f = fetchImpl || (typeof fetch !== "undefined" ? fetch : null);
+    if (!f) throw new Error("No fetch implementation available");
+    const get = async (url, what) => {
+      if (!url) throw new Error(`${ms.label}: no ${what} URL in #!mss`);
+      const res = await f(url);
+      if (!res.ok) throw new Error(`HTTP ${res.status} loading ${what} ${url}`);
+      return res;
+    };
+    const [manifestRes, mapRes] = await Promise.all([get(ms.manifest, "manifest"), get(ms.urnmap, "urnmap")]);
+    const manifest = await manifestRes.json();
+    const map = parseUrnMap(await mapRes.text());
+    const images = manifestImages(manifest);
+    const dseRows = embeddedDse(data);
+    const entries = lightTable(images, map.rows, pagesFor(data, ms.urn), dseImageCounts(dseRows));
+    const found = entries.filter((e) => e.found).length;
+    const withDse = entries.filter((e) => e.dse > 0).length;
+    const warnings = map.warnings.slice();
+    if (!images.length) warnings.push(`manifest ${ms.manifest}: no images found`);
+    return { entries, counts: { images: entries.length, found, missing: entries.length - found, withDse }, warnings };
+  }
+
+  return {
+    THUMB_WIDTH, VIEW_SIZE,
+    manuscriptMenu, serviceKey, parseUrnMap, labelText, manifestImages, iiifImageUrl,
+    lightTable, pagesFor, loadManuscript, imageBase, dseImageCounts, embeddedDse, imagePassages,
+  };
 });
 
 </script>
 <script>
-/* app.js — UI for the agm reader. Depends on globals AgmCex, AgmEdition, AgmNotation and AgmViewer. */
+/* mss-app.js — UI for agm-mss.html. Depends on globals AgmCex, AgmViewer, AgmMss and AgmNotation. */
 (function () {
   "use strict";
   const $ = (id) => document.getElementById(id);
-  // Data-source controls exist only in some builds (see build.js), so these may be null.
+  // Data-source controls exist only in the fixture build (see build.js), so these may be null.
   const urlInput = $("url");
   const loadButton = $("load");
   const fileInput = $("file");
   const statusEl = $("status");
-  const surfaceSelect = $("surface");
-  const surfaceOut = $("surface-out");
-  const dataOut = $("data-out");
+  const msSelect = $("ms");
+  const msOut = $("ms-out");
 
-  /** App state, exposed for console inspection and tests. */
-  window.agm = { data: null, selectSurface };
+  /** App state, exposed for console inspection. */
+  window.mss = { data: null, ms: null, entries: [], selected: null, viewer: null, selectManuscript, selectImage, closeImage };
 
   if (urlInput) urlInput.value = AgmCex.DEFAULT_URL;
 
@@ -1452,349 +1455,274 @@ summary { cursor: pointer; font-weight: 600; }
   function el(tag, attrs, ...kids) {
     const e = document.createElement(tag);
     Object.assign(e, attrs || {});
-    for (const k of kids) e.append(k);
+    for (const k of kids) if (k !== null && k !== undefined && k !== "") e.append(k);
     return e;
   }
 
-  /* ---------- surface menu and contents ---------- */
+  /* ---------- manuscript menu ---------- */
 
-  function renderSurfaceMenu(d) {
-    const menu = AgmEdition.surfaceMenu(d);
-    surfaceSelect.replaceChildren(
-      el("option", { value: "", textContent: menu.length ? "Choose an artifact…" : "No artifacts in this release" }),
-      ...menu.map((s) => el("option", { value: s.urn, textContent: s.label }))
-    );
-    surfaceSelect.disabled = menu.length === 0;
-    surfaceOut.replaceChildren();
+  function renderMenu(d) {
+    const menu = AgmMss.manuscriptMenu(d);
+    msSelect.replaceChildren(
+      el("option", { value: "", textContent: menu.length ? "Choose a manuscript…" : "No manuscripts in this release" }),
+      ...menu.map((m) => el("option", { value: m.urn, textContent: m.label })));
+    msSelect.disabled = menu.length === 0;
+    msOut.replaceChildren();
   }
 
-  /** Notation rendered in the Mousike Notation font, with the URN encoding below it. */
-  function notationEl(urnText, extra) {
-    return el("div", { className: "content" },
-      el("div", { className: "mousike-notation", textContent: AgmNotation.notesToUnicodeSafe(urnText) }),
-      el("div", { className: "notation" }, el("span", { textContent: urnText }), extra || ""));
-  }
+  let loadToken = 0; // ignore results for a manuscript the user has since moved away from
 
-  function contentEl(p) {
-    if (p.block === "notes") {
-      const n = p.unit === "group" ? p.record.notes.length : 0;
-      return notationEl(p.record.text,
-        n > 1 ? el("span", { className: "count", textContent: ` (${n} notes on one syllable)` }) : null);
-    }
-    return el("div", { className: "content greek", textContent: p.record.text });
-  }
+  async function selectManuscript(urn) {
+    msSelect.value = urn || "";
+    const token = ++loadToken;
+    Object.assign(window.mss, { ms: null, entries: [], selected: null, viewer: null });
+    grid = pageSection = pageHead = viewerHolder = textSection = null;
+    const ms = AgmMss.manuscriptMenu(window.mss.data || {}).find((m) => m.urn === urn);
+    if (!ms) { msOut.replaceChildren(); return null; }
+    window.mss.ms = ms;
 
-  function passageBody(p) {
-    if (p.match === "exact") return contentEl(p);
-    if (p.match === "container") {
-      return el("div", null,
-        el("div", { className: "note", textContent: `Not found in ${p.block}. Containing passage ${shortRef(p.record.urn)}:` }),
-        contentEl(p));
-    }
-    return el("div", { className: "note", textContent: "Not found in texts, notes or syllables." });
-  }
+    const status = el("p", { className: "counts", textContent: "Loading manifest and URN map…" });
+    msOut.replaceChildren(
+      el("h2", { textContent: ms.label }),
+      el("p", { className: "urn-line" }, el("code", { textContent: ms.urn })),
+      status);
 
-  function selectSurface(urn) {
-    surfaceSelect.value = urn || "";
-    stopAudio(); // a detached <audio> keeps playing, so stop it before replacing the view
-    window.agm.surface = urn || null;
-    window.agm.viewer = null;
-    const d = window.agm.data;
-    if (!d || !urn) { surfaceOut.replaceChildren(); return null; }
-    const view = AgmEdition.surfaceContents(d, urn);
-    const { counts } = view;
-
-    const head = el("p", { className: "counts" });
-    head.textContent = counts.total === 0
-      ? "No DSE records for this artifact."
-      : `${counts.total} DSE record(s): ${counts.exact} resolved` +
-        (counts.container ? `, ${counts.container} only to a containing passage` : "") +
-        (counts.missing ? `, ${counts.missing} not found` : "") + ".";
-
-    const list = el("ol", { className: "entries" });
-    for (const { dse, passage } of view.entries) {
-      const roi = dse.roi;
-      list.append(el("li", { className: passage.match === "exact" ? "entry" : "entry unresolved" },
-        el("div", { className: "entry-head" },
-          el("span", { className: "ref", textContent: shortRef(dse.text), title: dse.text }),
-          el("span", {
-            className: "roi",
-            textContent: roi ? "region " + [roi.left, roi.top, roi.width, roi.height].join(", ") : "no region",
-            title: dse.image,
-          })),
-        passageBody(passage)));
-    }
-
-    surfaceOut.replaceChildren(
-      audioSection(AgmEdition.surfaceAudio(d, urn)),
-      el("h2", { textContent: view.surface ? view.surface.label : urn }),
-      el("p", { className: "urn-line" }, el("code", { textContent: urn })),
-      linesView(AgmEdition.surfaceLines(d, urn)),
-      imageSection(AgmEdition.surfaceImages(d, urn)),
-      el("details", { className: "dse-panel" },
-        el("summary", { textContent: `DSE records (${counts.total})` }),
-        head,
-        list));
-    return view;
-  }
-
-  /* ---------- audio menu: tracks indexed to the displayed notation lines ---------- */
-
-  let player = null; // the <audio> element for the current surface
-
-  function stopAudio() {
-    if (player) { player.pause(); player.removeAttribute("src"); player.load(); }
-    player = null;
-    window.agm.track = null;
-  }
-
-  function audioSection(tracks) {
-    window.agm.tracks = tracks;
-    if (!tracks.length) {
-      return el("p", { className: "note muted", textContent: "No audio for this artifact." });
-    }
-    const select = el("select", { id: "audio" },
-      el("option", { value: "", textContent: "Choose a recording…" }),
-      ...tracks.map((t, i) => el("option", { value: String(i), textContent: t.label, title: t.file })));
-    select.addEventListener("change", () => playTrack(select.value === "" ? null : Number(select.value)));
-    player = el("audio", { id: "player", controls: true, preload: "none" });
-    player.hidden = true;
-    const msg = el("span", { id: "audio-msg", className: "note" });
-    player.addEventListener("error", () => {
-      if (player && player.getAttribute("src")) msg.textContent = `Could not load ${player.src}`;
-    });
-    return el("section", { className: "audio-picker" },
-      el("label", { htmlFor: "audio", textContent: "Audio" }), select, player, msg);
-  }
-
-  /** Play track number `i` of the current artifact's audio menu; null stops playback. */
-  function playTrack(i) {
-    const t = i === null ? null : (window.agm.tracks || [])[i];
-    const msg = $("audio-msg");
-    const select = $("audio");
-    if (!player) return null;
-    if (msg) msg.textContent = "";
-    if (!t) {
-      player.pause();
-      player.hidden = true;
-      window.agm.track = null;
-      if (select) select.value = "";
+    let result;
+    try {
+      result = await AgmMss.loadManuscript(window.mss.data, ms);
+    } catch (e) {
+      if (token === loadToken) status.replaceChildren(el("span", { className: "note", textContent: `Could not load: ${e.message}` }));
       return null;
     }
-    if (select) select.value = String(i);
-    window.agm.track = t;
-    player.hidden = false;
-    player.src = t.url;
-    const p = player.play();
-    if (p && p.catch) {
-      p.catch((e) => {
-        if (msg && e.name !== "AbortError") msg.textContent = `Could not play: ${e.message}`;
-      });
+    if (token !== loadToken) return null;
+
+    const { entries, counts, warnings } = result;
+    window.mss.entries = entries;
+    status.replaceChildren(`${counts.images} image(s), ${counts.found} captioned from the URN map`,
+      counts.missing ? el("span", { className: "missing", textContent: `, ${counts.missing} not found` }) : "",
+      ", ",
+      el("span", { className: "dse-count", textContent: `${counts.withDse} with DSE records` }),
+      ".");
+    if (warnings.length) {
+      msOut.append(el("details", { className: "ms-warnings" },
+        el("summary", { textContent: `${warnings.length} warning(s)` }),
+        el("ul", null, ...warnings.map((w) => el("li", { textContent: w })))));
     }
-    return t;
-  }
-  window.agm.playTrack = playTrack;
-
-  /* ---------- image menu: distinct images cited by the surface's DSE records ---------- */
-
-  let imageOut = null; // element holding the viewer for the selected image
-
-  /** Image menu plus a pan/zoom view of the selected image (first one preselected). */
-  function imageSection(images) {
-    window.agm.images = images;
-    window.agm.image = null;
-    if (!images.length) {
-      imageOut = null;
-      return el("p", { className: "note", textContent: "No images cited for this artifact." });
-    }
-    const select = el("select", { id: "image" },
-      ...images.map((im) => el("option", {
-        value: im.urn,
-        textContent: im.image ? im.label : `${im.label} (not in image catalog)`,
-        title: im.urn,
-      })));
-    select.addEventListener("change", () => selectImage(select.value));
-    imageOut = el("div", { className: "image-out" });
-    const sec = el("section", { className: "image-section" },
-      el("div", { className: "image-picker" },
-        el("label", { htmlFor: "image", textContent: "Image" }), select),
-      imageOut);
-    // Defer so the section is in the document (the viewer needs its size to fit the image).
-    setTimeout(() => selectImage(images[0].urn), 0);
-    return sec;
+    grid = lightTableEl(entries);
+    textSection = el("section", { className: "page-text", id: "page-text" });
+    textSection.hidden = true;
+    msOut.append(dseFilter(counts.withDse), el("div", { className: "stage" }, pageView(), grid), textSection);
+    return result;
   }
 
-  /** Make `urn` (an image URN without region of interest) the selected image and show it. */
-  function selectImage(urn) {
-    const im = (window.agm.images || []).find((x) => x.urn === urn);
-    if (!im || !imageOut) return null;
-    window.agm.image = urn;
-    const select = $("image");
-    if (select) select.value = urn;
+  /* ---------- light table ---------- */
 
-    const url = AgmEdition.imageUrl(im.image);
-    if (!url) {
-      imageOut.replaceChildren(el("p", { className: "note",
-        textContent: `${urn} is not in the image catalog, so it can't be displayed.` }));
-      return urn;
-    }
-    const holder = el("div", { className: "viewer" });
-    imageOut.replaceChildren(holder);
-    const viewer = AgmViewer.createViewer(holder);
-    window.agm.viewer = viewer;
-
-    // Regions of interest on this image, linked to the line view by DSE text URN.
-    const regions = AgmEdition.imageRegions(window.agm.data, window.agm.surface, urn);
-    viewer.setRegions(regions.map((r) => ({ id: r.id, roi: r.roi, kind: r.kind, title: shortRef(r.id) })));
-    viewer.onRegionHover((id) => highlight(id));
-    const withRegion = new Set(regions.map((r) => r.id));
-    for (const e of surfaceOut.querySelectorAll("[data-urn]")) {
-      e.classList.toggle("has-roi", withRegion.has(e.dataset.urn));
-    }
-    highlight(null);
-
-    viewer.load(url, im.label);
-    if (regions.length) {
-      imageOut.append(el("p", { className: "roi-key" },
-        el("span", { className: "sw", style: "border-color: rgba(255,190,60,.95)" }), "notes",
-        el("span", { className: "sw", style: "border-color: rgba(80,200,255,.95)" }), "syllables",
-        ` · ${regions.length} region(s). Hover a region or a syllable/note to link them.`));
-    }
-    if (im.image.credits) {
-      imageOut.append(el("p", { className: "credits", textContent: im.image.credits }));
-    }
-    return urn;
+  function lightTableEl(entries) {
+    const grid = el("div", { className: "light-table", id: "light-table" });
+    entries.forEach((e, i) => {
+      const img = el("img", { src: e.thumb, alt: e.label, loading: "lazy", decoding: "async" });
+      img.addEventListener("error", () => img.classList.add("broken"));
+      const badge = e.dse
+        ? el("span", { className: "dse-badge", textContent: String(e.dse), title: `${e.dse} DSE record(s)` })
+        : null;
+      const btn = el("button", {
+        type: "button",
+        className: "thumb" + (e.found ? "" : " not-found") + (e.dse ? " has-dse" : ""),
+        title: (e.urn || e.service) + (e.dse ? `\n${e.dse} DSE record(s)` : ""),
+      }, el("figure", { style: "margin:0" }, img, badge, el("figcaption", { textContent: e.label })));
+      btn.dataset.index = String(i);
+      btn.addEventListener("click", () => selectImage(i));
+      grid.append(btn);
+    });
+    return grid;
   }
-  window.agm.selectImage = selectImage;
 
-  /* ---------- linked highlighting: line view ↔ image regions ---------- */
+  /** "Only images with DSE records" toggle for the light table (hides the others). */
+  function dseFilter(n) {
+    const box = el("input", { type: "checkbox", id: "dse-only", disabled: n === 0 });
+    box.addEventListener("change", () => {
+      if (grid) grid.classList.toggle("dse-only", box.checked);
+    });
+    return el("label", { className: "dse-filter", htmlFor: "dse-only" }, box,
+      el("span", { className: "dse-swatch" }), ` Only images with DSE records (${n})`);
+  }
+
+  /* ---------- selected image: pan/zoom view ---------- */
+
+  let grid = null;         // the light table
+  let pageHead = null;
+  let viewerHolder = null;
+  let pageSection = null;  // the full-image view; replaces the light table while open
+  let gridScroll = 0;      // light-table scroll position, restored on close
+  let textSection = null;  // passages indexed to the open image, shown below it
+
+  function pageView() {
+    pageHead = el("div", { className: "page-head" });
+    viewerHolder = el("div", { className: "viewer" });
+    pageSection = el("section", { className: "page-view", id: "page-view" }, pageHead, viewerHolder);
+    pageSection.hidden = true;
+    return pageSection;
+  }
+
+  /**
+   * Show light-table entry `i` in the pan/zoom viewer, in place of the light table
+   * (Close or Escape returns to the light table).
+   */
+  function selectImage(i) {
+    const entries = window.mss.entries;
+    const e = entries[i];
+    if (!e || !pageSection) return null;
+    window.mss.selected = i;
+    for (const t of document.querySelectorAll(".thumb.selected")) t.classList.remove("selected");
+    const thumb = document.querySelector(`.thumb[data-index="${i}"]`);
+    if (thumb) thumb.classList.add("selected");
+
+    const prev = el("button", { type: "button", textContent: "‹ Previous", disabled: i === 0 });
+    const next = el("button", { type: "button", textContent: "Next ›", disabled: i === entries.length - 1 });
+    const close = el("button", { type: "button", className: "close", textContent: "✕ Close", title: "Back to the light table (Esc)" });
+    prev.addEventListener("click", () => selectImage(i - 1));
+    next.addEventListener("click", () => selectImage(i + 1));
+    close.addEventListener("click", closeImage);
+    const meta = [e.page ? e.page.urn : null, e.urn, e.dse ? `${e.dse} DSE record(s)` : null]
+      .filter(Boolean).join(" · ");
+    pageHead.replaceChildren(
+      el("h3", { className: e.found ? "" : "not-found", textContent: e.page ? e.page.label : e.label }),
+      meta ? el("span", { className: "meta", textContent: meta }) : el("span", { className: "meta not-found", textContent: `not in URN map: ${e.service}` }),
+      el("span", { className: "page-nav" }, prev, next, close));
+
+    if (pageSection.hidden) {
+      gridScroll = grid ? grid.scrollTop : 0; // display:none can lose it, so keep it ourselves
+      if (grid) grid.hidden = true;
+      pageSection.hidden = false;
+    }
+    if (!window.mss.viewer) window.mss.viewer = AgmViewer.createViewer(viewerHolder);
+    window.mss.viewer.load(e.full, e.label);
+    renderPassages(e);
+    if (!isOnScreen(pageSection)) pageSection.scrollIntoView({ block: "nearest" });
+    return e;
+  }
+
+  /** Close the full-image view and return to the light table where it was. */
+  function closeImage() {
+    if (!pageSection || pageSection.hidden) return;
+    pageSection.hidden = true;
+    if (textSection) textSection.hidden = true;
+    if (!grid) return;
+    grid.hidden = false;
+    grid.scrollTop = gridScroll;
+    // Keep the last-viewed thumbnail (Previous/Next may have moved on) visible and focused.
+    const thumb = grid.querySelector(".thumb.selected");
+    if (thumb) {
+      const g = grid.getBoundingClientRect(), t = thumb.getBoundingClientRect();
+      if (t.top < g.top) grid.scrollTop -= g.top - t.top + 12;
+      else if (t.bottom > g.bottom) grid.scrollTop += t.bottom - g.bottom + 12;
+      thumb.focus({ preventScroll: true });
+    }
+  }
+
+  document.addEventListener("keydown", (e) => {
+    if (!pageSection || pageSection.hidden) return;
+    if (e.key === "Escape") { closeImage(); e.preventDefault(); }
+  });
+
+  /* ---------- text indexed to the open image ---------- */
+
+  /** Show the `#!texts_cols` passages that DSE records index to entry `e`'s image. */
+  function renderPassages(e) {
+    if (!textSection) return;
+    const passages = e.urn ? AgmMss.imagePassages(window.mss.data, e.urn) : [];
+    showRegions(passages); // always: clears the previous image's regions when there are none
+    textSection.hidden = passages.length === 0;
+    if (!passages.length) { textSection.replaceChildren(); return; }
+
+    const works = [...new Set(passages.map((p) => p.catalog)
+      .filter(Boolean).map((c) => [c.groupName, c.workTitle].filter(Boolean).join(", ")))];
+    const list = el("ol", { className: "passages" });
+    for (const p of passages) {
+      list.append(linked(el("li", { className: "passage" + (p.row ? "" : " missing") + (p.roi ? " has-roi" : "") },
+        el("span", { className: "ref", textContent: p.passage, title: p.urn }),
+        p.row ? passageBody(p.row)
+          : el("span", { className: "note", textContent: "not found in #!texts_cols" })), p.urn));
+    }
+    textSection.replaceChildren(
+      el("h3", { textContent: `Text on this image (${passages.length} passage${passages.length === 1 ? "" : "s"})` },
+        works.length ? el("span", { className: "work", textContent: ` · ${works.join("; ")}` }) : null),
+      list);
+  }
+
+  /* ---------- linked highlighting: image regions ↔ text passages ---------- */
 
   let highlighted = null;
 
-  /** Highlight passage `urn` (a DSE text URN) in the line view and on the image; null clears. */
+  /** Draw the passages' regions of interest on the image, keyed by passage URN. */
+  function showRegions(passages) {
+    const viewer = window.mss.viewer;
+    highlighted = null;
+    if (!viewer) return;
+    viewer.setRegions(passages.filter((p) => p.roi)
+      .map((p) => ({ id: p.urn, roi: p.roi, kind: "text", title: p.passage })));
+    viewer.onRegionHover((id) => highlight(id));
+    viewer.highlight(null);
+  }
+
+  /** Highlight passage `urn` in the text panel and its region(s) on the image; null clears. */
   function highlight(urn) {
     highlighted = urn || null;
-    for (const e of surfaceOut.querySelectorAll(".hl")) e.classList.remove("hl");
-    if (highlighted) {
-      for (const e of surfaceOut.querySelectorAll("[data-urn]")) {
-        if (e.dataset.urn === highlighted) e.classList.add("hl");
+    if (textSection) {
+      for (const li of textSection.querySelectorAll(".passage")) {
+        li.classList.toggle("hl", highlighted !== null && li.dataset.urn === highlighted);
       }
     }
-    if (window.agm.viewer) window.agm.viewer.highlight(highlighted);
+    if (window.mss.viewer) window.mss.viewer.highlight(highlighted);
   }
-  window.agm.highlight = highlight;
+  window.mss.highlight = highlight;
 
-  /** Tag a line-view element with its passage URN so it links to image regions. */
-  function linked(e, urn) {
-    e.dataset.urn = urn;
-    e.addEventListener("pointerenter", () => highlight(urn));
-    e.addEventListener("pointerleave", () => { if (highlighted === urn) highlight(null); });
-    return e;
-  }
-
-  /* ---------- line view: syllables with their note groups above ---------- */
-
-  function linesView(texts) {
-    const sec = el("section", { className: "lines" });
-    if (!texts.length) {
-      sec.append(el("p", { className: "note", textContent: "No syllables or notes for this artifact." }));
-      return sec;
-    }
-    for (const { base, lines } of texts) {
-      if (texts.length > 1) sec.append(el("h3", { textContent: shortRef(base) }));
-      for (const ln of lines) sec.append(lineEl(ln));
-    }
-    return sec;
+  /** Tag a passage element with its URN so hovering it highlights its region. */
+  function linked(node, urn) {
+    node.dataset.urn = urn;
+    node.addEventListener("pointerenter", () => highlight(urn));
+    node.addEventListener("pointerleave", () => { if (highlighted === urn) highlight(null); });
+    return node;
   }
 
-  function lineEl(ln) {
-    const head = el("div", { className: "line-head" },
-      el("span", { className: "line-no", textContent: `Line ${ln.line}` }));
-    if (!ln.aligned) {
-      head.append(el("span", {
-        className: "note",
-        textContent: `${ln.syllables.length} syllable(s), ${ln.groups.length} note group(s)`,
-      }));
-    }
-    const row = el("div", { className: "line-row" });
-    for (const c of ln.columns) {
-      const g = c.group, s = c.syllable;
-      const col = el("div", { className: "col" + (g && s ? "" : " unmatched") });
-      col.append(g
-        ? linked(el("div", {
-            className: "mousike-notation col-notes",
-            textContent: AgmNotation.notesToUnicodeSafe(g.text),
-            title: `${shortRef(g.urn)}  ${g.text}`,
-          }), g.urn)
-        : el("div", { className: "col-notes missing", textContent: "—", title: "no note group" }));
-      col.append(s
-        ? linked(el("div", { className: "greek col-syl", textContent: s.text, title: shortRef(s.urn) }), s.urn)
-        : el("div", { className: "col-syl missing", textContent: "—", title: "no syllable" }));
-      row.append(col);
-    }
-    return el("div", { className: ln.aligned ? "line" : "line misaligned" }, head, row);
+  /** A `#!texts_cols` row: its cells side by side, with Sowerby note URNs shown as Unicode signs. */
+  function passageBody(row) {
+    const body = el("div", { className: "cells" });
+    body.style.gridTemplateColumns = `repeat(${Math.max(row.cells.length, 1)}, minmax(0, auto))`;
+    for (const cell of row.cells) body.append(cellEl(cell));
+    return body;
   }
 
-  /** "urn:cts:mousike:epigraphic.seikilos.notes:1.1" -> "notes:1.1" */
-  function shortRef(urn) {
-    const { work, passage } = AgmCex.ctsParts(urn);
-    return `${work.split(".").pop()}${passage ? ":" + passage : ""}`;
+  function cellEl(text) {
+    const cell = el("span", { className: "cell greek" });
+    for (const seg of AgmNotation.splitEmbeddedNotation(text)) {
+      cell.append(seg.urn
+        ? el("span", {
+            className: "mousike-notation note-sign" + (seg.ok ? "" : " unknown"),
+            textContent: seg.unicode,
+            title: seg.urn,
+          })
+        : seg.text);
+    }
+    return cell;
   }
 
-  surfaceSelect.addEventListener("change", () => selectSurface(surfaceSelect.value));
-
-  /* ---------- raw data inspector ---------- */
-
-  const GREEK_COLS = { texts: ["text"], syllables: ["text"] };
-
-  function tableFor(name, rows) {
-    const cols = AgmCex.BLOCK_SCHEMAS[name];
-    const t = el("table");
-    t.append(el("thead", null, el("tr", null, ...cols.map((c) => el("th", { textContent: c })))));
-    const tb = el("tbody");
-    for (const r of rows) {
-      tb.append(el("tr", null, ...cols.map((c) => {
-        const v = r[c];
-        let cls = "";
-        if (/^urn:/.test(v)) cls = "urn";
-        else if ((GREEK_COLS[name] || []).includes(c)) cls = "greek";
-        return el("td", { textContent: v, className: cls });
-      })));
-    }
-    t.append(tb);
-    return el("div", { className: "scroll" }, t);
+  /** True when all of `node` is within the window. */
+  function isOnScreen(node) {
+    const r = node.getBoundingClientRect();
+    return r.top >= 0 && r.bottom <= window.innerHeight;
   }
 
-  function renderData(d) {
-    dataOut.replaceChildren();
-    const summary = el("div", { className: "summary" });
-    summary.append(el("div", null, el("b", { textContent: d.version ?? "—" }), el("span", { textContent: "version" })));
-    for (const name of AgmCex.BLOCK_NAMES.slice(1)) {
-      summary.append(el("div", null, el("b", { textContent: String(d[name].length) }), el("span", { textContent: name })));
-    }
-    dataOut.append(summary);
+  msSelect.addEventListener("change", () => selectManuscript(msSelect.value));
 
-    if (d.warnings.length) {
-      dataOut.append(el("details", { className: "warnings" },
-        el("summary", { textContent: `${d.warnings.length} warning(s)` }),
-        el("ul", null, ...d.warnings.map((w) => el("li", { textContent: w })))));
-    }
-    for (const name of AgmCex.BLOCK_NAMES.slice(1)) {
-      dataOut.append(el("details", null,
-        el("summary", { textContent: `#!${name} (${d[name].length})` }),
-        tableFor(name, d[name])));
-    }
-  }
-
-  /* ---------- loading ---------- */
+  /* ---------- loading the release ---------- */
 
   function accept(d, source) {
-    window.agm.data = d;
+    window.mss.data = d;
     setStatus(`Loaded mousike release ${d.version}`, false, `Source: ${source}`);
-    renderSurfaceMenu(d);
-    renderData(d);
+    renderMenu(d);
   }
-  window.agm.accept = accept;
+  window.mss.accept = accept;
 
   async function loadUrl() {
     const url = (urlInput && urlInput.value.trim()) || AgmCex.DEFAULT_URL;

@@ -1,4 +1,4 @@
-/* mss-app.js — UI for mss.html. Depends on globals AgmCex, AgmViewer, AgmMss and AgmNotation. */
+/* mss-app.js — UI for agm-mss.html. Depends on globals AgmCex, AgmViewer, AgmMss and AgmNotation. */
 (function () {
   "use strict";
   const $ = (id) => document.getElementById(id);
